@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CARD BATTLES</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/x-icon" href="/img/cards/froster.png">
+    <script src="node_modules/sql.js/dist/sql-wasm.js"></script>
+    <script src="https://requirejs.org/docs/release/2.3.5/minified/require.js"></script>
+    <script type="module" src="/node_modules/fs-web/fs.min.js"></script>
+    <script type="module" src="/node_modules/buffer/index.js"></script>
+    
+</head>
+<body>
+   
+    <div id="filler" style="margin-bottom:-36.5px;opacity: 0;">
+        filler
+    </div>
+    <svg height="0" width="0" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+            <linearGradient id="gradient-1" y2="1" x2="0">
+                <stop stop-color="white" offset="0" stop-opacity="0.5"/>
+                <stop stop-color="black" offset="1"/>
+            </linearGradient>
+            <radialGradient id="gradient-2" y2="1">
+                <stop stop-color="white" offset="0"/>
+                <stop stop-color="rgb(200,200,200)" offset="1" />
+            </radialGradient>
+            <filter id="filter-1" x="0" y="0">
+                <feGaussianBlur in="SourceGraphic" stdDeviation="1"/>
+            </filter>
+            <filter id="filter-2" x="0" y="0">
+                <feTurbulence type="fractalNoise" baseFrequency="10" numOctaves="6" stitchTiles="stitch" opacity="0.1"/>
+            </filter>
+            <pattern id="patt-1" x="0" y="0" width="1" height="1" patternUnits="userSpaceOnUse">
+                <circle cx="1" cy="1" r="0.9" fill="white"/>
+            </pattern>
+            <pattern id="patt-2" x="0" y="0" width="10" height="10" patternUnits="userSpaceOnUse">
+                <rect x="0" y="0" width="6" height="100" fill="white"/>
+                <rect x="6" y="0" width="4" height="100" fill="white" opacity="0.7"/>
+            </pattern>
+            <mask id="mask-1">
+                <rect x="0.5" y="0.2" width="1000" height="1000" fill="url(#patt-1)"/>
+            </mask>
+            <mask id="mask-2">
+                <rect x="0.5" y="0.2" width="1000" height="1000" fill="url(#patt-2)"/>
+            </mask>
+            <mask id="mask-3">
+                <rect x="0.5" y="0.2" width="140" height="160" fill="url(#gradient-2)"/>
+            </mask>
+        </defs>
+    </svg>
+    <div id="transition">
+        <p>FILLER</p>
+    </div>
+    <div id="adventure" class="hide">
+        <div id="a1" class="asplit">
+            <div id="currentoverview">
+                <h1 id="curloc">Current Location: Home</h2>
+                <p id="curlocdesc">Start with 3 regular spearmen, 300 health, 5 mana gain, and no upgrades.</p>
+            </div>
+            <hr>
+            <div id="lore">
+                <p id="loretext"></p>
+            </div>
+            <div class="open-modal-btn-wrapper" id="event-modal-btn-wrapper">
+                <button class="open-modal-btn" id="event-modal-btn" data-target="event-overlay">
+                    Open Shop
+                </button>
+            </div>
+            <div id="special" class="hide">
+                <h2 id="specialtitle">SPECIAL</h2>
+                <div id="sc1" class="specialcard">
+                    
+                </div>
+                <div id="sc2" class="specialcard">
+                    
+                </div>
+                <div id="sc3" class="specialcard">
+                    
+                </div>
+                <!---
+                <div id="easymode">
+                    <h2>Easy</h2>
+                </div>-->
+            </div>
+            <div id="special2" class="hide">
+                <h2 id="specialtitle2">SPECIAL</h2>
+                <div id="sc1a" class="specialcard">
+                    
+                </div>
+                <div id="sc2a" class="specialcard">
+                    
+                </div>
+                <div id="sc2a" class="specialcard">
+                    
+                </div>
+                
+            </div>
+            
+            <hr>
+            <div id="proceedoverview">
+                <h2 id="proceed">Travel To Next Area: Road To Coda</h2>
+                <p id="proceeddesc"></p>
+                <button type="button" id="travel">Travel</button>
+                <button type="button" id="alttravel">Skip</button>
+            </div>
+        </div>
+        <div id="a2" class="asplit">
+            
+            <h1 style="font-size:40px;">BACKPACK</h1>
+            <div id="plrstats">
+
+            </div>
+            <h4 id="inventoryspecialtext"></h4>
+            <h4 id="playerpower" class="hide">Power: 0</h4>
+            <h3>Inventory</h3>
+            <div id="plrinventory">
+
+            </div>
+            <h3>Relics</h3>
+            <div id="plrrelics">
+                
+            </div>
+        </div>
+        <div id="backpack-toggle">Ja hallo guys</div>
+        <div id="event-overlay" class="modal-overlay hide">
+            <div id="event-wrapper" class="modal-wrapper">
+                <div class="close-btn-wrapper">
+                    <button class="close-modal-btn" data-target="event-overlay">
+                        Close
+                    </button>
+                </div>
+                <div class="tab">
+                    <button class="tablinks" onclick="openTab(event,'eventtab')">
+                        Event
+                    </button>
+                </div>
+                <div id="eventtab" class="tabcontent">
+                    <div id="emth-wrapper"><h1 class="m-0" id="event-modal-tab1-header">Shop</h1></div>
+                    
+                    <hr>
+                    <div class="modal-content" id="modal-content3">
+                        <h2 style="text-align:center;">Cards</h2>
+                        <div id="asp-1-flex" class="event-flex">
+                            <div id="opt1" class="asp-1">
+                                <div id="opt1-main" class="asp-main">
+
+                                </div>
+                                <div id="opt1-tag" class="asp-tag">
+
+                                </div>
+                            </div>
+                            
+                            <div id="opt2" class="asp-1">
+                                <div id="opt2-main" class="asp-main">
+
+                                </div>
+                                <div id="opt2-tag" class="asp-tag">
+
+                                </div>
+                            </div>
+                            
+                            <div id="opt3" class="asp-1">
+                                <div id="opt3-main" class="asp-main">
+
+                                </div>
+                                <div id="opt3-tag" class="asp-tag">
+
+                                </div>
+                            </div>
+                            
+                        </div>
+                        
+                    </div>
+                </div>
+                <button id="reroll" class="reroll" type="button">Reroll (15 coda coins)</button>
+            </div>
+            
+        </div>
+    </div>
+    
+    <div id="modes" class="hide">
+        <div id="easymode" class="modes">
+            <h2>Easy</h2>
+            <p>You have 2x more health, while enemies have 0.7x as much health. Your cards are also 50% better, and you gain 2x as much mana.</p>
+        </div>
+        <div id="normalmode" class="modes">
+            <h2>Normal</h2>
+            <p>All stats are standard.</p>
+        </div>
+        <div id="hardmode" class="modes">
+            <h2>Hard</h2>
+            <p>You have 70% of standard health, while enemies have 20% more health. You gain 0% more mana, and all cards have 80% of their original stats.</p>
+        </div>
+        <div id="cataclysmmode" class="modes">
+            <h2>Cataclysm</h2>
+            <p>You have 1/5 of standard health, while enemies have 2x as much health. The enemy gains 140% more mana, and your card stats are decreased by 50%.</p>
+        </div><!---
+        <div id="easymode">
+            <h2>Easy</h2>
+        </div>-->
+    </div>
+    <div id="startingmods" class="hide">
+        <div id="nephew" class="startmods">
+            <h2>Nephew</h2>
+            <p>Start with 2 regular spearmen, 300 health, 5 mana gain, and no upgrades.</p>
+        </div>
+        <div id="uncleman" class="startmods">
+            <h2>UncleMan</h2>
+            <p>Start with 1 factory, 500 health, 7 mana gain, and no upgrades.</p>
+        </div>
+    </div>
+    <div id="menu">
+        <div id="background">
+            <h1 id="gametitle">QUEST FOR BEAN</h1>
+            <div class="open-modal-btn-wrapper">
+                <button class="open-modal-btn" data-target="modal-overlay">
+                    Changelog
+                </button>
+            </div>
+            <button id="play">
+                PLAY
+            </button>
+            
+        </div>
+        <p id="versiontext">v0.3.1.1 - UPDATE OF NOTHING</p>
+    </div>
+    <div id="game" class="hide">
+        <h2 id="battletitle">FIGHT AGAINST</h2>
+        <p id="p1">Player 1: 500 health</p>
+        <p id="p2">Player 2: 500 health</p>
+        
+        <h4 id="whichturn">YOUR TURN</h4>
+        <p id="battletext"></p>
+        <!--        <div>
+            <p id="curmode">Current Mode: Normal</p>
+            <select id="customoptions" class="hide">
+                <option value="">No Challenge</option>
+                <option value="industrial">Industrial Revolution</option>
+                <option value="flagship">Carrier Flagship</option>
+                <option value="decay">Decay</option>
+                <option value="interest">Interest</option>
+            </select>
+        </div>
+       
+        <button type="button" id="mode">Change Mode</button>-->
+        <h3>Your Cards</h3>
+        <div>
+            <button type="button" id="draw">Draw Card</button>&emsp;<button type="button" id="discard">Discard (1 left)</button>&emsp;<button type="button" id="endselect" class="hide">Clear Select</button>
+            <br><br>
+            <button type="button" id="togglecardmode">Toggle Card Mode (Current: Use)</button>
+        </div>
+        
+        <table id="cards">
+            <tr class="cardrow">
+                <td id="c1" class="card"></td>
+                <td id="c2" class="card"></td>
+                <td id="c3" class="card"></td>
+                <td id="c4" class="card"></td>
+                <td id="c5" class="card"></td>
+            </tr>
+            <tr class="cardrow">
+                <td id="c6" class="card"></td>
+                <td id="c7" class="card"></td>
+                <td id="c8" class="card"></td>
+                <td id="c9" class="card"></td>
+                <td id="c10" class="card"></td>
+            </tr>
+        </table>
+        <h3>Opponent Cards</h3>
+        <table id="oppcards">
+            <tr class="cardrow">
+                <td id="o1" class="card"></td>
+                <td id="o2" class="card"></td>
+                <td id="o3" class="card"></td>
+                <td id="o4" class="card"></td>
+                <td id="o5" class="card"></td>
+            </tr>
+            <tr class="cardrow">
+                <td id="o6" class="card"></td>
+                <td id="o7" class="card"></td>
+                <td id="o8" class="card"></td>
+                <td id="o9" class="card"></td>
+                <td id="o10" class="card"></td>
+            </tr>
+        </table>
+        <p id="text"></p>
+        <button type="button" id="turn">End Turn</button>
+    </div>
+    <div id="ultrawrapper">
+        <img id="ultrawrapperimg" src="">
+    </div>
+    
+ 
+    <div class="modal-overlay hide" id="modal-overlay">
+        <div class="modal-wrapper" id="modal-wrapper">
+            <div class="close-btn-wrapper">
+                <button class="close-modal-btn" data-target="modal-overlay">
+                    Close
+                </button>
+            </div>
+            <div class="tab">
+                <button class="tablinks" onclick="openTab(event,'changelogtab')">
+                    Changelog
+                </button>
+                <button class="tablinks" onclick="openTab(event,'tutorialtab')">
+                    Tutorial
+                </button>
+                <button class="tablinks" onclick="openTab(event,'importanttab')">
+                    Important Information
+                </button>
+            </div>
+            <div id="changelogtab" class="tabcontent">
+                <h1>Update v0.3.1.1 - Update of Nothing</h1>
+                <hr>
+                <div class="modal-content" id="modal-content">
+                    <h3>Important Note</h3>
+                    <p>Nothing was added</p>
+                    <h3>New cards!</h3>
+                    <ul>
+                        <li>Bubblemancer, a card that heals multiple allies and gives them an attack boost. Was added 2 updates ago but forgot to mention.</li>
+                        <li>Celestial Striker, applies starstruck effect. Deals 60 damage with 4 ammo, but with 3 cooldown.</li>
+                    </ul>
+                    <h3>New relics!</h3>
+                    <ul>
+                        <li>1.</li>
+                    </ul>
+                    <h3>Bean Power</h3>
+                    <ul>
+                        <li>Added rare events giving you legendary bean relics.</li>
+                    </ul>
+                    <h3>YASSIFICATION</h3>
+                    <ul>
+                        <li style="mask:url(#mask-1)">Locations & fights (not all as of yet) will now have faint image backgrounds!</li>
+                        <li>Button designs somewhat changed.</li>
+                        <li>Modals now have a clean transition effect. </li>
+                    </ul>
+                    <h3>RandKey Conditioning!</h3>
+                    <p>randKey() conditioning! There is now a second argument to the function randKey(), which is .text-bold{con}. Since I am too lazy to learn regex, I have created my own, which follows this style: 'subobj?val=target;subobj?val2=target2;' etc.. Any keys that qualify for those conditions will be eliminated from the random process, which disables gaining unobtainable cards in shops. This is necessary to stop people from gaining unobtainable cards specific to other cards or enemies.</p>
+                    <h3>Coda Update!</h3>
+                    <p>Coda now has more locations, allowing for further adventure after defeating Traffic Lord.</p>
+                    <h3>Other Additions:</h3>
+                    <ul>
+                        <li>New relics.</li>
+                        <li>There is now a text at the inventory, informing the player about possible upgrades in case they didn't read the dialogue thoroughly (skill issue).</li>
+                        <li>BATTLE MODIFIERS INFO! You can now see *some* enemy modifiers, like flametouch and quickuse.</li>
+                        <li>Added plenty mo' locations!</li>
+                        <li>Upgraded image of Juggernaut.</li>
+                        <li>Removed the Spirit of Chaos</li>
+                    </ul>
+                    <h3>Balance Changes:</h3>
+                    <ul>
+                        <li>Nerfed golden slime to gain less mana and have less health.</li>
+                        <li>Traffic Lord slightly buffed, Lord K slightly nerfed.</li>
+                        <li>Mammoth tusk buffed.</li>
+                        <li>Charger slight rework: Now has 50 starting damage and gains 15 damage per turn, but it is uncapped and does not decrease on attack. Shock effect now applies to 4 cards, and has a 1/2 chance of stunning them.</li>
+                    </ul>
+                    <h3>Bug Fixes:</h3>
+                    <ul>
+                        <li>When buying a card, it will now no longer be a copy of one if you already have a different version of the given card in your deck.</li>
+                        <li>Cards and shop cards now count as a separate object, as before, if a shop card was upgraded, the card itself would be upgraded. For example, if the shop offered a solar prism with 70 atk, and you use a dyson sphere, it would create that solar prism instead of a standard one.</li>
+                        <li>Debounce added to play button. Previously, if you clicked the button twice within 0.2 seconds, you would glitch into a screen with both the adventure screen and mode select screen. Now you can only click again after 0.3 seconds.</li>
+                        <li>Fake Coins battle fixed.</li>
+                        <li>Bubblemancer removing bad effects fixed.</li>
+                    </ul>
+                    <h3>Next Update?</h3>
+                    <p>Finish card modifiers AND add special character cards. Also planned: Card named Celestial Striker, spawns in stuff from space. And a few locations for the library.</p>
+                    <h3>Other Information:</h3>
+                    <div class="tab tab-mini">
+                        <button class="tablinks-mini tablinks" onclick="openMiniTab(event,'cardstab')">
+                            All Cards
+                        </button>
+                        <button class="tablinks-mini tablinks" onclick="openMiniTab(event,'relicstab')">
+                            All Relics
+                        </button>
+                        <button class="tablinks-mini tablinks" onclick="openMiniTab(event,'locationstab')">
+                            All Locations
+                        </button>
+                        <button class="tablinks-mini tablinks" onclick="openMiniTab(event,'enemiestab')">
+                            All Enemies
+                        </button>
+                        <br><br><br>
+                        <div id="cardstab" class="minitabcontent">
+                            <h3>Cards as of current: </h3>
+                        </div>
+                        <div id="relicstab" class="minitabcontent">
+                            <h3>Relics as of current: </h3>
+                            <p id="relicp"></p>
+                        </div>
+                        <div id="locationstab" class="minitabcontent">
+                            <h3>Locations as of current: </h3>
+                            <p id="locp"></p>
+                        </div>
+                        <div id="enemiestab" class="minitabcontent">
+                            <h3>Enemies as of current: </h3>
+                            <p id="enemp"></p>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+            <div id="tutorialtab" class="tabcontent">
+                <h1>Tutorial & Other Game Info!</h1>
+                <hr>
+                <div class="modal-content" id="modal-content2">
+                    <h3>Card Information</h3>
+                    <p>When starting a game, your cards will look like this: </p>
+                    <br>
+                    <img src="/img/tutorial/carddemo1.png" width="140" height="160">
+                    <h4>What does it mean?</h4>
+                    <p>Here is a simple list of all of the attributes of a card:</p>
+                    <ul>
+                        <li>Title - The big, bold text on the top shows the name of the card. This is also shown in the drawing.</li>
+                        <li><i>x</i> HP - Shows the card's health. Some cards have more health, like juggernaut, with 100. At zero HP, the card is destroyed.</li>
+                        <li><i>x</i> ATK - The card's attack. Not all cards are attack cards, but those that are will deal a certain amount of damage that can be buffed. </li>
+                        <li><i>x</i> HEAL - Some cards are healing cards, and the HEAL attribute shows how much health the heal. </li>
+                        <li><i>x</i> CD - This is the card's cooldown. Whenever you end a turn, the cooldown goes down by one. Cards like juggernaut require you to wait 3 turns before using them again, while other cards like spearman can be used once every turn.</li>
+                        <li><i>x</i> AMMO/USES - How many times a card can be used before going on cooldown. Cards like turret and flamethrower can be used multiple times before going on cooldown, but it will cost quite a bit of mana to exhaust all of the ammo. Ammo regens by 1 each turn.</li>
+                        <li><i>x</i> MU - Mana use. Mana is an important aspect of the game, as if you don't have enough, you can't use cards. You start with a base 10 starting mana each battle and 5 mana gained each turn. This card, spearman, only uses 1 mana. Other cards use 2, 3, 4, and more.</li>
+                    </ul>
+                    <h3>Other Mechanics</h3>
+                    <p>There are other mechanics used in a card battle, which are shown here:</p>
+                    <img src="/img/tutorial/othermechanics.png" width="400" height="245" style="border: 3px solid black;">
+                    <h4>What are these mechanics?</h4>
+                    <ul>
+                        <li>Health & Mana Bar - This text is right below the title, "Fight Against [Enemy]". It shows your health and mana, as well as the enemy's (plus AI Mode, which is for testing). At 0 health, you will lose.</li>
+                        <li>YOUR TURN - This shows who's turn it is. "OPP TURN" means it's the opponent's turn.</li>
+                        <li>Draw Card - You can draw cards here. It'll cost 3 mana.</li>
+                        <li>Discard (<i>x</i> left) - You can discard cards by selecting them and clicking the button. It will delete them from the board, and give you 1 mana.</li>
+                        <li>Toggle Card Mode - There are 2 card modes, use and select. With use, you can use one of your cards. With select, you can target a card to do something on. This can be for healing, or attacking a specific enemy card.</li>
+                        <li>End Turn - Not displayed on screen, but at the very bottom. Scroll down below the enemy's cards, and end turn when you don't want to do anything.</li>
+                    </ul>
+                    <h3>Other Not Shown Mechanics</h3>
+                    <ul>
+                        <li>Reloading - At the start of each round and reload, your hand consists of .text-bold{inventory length}*.text-bold{1.5}+1 cards. 1 card is added to your hand at the end of each turn. If you spend all cards in your hand, you will have to end turn to reload.</li>
+                        <li>Relics - They give special effects like extra damage and health, or an upgrade for one specific card.</li>
+                        <li>Enemy Modifiers - Some enemies have special abilities, like Lord K's .text-bold{Meteor Strike} and Traffic Lord's .text-bold{Turn Block}. As of current only a few are displayed.</li>
+                        <li>[UPCOMING] Card Modifiers - You can add modifiers to your cards like an .text-bold{Infernal Foil}, which makes it resistant to fire. Coming soon.</li>
+                    </ul>
+                    <h3>What Else?</h3>
+                    <p>Some cards have special mechanics, like soul keeper or solar prism. You will slowly discover these as you play. If you want to know every card's attributes, go to the changelog and scroll down. Have fun!</p>
+                </div>
+            </div>
+            
+            <div id="importanttab" class="tabcontent">
+                
+                <h1>Important Info That The Developer Always Forgets</h1>
+                <hr>
+                <div class="modal-content" id="modal-content3">
+                    <h3>Sizing</h3>
+                    <p>Let <i>w:h</i> be width to height ratio.<br>All cards have a <i>7:8</i> size ratio. (~0.875)<br>All background images have a roughly <i>11:5</i> size ratio. (~2.2) .text-yell{## Note - Some images (like DJ Neon image) have a ratio of 2.6}</p>
+                    <h3>SVG Usage</h3>
+                    <p style="mask:url(#mask-1);">This is mask 1. I love mask 1. Mask one is my life.</p>
+                    <p>Each card has a 1% chance of gaining either a dotted or striped mask. If you get one, you're lucky!</p>
+                    <h3>Card Test</h3>
+                    <p>This is the display of a card.</p>
+                    <table><td id="card-test-display">Test Card</td></table>
+                    <input id="card-test-display-input" type="text" placeholder="Enter Card Name Here...">
+                    <button id="card-test-display-submit">Submit</button>
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
+    <div id="cheat-menu" class="hide">
+        <h2 id="cheat-menu-header">Cheat Menu</h1>
+        <button class="cheat-btn" type="button" data-cheat="1">Kill Opponent</button>
+        <input type="text" class="cheat-input" id="cheat-input-2" placeholder="Enter card here..">
+        <button class="cheat-btn" type="button" data-cheat="2">Gain Card</button>
+        <button class="cheat-btn" type="button" data-cheat="3">+1000 coins</button>
+        <button class="cheat-btn" type="button" data-cheat="4">Starter Pack</button>
+    </div>
+    <audio id="sfx1">
+        <source src="sounds/draw-card.mp3" type="audio/mpeg">
+    </audio>
+    <button id="togglevolume" type="button">Toggle Volume</button>
+    <script src="lib.js"></script>
+    <script src="script.js" defer></script>
+</body>
+</html>
