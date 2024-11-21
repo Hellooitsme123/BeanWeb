@@ -1,0 +1,284 @@
+* {
+  font-family: "Trebuchet MS", sans-serif;
+}
+
+.hide {
+  display: none;
+}
+
+.level-link {
+  cursor: pointer;
+}
+
+.level-link-disabled {
+  color: #393939;
+  font-weight: bold;
+}
+
+.normal-box {
+  width: 100px;
+  height: 100px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+.normal-box.box-large {
+  width: 200px;
+  height: 200px;
+}
+.normal-box.box-large .sub-box {
+  width: 200px !important;
+  height: 200px !important;
+}
+.normal-box > .sub-box {
+  width: 85px;
+  height: 85px;
+  max-width: 170px;
+  max-height: 170px;
+  background: rgb(50, 50, 50);
+  color: white;
+  vertical-align: middle;
+  text-align: center;
+  display: table;
+  font-weight: bolder;
+  word-break: break-all;
+  text-wrap: pretty;
+}
+.normal-box > .sub-box > * {
+  vertical-align: middle;
+  display: table-cell;
+}
+
+.box-large {
+  width: 200px !important;
+  height: 200px !important;
+}
+.box-large > .sub-box {
+  width: 170px !important;
+  height: 170px !important;
+}
+
+.box-black {
+  background: rgb(0, 0, 0);
+}
+.box-red {
+  background: rgb(171, 0, 0);
+}
+.box-brown {
+  background: rgb(103, 77, 35);
+}
+.box-vermillion {
+  background: rgb(227, 66, 52);
+}
+.box-orange {
+  background: rgb(255, 127, 0);
+}
+.box-cream {
+  background: rgb(205, 209, 146);
+}
+.box-yellow {
+  background: rgb(255, 255, 0);
+}
+.box-lime {
+  background: rgb(20, 255, 0);
+}
+.box-green {
+  background: rgb(11, 143, 11);
+}
+.box-mint {
+  background: rgb(100, 200, 148);
+}
+.box-cyan {
+  background: rgb(84, 235, 255);
+}
+.box-periwinkle {
+  background: rgb(133, 151, 255);
+}
+.box-blue {
+  background: rgb(29, 41, 207);
+}
+.box-navy {
+  background: rgb(25, 10, 100);
+  font-size: 12px;
+}
+.box-purple {
+  background: rgb(100, 20, 120);
+}
+.box-magenta {
+  background: rgb(255, 0, 255);
+}
+.box-lavender {
+  background: rgb(205, 155, 201);
+}
+.box-gray {
+  background: rgb(100, 100, 100);
+}
+.box-white {
+  background: rgb(210, 210, 210);
+}
+.box-chroma {
+  background: linear-gradient(45deg, rgb(171, 0, 0), rgb(255, 127, 0), rgb(255, 255, 0), rgb(20, 255, 0), rgb(29, 41, 207), rgb(100, 20, 120), rgb(255, 0, 255));
+}
+
+.box-half-blue-black {
+  background: linear-gradient(90deg, rgb(29, 41, 207) 50%, rgb(0, 0, 0) 50%);
+}
+.box-half-yellow-red {
+  background: linear-gradient(90deg, rgb(255, 255, 0) 50%, rgb(171, 0, 0) 50%);
+}
+.box-half-purple-white {
+  background: linear-gradient(90deg, rgb(100, 20, 120) 50%, rgb(210, 210, 210) 50%);
+}
+.box-half-purple-blue {
+  background: linear-gradient(90deg, rgb(100, 20, 120) 50%, rgb(29, 41, 207) 50%);
+}
+.box-half-black-gray {
+  background: linear-gradient(90deg, rgb(0, 0, 0) 50%, rgb(100, 100, 100) 50%);
+}
+.box-half-black-vermillion {
+  background: linear-gradient(90deg, rgb(0, 0, 0) 50%, rgb(227, 66, 52) 50%);
+}
+.box-half-white-periwinkle {
+  background: linear-gradient(90deg, rgb(210, 210, 210) 50%, rgb(133, 151, 255) 50%);
+}
+.box-half-white-red {
+  background: linear-gradient(90deg, rgb(210, 210, 210) 50%, rgb(171, 0, 0) 50%);
+}
+.box-half-white-purple {
+  background: linear-gradient(90deg, rgb(210, 210, 210) 50%, rgb(100, 20, 120) 50%);
+}
+.box-half-white-black {
+  background: linear-gradient(90deg, rgb(210, 210, 210) 50%, rgb(0, 0, 0) 50%);
+}
+
+.box-exo-black-red {
+  background: linear-gradient(to right, rgb(0, 0, 0) 50px, rgb(0, 0, 0) 50px), linear-gradient(to bottom, transparent 0% 30%, rgb(0, 0, 0) 30% 70%, transparent 70% 100%), linear-gradient(to right, rgb(171, 0, 0) 0% 30%, rgb(0, 0, 0) 30% 70%, rgb(171, 0, 0) 70% 100%);
+  background-repeat: no-repeat !important;
+  background-size: 85% 85%, auto, auto;
+  background-position: 50% 50%, 0px 0px, 0px 0px;
+}
+.box-exo-black-red > .sub-box {
+  width: 87% !important;
+  height: 87% !important;
+}
+.box-exo-black-red.mini-box {
+  border: 3px solid rgb(171, 0, 0) !important;
+  background: rgb(0, 0, 0) !important;
+}
+
+.box-checker-blue-black {
+  background: repeating-conic-gradient(rgb(0, 0, 0) 0% 25%, rgb(29, 41, 207) 0% 50%) 50%/100px 100px;
+}
+.box-checker-black-blue {
+  background: repeating-conic-gradient(rgb(29, 41, 207) 0% 25%, rgb(0, 0, 0) 0% 50%) 50%/100px 100px;
+}
+.box-checker-chroma-blue {
+  background: linear-gradient(to right, rgb(29, 41, 207) 50%, transparent 50%), linear-gradient(to left, rgb(29, 41, 207) 50%, transparent 50%), linear-gradient(45deg, rgb(171, 0, 0), rgb(255, 127, 0), rgb(255, 255, 0), rgb(20, 255, 0), rgb(29, 41, 207), rgb(100, 20, 120), rgb(255, 0, 255));
+  background-repeat: no-repeat, no-repeat, repeat;
+  background-position: 0px 50px, 0px -50px, 0px 0px;
+  background-size: 100% 100%, 100% 100%, 50% 50%;
+}
+.box-checker-chroma-blue.mini-box {
+  background-position: 0px 5px, 0px -5px, 0px 0px !important;
+  width: 12px;
+  height: 12px;
+}
+
+td {
+  width: 100px;
+  height: 100px;
+  border: 1.5px solid black;
+}
+
+input {
+  font-size: 18px;
+}
+
+.omega-text {
+  width: 70%;
+  height: 70%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgb(190, 190, 190);
+  border: 2px solid black;
+  box-shadow: 0px 0px 5px 5px rgb(100, 100, 100);
+  border-radius: 15px;
+  z-index: 1000;
+  text-align: center;
+}
+.omega-text > p {
+  font-size: 80px;
+  font-weight: bolder;
+  color: white;
+  -webkit-text-stroke-color: black;
+  -webkit-text-stroke-width: 2px;
+}
+.omega-text > button {
+  font-size: 30px;
+  width: 30%;
+  height: 20%;
+  background: maroon;
+  color: white;
+  font-weight: bolder;
+  border-radius: 15px;
+  border: 3px solid black;
+  cursor: pointer;
+}
+
+.b {
+  font-weight: bolder;
+}
+
+.b {
+  font-weight: bolder;
+}
+
+
+#level-select {
+  height: 300px;
+  width: 400px;
+  overflow-y: scroll;
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgb(200, 200, 200);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(102, 102, 102, 0.4);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #393939;
+}
+
+.mini-box {
+  width: 10px !important;
+  height: 10px !important;
+  display: inline-block !important;
+  border: 2px solid black !important;
+  margin-right: 2px;
+}
+
+.secret-span {
+  display: none;
+}
+
+.ll-trial {
+  font-weight: bolder;
+  color: maroon;
+}
+
+#curSection {
+  font-size: 30px;
+  font-weight: bolder;
+  margin: 0;
+}/*# sourceMappingURL=style.css.map */

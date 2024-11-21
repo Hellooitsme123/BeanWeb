@@ -1,0 +1,13 @@
+#event {
+    width: 500px;
+    height: 300px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    border-radius:10px;
+    padding-left: 5px;
+    text-align: center;
+    margin-right: -50%;
+    background: beige; 
+    transform: translate(-50%, -50%);
+}

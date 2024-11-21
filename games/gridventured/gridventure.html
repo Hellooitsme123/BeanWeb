@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gridventure</title>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="gridventure.css">
+</head>
+<body>
+    <h1>Gridventure</h1>
+    <div id="level-select">
+        <div id="level-grid">
+            <div class="level-button" data-level="1.level0">
+                <h2>0</h2>
+            </div>
+            <div class="level-button" data-level="1.level1">
+                <h2>1</h2>
+            </div>
+            <div class="level-button" data-level="1.level2">
+                <h2>2</h2>
+            </div>
+            <div class="level-button" data-level="1.level3">
+                <h2>3</h2>
+            </div>
+            <div class="level-button" data-level="1.level4">
+                <h2>4</h2>
+            </div>
+            <div class="break">
+            </div>
+            <div class="level-button" data-level="1.level5">
+                <h2>5</h2>
+            </div>
+            <div class="level-button" data-level="1.level6">
+                <h2>6</h2>
+            </div>
+            <div class="level-button" data-level="1.level7">
+                <h2>7</h2>
+            </div>
+        </div>
+    </div>
+    <div id="level-container" class="hide">
+        <h2 id="title"></h2>
+        <button id="backBtn">Back</button>
+        <h3 id="score"></h3>
+        <div id="grid">
+        </div>
+        <div id="level-text"></div>
+        
+        <br>
+        <div id="blocks">
+            <div class="block" data-block="" data-amount=""></div>
+        </div>
+        <div id="event">
+            <h2>Options</h2>
+            <p id="eventP"></p>
+            <button id="runBtn" class="btn">Run</button>
+            <button id="stopBtn" class="btn">Stop</button>
+            <br>
+            <button id="pathBtn" class="btn">Show Pathing</button>
+        </div>
+    </div>
+    
+    <script src="/script.js"></script>
+    <script src="gridventure_levels.js"></script>
+    <script src="gridventure.js"></script>
+</body>
+</html>

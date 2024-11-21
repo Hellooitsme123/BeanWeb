@@ -1,0 +1,212 @@
+@font-face {
+    font-family: "AlexBrush";
+    src: url('/fonts/AlexBrush.ttf');
+}
+@font-face {
+    font-family: "SuperBubbly";
+    src: url('/fonts/SuperBubbly.ttf');
+}
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+#container-wrapper {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    margin: 0;
+    padding: 0;
+}
+#container {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    margin: 0;
+    padding: 0;
+}
+/* Menu */
+#fx-1 {
+    z-index: -1000;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    margin: 0;
+    padding: 0;
+    background: repeating-linear-gradient(45deg, yellow 0, yellow 30px, white 30px, white 60px);
+    background-size: 84.85px 84.85px;
+    animation: menu-background 2s linear infinite;
+}
+@keyframes menu-background {
+    from {
+        background-position: 0 0;
+    }
+    to {
+        background-position: 84.85px 0;
+    }
+}
+.main-div {
+    width: 100%;
+    height: 100%;
+    font-family: 'Trebuchet MS';
+    margin: 0;
+}
+
+#menu {
+    width: 100%;
+    height: 100%;
+    z-index: 1000;
+}
+#game-title {
+    font-size: 120px;
+    font-weight: bolder;
+    text-align: center;
+    font-family:'AlexBrush';
+    margin: 0;
+    text-shadow: 
+        4px 4px 0 gold, /* Right and down */
+        -4px -4px 0 gold, /* Left and up */
+        4px -4px 0 gold, /* Right and up */
+        -4px 4px 0 gold; /* Left and down */
+}
+#play {
+    border: 8px solid rgb(107, 62, 18);
+    background: rgb(205, 161, 118);
+    text-align: center;
+    font-size: 50px;
+    position: absolute;
+    top: 54%;
+    left: 50%;
+    transform: translate(-50%,-54%);
+    width: 250px;
+    height: 75px;
+    border-radius: 24px;
+    font-family: 'SuperBubbly';
+    font-weight:100;
+    letter-spacing: 1.1px;
+    cursor: pointer;
+}
+#play:hover {
+    background: repeating-linear-gradient(135deg, rgb(215, 171, 128), rgb(215,171, 128) 100px, rgb(141, 97, 52) 100px, rgb(141,97,52) 150px, rgb(215,171,128) 150px, rgb(215,171,128) 800px);
+    background-size: 800px 160px;
+    background-position: 250px 0px;
+    animation: playbtn-hover 0.2s linear;
+}
+@keyframes playbtn-hover {
+    from {
+        background-position: -100px 0px;
+    }
+    to {
+        background-position: 300px 0px;
+    }
+}
+/* GENERAL UI */
+.ui-header-wrapper {
+    transform:translateY(5px);
+    margin-left:5px;
+    background: rgb(179, 179, 179);
+    width: 300px;
+    border: 5px solid black;
+    border-radius: 10px;
+    text-align: center;
+    height: 50px;
+}   
+.ui-header {
+    margin: 0;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    font-size: 40px;
+}
+.redirect-block {
+    transform:translateY(8px);
+    margin-left:22px;
+    background:rgb(215, 215, 215);
+    width: 100px;
+    border: 5px solid black;
+    border-radius: 10px;
+    text-align: center;
+    height: 30px;
+    cursor: pointer;
+}
+.redirect-header {
+    margin: 0;
+    padding-top: 5px;
+}
+::-webkit-scrollbar {
+    width: 5px;
+}
+::-webkit-scrollbar-track {
+    background-color:rgb(217, 217, 217);
+}
+::-webkit-scrollbar-thumb {
+    background-color: darkgrey;
+}
+/* Orders */
+#orders-div {
+    width: 60%;
+    height: 75%;
+    background:rgb(220,220,220);
+    border: 5px solid black;
+    border-radius: 20px;
+    position:absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-77%,-42%);
+    overflow: hidden;
+}
+#widgets-div {
+    width: 30%;
+    height: 90%;
+    background:rgb(220,220,220);
+    border: 5px solid black;
+    border-radius: 20px;
+    position:absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(55%,-50%);
+    display: grid;
+    grid-auto-flow: row;
+    row-gap: 20px;
+    grid-template-rows: 100px 100px;
+    grid-template-columns: 100px 100px;
+    justify-content: space-evenly;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    box-sizing: border-box;
+}
+.widget {
+    background: radial-gradient(rgb(208, 208, 208),rgb(255, 255, 255));
+    width: 100px;
+    height: 100px;
+    border: 3px solid;
+    border-image: linear-gradient(45deg, rgb(220,220,220),rgb(100,100,100),rgb(255,255,255));
+    border-image-slice: 10 10 10 10;
+    font-size: 80px;
+    font-weight: bold;
+    text-align: center;
+    font-family: "Trebuchet MS";
+    cursor: pointer;
+}
+/* Ingredients */
+#ingredients-div {
+    width: 80%;
+    height: 75%;
+    background:rgb(220,220,220);
+    border: 5px solid black;
+    border-radius: 20px;
+    position:absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-44%,-42%);
+    overflow: hidden;
+    display: flex;
+}
+#ingredient-cell {
+    width: 100px;
+    height: 100px;
+}

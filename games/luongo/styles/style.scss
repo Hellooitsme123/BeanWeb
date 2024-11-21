@@ -1,0 +1,361 @@
+$black-box: rgb(0, 0, 0);
+$red-box: rgb(171, 0, 0);
+$brown-box: rgb(103, 77, 35);
+$vermillion-box: rgb(227,66,52);
+$orange-box: rgb(255, 127, 0);
+$cream-box: rgb(205, 209, 146);
+$yellow-box: rgb(255, 255, 0);
+$lime-box: rgb(20, 255, 0);
+$green-box: rgb(11, 143, 11);
+$mint-box: rgb(100, 200, 148);
+$cyan-box: rgb(84, 235, 255);
+$periwinkle-box: rgb(133, 151, 255);
+$blue-box: rgb(29, 41, 207);
+$navy-box: rgb(25, 10, 100);
+$purple-box: rgb(100, 20, 120);
+$magenta-box: rgb(255, 0, 255);
+$lavender-box: rgb(205, 155, 201);
+$gray-box: rgb(100, 100, 100);
+$white-box: rgb(210, 210, 210); 
+$chroma-box: linear-gradient(45deg, $red-box, $orange-box, $yellow-box, $lime-box, $blue-box, $purple-box, $magenta-box);
+
+* {
+	font-family: 'Trebuchet MS', sans-serif;
+}
+
+@mixin half-block($color1, $color2) {
+	background: linear-gradient(90deg, $color1 50%, $color2 50%);
+}
+
+@mixin checker-block($color1, $color2) {
+	background: repeating-conic-gradient($color2 0% 25%, $color1 0% 50%) 50% / 100px 100px;
+}
+
+@mixin exo-block($color1, $color2) {
+	background: linear-gradient(to right, $color1 50px,$color1 50px), linear-gradient(to bottom, transparent 0% 30%, $color1 30% 70%, transparent 70% 100%), linear-gradient(to right, $color2 0% 30%, $color1 30% 70%, $color2 70% 100%);
+	background-repeat: no-repeat !important;
+	background-size: 85% 85%,auto,auto;
+	background-position: 50% 50%, 0px 0px, 0px 0px;
+	&> .sub-box {
+		width: 87% !important;
+		height: 87% !important;
+	}
+	&.mini-box {
+		border: 3px solid $color2 !important;
+		background: $color1 !important;
+	}
+}
+
+@mixin special-checker($color1,$color2) {
+	background: linear-gradient(to right, $color2 50%, transparent 50%), linear-gradient(to left, $color2 50%, transparent 50%), $color1;
+	background-repeat: no-repeat, no-repeat, repeat;
+	background-position: 0px 50px, 0px -50px, 0px 0px;
+	background-size: 100% 100%, 100% 100%, 50% 50%;
+	&.mini-box {
+		background-position: 0px 5px, 0px -5px, 0px 0px !important;
+		width: 12px;
+		height: 12px;
+	}
+}
+
+@mixin large-block() {
+	width: 200px !important;
+	height: 200px !important;
+	&>.sub-box {
+		width: 170px !important;
+		height: 170px !important;
+	}
+}
+
+.hide {
+	display: none;
+}
+
+.level-link {
+	cursor: pointer;
+}
+
+.level-link-disabled {
+	color: #393939;
+	font-weight: bold;
+}
+
+.normal-box {
+	width: 100px;
+	height: 100px;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: center;
+
+	&.box-large {
+		width: 200px;  // Assuming you want the parent box to be larger too
+		height: 200px;
+
+		.sub-box {
+			width: 200px !important;
+			height: 200px !important;
+		}
+	}
+
+	&>.sub-box {
+		width: 85px;
+		height: 85px;
+		max-width: 170px;
+		max-height: 170px;
+		background: rgb(50, 50, 50);
+		color: white;
+		vertical-align: middle;
+		text-align: center;
+		display: table;
+		font-weight: bolder;
+		word-break: break-all;
+		text-wrap: pretty;
+
+		&>* {
+			vertical-align: middle;
+			display: table-cell;
+		}
+	}
+	
+}
+
+.box-large {
+	@include large-block();
+}
+
+.box {
+	&-black {
+		background: $black-box;
+	}
+
+	&-red {
+		background: $red-box;
+	}
+
+	&-brown {
+		background: $brown-box;
+	}
+
+	&-vermillion {
+		background: $vermillion-box;
+	}
+
+	&-orange {
+		background: $orange-box;
+	}
+
+	&-cream {
+		background: $cream-box;
+	}
+
+	&-yellow {
+		background: $yellow-box;
+	}
+
+	&-lime {
+		background: $lime-box;
+	}
+
+	&-green {
+		background: $green-box;
+	}
+
+	&-mint {
+		background: $mint-box;
+	}
+
+	&-cyan {
+		background: $cyan-box;
+	}
+
+	&-periwinkle {
+		background: $periwinkle-box;
+	}
+
+	&-blue {
+		background: $blue-box;
+	}
+
+	&-navy {
+		background: $navy-box;
+		font-size: 12px;
+	}
+
+	&-purple {
+		background: $purple-box;
+	}
+
+	&-magenta {
+		background: $magenta-box;
+	}
+
+	&-lavender {
+		background: $lavender-box;
+	}
+
+	&-gray {
+		background: $gray-box;
+	}
+
+	&-white {
+		background: $white-box;
+	}
+
+	&-chroma {
+		background: $chroma-box;
+	}
+}
+
+.box-half {
+	&-blue-black {
+		@include half-block($blue-box, $black-box);
+	}
+	&-yellow-red {
+		@include half-block($yellow-box, $red-box);
+	}
+	&-purple-white {
+		@include half-block($purple-box, $white-box);
+	}
+	&-purple-blue {
+		@include half-block($purple-box, $blue-box);
+	}
+	&-black-gray {
+		@include half-block($black-box, $gray-box);
+	}
+	&-black-vermillion {
+		@include half-block($black-box, $vermillion-box);
+	}
+	&-white-periwinkle {
+		@include half-block($white-box, $periwinkle-box);
+	}
+	&-white-red {
+		@include half-block($white-box, $red-box);
+	}
+	&-white-purple {
+		@include half-block($white-box, $purple-box);
+	}
+	&-white-black {
+		@include half-block($white-box, $black-box);
+	}
+}
+
+.box-exo {
+	&-black-red {
+		@include exo-block($black-box,$red-box);
+	}
+}
+
+.box-checker {
+	&-blue-black {
+		@include checker-block($blue-box, $black-box );
+	}
+
+	&-black-blue {
+		@include checker-block($black-box, $blue-box);
+	}
+	&-chroma-blue {
+		@include special-checker($chroma-box, $blue-box);
+	}
+}
+
+td {
+	width: 100px;
+	height: 100px;
+	border: 1.5px solid black;
+}
+
+input {
+	font-size: 18px;
+}
+
+.omega-text {
+	width: 70%;
+	height: 70%;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	background: rgb(190, 190, 190);
+	border: 2px solid black;
+	box-shadow: 0px 0px 5px 5px rgb(100, 100, 100);
+	border-radius: 15px;
+	z-index: 1000;
+	text-align: center;
+
+	&>p {
+		font-size: 80px;
+		font-weight: bolder;
+		color: white;
+		-webkit-text-stroke-color: black;
+		-webkit-text-stroke-width: 2px;
+	}
+
+	&>button {
+		font-size: 30px;
+		width: 30%;
+		height: 20%;
+		background: maroon;
+		color: white;
+		font-weight: bolder;
+		border-radius: 15px;
+		border: 3px solid black;
+		cursor: pointer;
+	}
+}
+
+.b {
+	font-weight: bolder;
+}
+
+.b {
+	font-weight: bolder;
+}
+
+/*# sourceMappingURL=style.css.map */
+#level-select {
+	height: 300px;
+	width: 400px;
+	overflow-y: scroll;
+}
+
+::-webkit-scrollbar {
+	width: 5px;
+	height: 5px;
+}
+
+::-webkit-scrollbar-track {
+	background: rgb(200, 200, 200);
+}
+
+::-webkit-scrollbar-thumb {
+	background: #6666;
+}
+
+::-webkit-scrollbar-thumb:hover {
+	background: #393939;
+}
+
+.mini-box {
+	width: 10px !important;
+	height: 10px !important;
+	display: inline-block !important;
+	border: 2px solid black !important;
+	margin-right: 2px;
+}
+
+.secret-span {
+	display: none;
+}
+
+.ll {
+	&-trial {
+		font-weight: bolder;
+		color: maroon;
+	}
+}
+#curSection {
+	font-size: 30px;
+	font-weight: bolder;
+	margin: 0;
+}

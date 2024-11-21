@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="styles/style.css" />
+</head>
+
+<body>
+    <h1>LINGO LAND</h1>
+    <div id="level-select">
+        <h3>Choose Your Level: </h3>
+        <p class="level-link" data-level="The Novice">0. White Room | The ??? <span class="mini-box box-white"></span></p>
+        <p class="level-link" data-level="The Colossal">1. Blue Room | The ??? <span class="mini-box box-blue"></span></p>
+        <p class="level-link" data-level="The Firebrand">2. Red Room | The ??? <span class="mini-box box-red"></span></p>
+        <p class="level-link" data-level="The Primary">3. Miscellaneous | The ??? <span class="mini-box box-white"></span><span class="mini-box box-blue"></span><span class="mini-box box-red"></span> </p>
+        <p class="level-link" data-level="The Incremental">4. Number Room | The ??? <span class="mini-box box-white"></span><span class="mini-box box-black"></span></p>
+        <p class="level-link" data-level="The Radiant">5. You Are | The ??? <span class="mini-box box-vermillion"></span><span class="mini-box box-periwinkle"></span><span class="mini-box box-black"></span></p>
+        <p class="level-link" data-level="The Illusive">6. Yellow Room | The ??? <span class="mini-box box-yellow"></span></p>
+        <p class="level-link" data-level="The Blooming">7. Flower Center | The ??? <span class="mini-box box-purple"></span></p>
+        <p class="level-link" data-level="The Educated">8. Schoolhouse | The ??? <span class="mini-box box-purple"></span></p>
+        <p class="level-link" data-level="The Reticent">9. Narrow Corridors | The ??? <span class="mini-box box-white"></span></p>
+        <p class="level-link" data-level="The Loquacious">10. Pillar Room | The ??? <span class="ll-trial">[TRIAL]</span> <span class="mini-box box-white"></span></p>
+        
+        <hr>
+        <p class="level-link-disabled" data-level="The Analytical" data-reveal="8a. Math Hall | The ???" data-reveal-id="1">-1. The ??? <span class="mini-box box-purple"></span></p>
+        <p class="level-link-disabled" data-level="The Geometric" data-reveal="8a1. Abstraction | The ???" data-reveal-id="2">-1a. The ???</p>
+        <p class="level-link-disabled" data-level="The Transparent" data-reveal="A1. Glass Dome | The ???" data-reveal-id="3">-2. The ???</p>
+        <p class="level-link-disabled" data-level="The Void" data-reveal="B1. The Null Zone | The ???" data-reveal-id="4">-3. The ??? <sep><span class="mini-box box-exo-black-red"></span></p>
+        <p class="level-link-disabled hide" data-level="The Test" data-reveal="nil1. Testing | The ???" data-reveal-id="dev">nil. The ???</p>
+    </div>
+    <div id="problems" class="hide">
+        <p id="curSection"></p>
+        <p id="curProblem"></p>
+        <p id="event-p"></p>
+        <p id="text-p"></p>
+        <table id="target-div">
+            <tr>
+                <td id="0:0"></td>
+                <td id="1:0"></td>
+                <td id="2:0"></td>
+            </tr>
+            <tr>
+                <td id="0:1"></td>
+                <td id="1:1"></td>
+                <td id="2:1"></td>
+            </tr>
+            <tr>
+                <td id="0:2"></td>
+                <td id="1:2"></td>
+                <td id="2:2"></td>
+            </tr>
+        </table>
+        <input type="text" id="answer" value="" oninput="checkInput()" autocomplete="off">
+        <button type="button" id="submit">Submit</button>
+        <button type="button" id="hint">Hint</button>
+        <br>
+        <button type="button" id="back" class="hide">Back</button>
+        <button type="button" id="next" class="hide">Next</button>
+    </div>
+    
+    <!--<div class="normal-box box-blue">
+        <div class="sub-box">
+            <p>hi</p>
+        </div>
+    </div>-->
+    <div class="omega-text hide" id="omega-text">
+        <p id="omega-p">THE NOVICE</p>
+        <button type="button" id="exit-omega">Exit</button>
+    </div>
+    <script src="puzzle.js"></script>
+    <script src="script.js" defer></script>
+</body>
+
+</html>

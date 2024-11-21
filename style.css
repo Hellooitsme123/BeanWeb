@@ -1,0 +1,8 @@
+* {
+    font-family: 'Trebuchet MS';
+}
+.disappearing {
+    transition: opacity 1.5s ease-in-out;
+    margin-top: 3px;
+    margin-bottom: 3px;
+}
