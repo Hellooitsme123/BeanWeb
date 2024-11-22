@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CARD BATTLES</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="icon" type="image/x-icon" href="/img/cards/froster.png">
+    <link rel="icon" type="image/x-icon" href="img/cards/froster.png">
     <script src="node_modules/sql.js/dist/sql-wasm.js"></script>
     <script src="https://requirejs.org/docs/release/2.3.5/minified/require.js"></script>
     <script type="module" src="/node_modules/fs-web/fs.min.js"></script>
@@ -124,7 +124,7 @@
                 
             </div>
         </div>
-        <div id="backpack-toggle">Ja hallo guys</div>
+        <div id="backpack-toggle">Hi</div>
         <div id="event-overlay" class="modal-overlay hide">
             <div id="event-wrapper" class="modal-wrapper">
                 <div class="close-btn-wrapper">
@@ -225,7 +225,7 @@
             </button>
             
         </div>
-        <p id="versiontext">v0.3.1.1 - UPDATE OF NOTHING</p>
+        <p id="versiontext">v0.3.2 - THE REALIZATION</p>
     </div>
     <div id="game" class="hide">
         <h2 id="battletitle">FIGHT AGAINST</h2>
@@ -313,62 +313,45 @@
                 </button>
             </div>
             <div id="changelogtab" class="tabcontent">
-                <h1>Update v0.3.1.1 - Update of Nothing</h1>
+                <h1>Update v0.3.2 - THE REALIZATION</h1>
                 <hr>
                 <div class="modal-content" id="modal-content">
+                    <h1>REMINDER FOR DEV</h1>
+                    <p>Work on addEffects function, add phaser ability, scrap forest locations</p>
                     <h3>Important Note</h3>
-                    <p>Nothing was added</p>
-                    <h3>New cards!</h3>
+                    <p>It was realized</p>
+                    <h3>-New cards</h3>
                     <ul>
-                        <li>Bubblemancer, a card that heals multiple allies and gives them an attack boost. Was added 2 updates ago but forgot to mention.</li>
-                        <li>Celestial Striker, applies starstruck effect. Deals 60 damage with 4 ammo, but with 3 cooldown.</li>
+                        <li>Unfinished cards have now been removed</li>
                     </ul>
-                    <h3>New relics!</h3>
+                    <h3>-New relics</h3>
                     <ul>
-                        <li>1.</li>
+                        <li>Many relics got scrapped</li>
                     </ul>
-                    <h3>Bean Power</h3>
+                    <h3>-Bean power</h3>
                     <ul>
-                        <li>Added rare events giving you legendary bean relics.</li>
+                        <li>Bean relics have been deleted</li>
                     </ul>
-                    <h3>YASSIFICATION</h3>
+                    <h3>RIP GAME</h3>
                     <ul>
-                        <li style="mask:url(#mask-1)">Locations & fights (not all as of yet) will now have faint image backgrounds!</li>
-                        <li>Button designs somewhat changed.</li>
-                        <li>Modals now have a clean transition effect. </li>
+                        <li>Many locations have been rendered obsolete and therefore removed rip game ggs</li>
                     </ul>
-                    <h3>RandKey Conditioning!</h3>
-                    <p>randKey() conditioning! There is now a second argument to the function randKey(), which is .text-bold{con}. Since I am too lazy to learn regex, I have created my own, which follows this style: 'subobj?val=target;subobj?val2=target2;' etc.. Any keys that qualify for those conditions will be eliminated from the random process, which disables gaining unobtainable cards in shops. This is necessary to stop people from gaining unobtainable cards specific to other cards or enemies.</p>
-                    <h3>Coda Update!</h3>
-                    <p>Coda now has more locations, allowing for further adventure after defeating Traffic Lord.</p>
                     <h3>Other Additions:</h3>
                     <ul>
-                        <li>New relics.</li>
-                        <li>There is now a text at the inventory, informing the player about possible upgrades in case they didn't read the dialogue thoroughly (skill issue).</li>
-                        <li>BATTLE MODIFIERS INFO! You can now see *some* enemy modifiers, like flametouch and quickuse.</li>
-                        <li>Added plenty mo' locations!</li>
-                        <li>Upgraded image of Juggernaut.</li>
-                        <li>Removed the Spirit of Chaos</li>
+                        <li>Rip game</li>
                     </ul>
                     <h3>Balance Changes:</h3>
                     <ul>
-                        <li>Nerfed golden slime to gain less mana and have less health.</li>
-                        <li>Traffic Lord slightly buffed, Lord K slightly nerfed.</li>
-                        <li>Mammoth tusk buffed.</li>
-                        <li>Charger slight rework: Now has 50 starting damage and gains 15 damage per turn, but it is uncapped and does not decrease on attack. Shock effect now applies to 4 cards, and has a 1/2 chance of stunning them.</li>
+                        <li>No</li>
                     </ul>
                     <h3>Bug Fixes:</h3>
                     <ul>
-                        <li>When buying a card, it will now no longer be a copy of one if you already have a different version of the given card in your deck.</li>
-                        <li>Cards and shop cards now count as a separate object, as before, if a shop card was upgraded, the card itself would be upgraded. For example, if the shop offered a solar prism with 70 atk, and you use a dyson sphere, it would create that solar prism instead of a standard one.</li>
-                        <li>Debounce added to play button. Previously, if you clicked the button twice within 0.2 seconds, you would glitch into a screen with both the adventure screen and mode select screen. Now you can only click again after 0.3 seconds.</li>
-                        <li>Fake Coins battle fixed.</li>
-                        <li>Bubblemancer removing bad effects fixed.</li>
+                        <li>There's no bugs if there's no game</li>
                     </ul>
                     <h3>Next Update?</h3>
-                    <p>Finish card modifiers AND add special character cards. Also planned: Card named Celestial Striker, spawns in stuff from space. And a few locations for the library.</p>
-                    <h3>Other Information:</h3>
-                    <div class="tab tab-mini">
+                    <p>Add everything back</p>
+                    <h3><s>Other Information:</s></h3>
+                    <div class="tab tab-mini hide">
                         <button class="tablinks-mini tablinks" onclick="openMiniTab(event,'cardstab')">
                             All Cards
                         </button>
@@ -408,7 +391,7 @@
                     <h3>Card Information</h3>
                     <p>When starting a game, your cards will look like this: </p>
                     <br>
-                    <img src="/img/tutorial/carddemo1.png" width="140" height="160">
+                    <img src="img/tutorial/carddemo1.png" width="140" height="160">
                     <h4>What does it mean?</h4>
                     <p>Here is a simple list of all of the attributes of a card:</p>
                     <ul>
@@ -422,7 +405,7 @@
                     </ul>
                     <h3>Other Mechanics</h3>
                     <p>There are other mechanics used in a card battle, which are shown here:</p>
-                    <img src="/img/tutorial/othermechanics.png" width="400" height="245" style="border: 3px solid black;">
+                    <img src="img/tutorial/othermechanics.png" width="400" height="245" style="border: 3px solid black;">
                     <h4>What are these mechanics?</h4>
                     <ul>
                         <li>Health & Mana Bar - This text is right below the title, "Fight Against [Enemy]". It shows your health and mana, as well as the enemy's (plus AI Mode, which is for testing). At 0 health, you will lose.</li>
@@ -476,6 +459,7 @@
         <source src="sounds/draw-card.mp3" type="audio/mpeg">
     </audio>
     <button id="togglevolume" type="button">Toggle Volume</button>
+    <script src="data.js"></script>
     <script src="lib.js"></script>
     <script src="script.js" defer></script>
 </body>
