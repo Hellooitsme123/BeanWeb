@@ -127,7 +127,6 @@ const characters = {
         "traversable": ["dirt","path","path1","path2","path3","portal","pressure_plate","open_metal","beezone","hostile_beezone","open_door","key","still_water"],
     }
 }
-const INF = Number.MAX_VALUE;
 var levelset = {
     1: {
         level0: {

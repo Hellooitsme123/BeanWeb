@@ -58,4 +58,14 @@ const lib = {
         return value;
     }
 };
+const logPoints = {
+    "oppDraw": {
+        console: {success:"oppDraw ran successfully",failure:"oppDraw failed"},
+        active: true,
+    },
+    "useCardData": {
+        console: "Card here: [data]",
+        active: true,
+    }
+}
 console.log("lib.js loaded");

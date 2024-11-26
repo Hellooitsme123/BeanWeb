@@ -151,10 +151,12 @@ var locationplacing = {
         stages: {
             stage1: {
                 name: "AdventureStart",
+                // change testfight to mysteryfight
                 set: ["home","roadtocoda","mysteryfight","owarpcenter","anyshops","tavern","taverngroupvictory","janjovictory","mysteryloc","tallmart","mysteryloc2","behindtallmart"],
                 anyshops: ["cosmeticshop"],
                 mysteryloc: ["cloakedhuman","speedingcar","none"],
                 mysteryloc2: ["tallmartroof","suddenurge"],
+                testfight: [],
                 mysteryfight: ["andreasappear,andreasvictory","goldslimeappear,goldslimevictory","phaserwizardappear,phaserwizardvictory"],
             },
             stage2: {
@@ -170,7 +172,7 @@ var locationplacing = {
                 set: ["mysteryloc","roadtocoda4","mysteryfight","lordkarena","lordkvictory","roadtocoda5","roadtocoda6","mysteryloc2","trafficlordappear","trafficlordvictory"],
                 mysteryloc: ["strangealtar","unclemanstatue","none"],
                 mysteryloc2: ["crowattack","cardtornado","none"],
-                mysteryfight: ["forest1,banditsvictory","leafos,leafosvictory","forestclearing,forestcastle,wisespiritsvictory","forest1,banditsvictory","leafos,leafosvictory","forestclearing,forestcastle,wisespiritsvictory","lostcave"],
+                mysteryfight: ["forest1,banditsvictory","leafo,leafovictory","forestclearing,forestcastle,wisespiritsvictory","forest1,banditsvictory","leafoappear,leafovictory","forestclearing,forestcastle,wisespiritsvictory","lostcave"],
             },
         },
     },
@@ -191,7 +193,7 @@ var locationplacing = {
         },
     }*/
 };
-var keywords = ["anyshops","mysteryloc","mysteryloc2","mysteryloc3","mysteryfight","mysteryfight2"];
+var keywords = ["anyshops","mysteryloc","mysteryloc2","mysteryloc3","mysteryfight","mysteryfight2","testfight"];
 var locationsarr = [];
 var curlocationindex = 0;
 var curlocationstage = 1;
@@ -229,6 +231,26 @@ for (let i = 0; i < 100; i++) {
     }
 }
 var curlocation = locations[locationsarr[0]];
+/**
+ * logPoint(type,success)
+ * @param {String} type type of log point
+ * @param {Boolean} success success or failure, can be null
+ */
+function logPoint(type,success=null) {
+    if (logPoints[type].active == true) {
+        if (success != null) {
+            if (success == true) {
+                console.log(logPoints[type].console["success"]);
+            } else {
+                console.log(logPoints[type].console["failure"]);
+            }
+            
+        } else {
+            console.log(logPoints[type].console);
+        }
+        
+    }
+}
 function nextLoc() {
     if (curlocation.name == "zeend") {
         curlocation = locations.home;
@@ -507,6 +529,10 @@ function randKey(obj,con = null) {
                     if (obj[key][secondary[0]] == secondary[1]) {
                         keys.splice(keys.indexOf(key),1);
                     }
+                    // check for booleans
+                    if ((obj[key][secondary[0]] == true && secondary[1] == "true") || (obj[key][secondary[0]] == false && secondary[1] == "false")) {
+                        keys.splice(keys.indexOf(key),1);
+                    } 
                 }
                 if (tempcon[0] == "prop") {
                     if (obj[key] == secondary[0]) {
@@ -665,10 +691,10 @@ function addEffect(card,effectname,s,t,u=false) {
         args[0] = Number(args[0]);
         args[0] += 1;
         args[1] += 1;
-        tempchosen.effects[index] = effectname+"{"+args[0]+","+args[1]+"}";
+        card.effects[index] = effectname+"{"+args[0]+","+args[1]+"}";
     }
-    if (tempchosen.effects.some(str => str.includes(effectname)) == false) {
-        tempchosen.effects.push(`${effectname}{${s},${t}}`);
+    if (card.effects.some(str => str.includes(effectname)) == false) {
+        card.effects.push(`${effectname}{${s},${t}}`);
     }
     return card;
 }
@@ -1539,6 +1565,7 @@ function turnover(player) {
     } else {
         plr = p2;
     }
+    plr.mana = stepRound(plr.mana,0.1);
     if (plr == p1) {
         if (Object.hasOwn(p1.relics,"redstarstaff") && (turns+1) % 10 == 0 && p1.health > 60 && Object.keys(p1.inventory).length > 0) {
             p1.health -= 20;
@@ -1636,6 +1663,7 @@ function turnover(player) {
         }
     }
     console.log(turns);
+    // boss abilities during turn
     if (plr.name == "wisespirits") {
         // to get a cycle, do: turns % 6 == 0, turns % 6 == 2, and turns % 6 == 4
         if (turns % 6 == 0) {
@@ -1814,9 +1842,14 @@ function turnover(player) {
                 }
             }
         }
-        if (zecard.name =="phaser" && randNum(1,100) <= zecard.stat) {
-            // checks if phaser's stat qualifies (base chance is 10%)
-            zecard.effects.push("Phased{1,1}");
+        if (zecard.name =="phaser") {
+            // checks if phaser's stat qualifies (base chance is 30%)
+            let chance = randNum(1,100);
+            console.log("Chance is: "+chance,zecard.stat);
+            if (chance <= zecard.stat) {
+                zecard.effects.push("Phased{1,1}");
+            }
+            
         }
     }
     if (plr.name == "trafficlord" && randNum(1,6) == 6) {
@@ -1852,6 +1885,30 @@ function playerTurn() {
         update();
     }
     
+}
+/**
+ * Gets first object element in array where a subkey is a subvalue
+ * @param {Array} arr 
+ * @param {String} subkey
+ * @param {String} subvalue 
+ * @param {Boolean} object_return decides whether or not object or index is returned
+ * @return {Object} first object where subkey is specified value
+ */
+function getFirstWithValue(arr,subkey,subvalue,object_return=false) {
+    arr = objectToArray(arr);
+    console.log(arr);
+    for (let i = 0; i < arr.length; i++) {
+        // iterate through all elems in array, try to find where subkey is value
+        console.log(arr[i]);
+        if (tryAccess(arr[i],subkey) == subvalue) {
+            if (object_return == true) {
+                return arr[i];
+            } else {
+                return i;
+            }
+            
+        }
+    }
 }
 function oppAttack() {
     let tries = 0;
@@ -1891,10 +1948,16 @@ function oppAttack() {
 function oppDraw() {
     if (Object.keys(p2.inventory).length < 10) {
         drawCard("p2");
+        if (tryAccess(p2,"aitype") == "super-buff" && p2.inventory[Object.keys(p2.inventory)[Object.keys(p2.inventory).length - 1]].type == "Healing" && randNum(1,3) == 1) {
+            update();
+            window.setTimeout(useCard(null,true,getFirstWithValue(p2.inventory,"type","Healing")),300)
+            
+        }
         p2.mana -= 3;
         if (randNum(0,1) == 1) {
             window.setTimeout(oppAttack,350);
         }   
+        logPoint("oppDraw",true);
         return true;
     } else {
         let feeling1 = randNum(1,3);
@@ -1903,7 +1966,7 @@ function oppDraw() {
         } else {
             aimode = 2;
         }
-        console.log("YOOO");
+        logPoint("oppDraw",false);
         return false;
     }
     
@@ -1922,7 +1985,7 @@ function oppChoice(start) {
     if (start == true) {
         opptries = 0;
     }
-    // var aimodes = 1,2,3 | 1: default, spend random amounts, select random cards | 2: save up, when many cards are on board, save up for more | 3: siege, attack with all force | 4: stock up, draw more cards
+    // var aimodes = 1,2,3 | 1: default, spend random amounts, select random cards | 2: save up, when many cards are on board, save up for more | 3: siege, attack with all force | 4: stock up, draw more cards | sB = super-buff
     // FLOWMAP: start->4->2->3->repeat
     let prevmode = aimode;
     if (Object.keys(p1.inventory).length-Object.keys(p2.inventory).length < -6 && p2.mana > 8) {
@@ -1968,7 +2031,11 @@ function oppChoice(start) {
         opptries++;
         let result;
         let time;
+        if (tryAccess(p2,"aitype") == "super-buff" && randNum(1,3) == 1) {
+            aimode == "super-buff";
+        }
         if (aimode == 1) {
+            // 1, which is default, draws when there is a small inventory. if not, it will either attack or draw.
             if (Object.keys(p2.inventory).length < 2) {
                 result = oppDraw();
                 choice -= 1;
@@ -2013,6 +2080,22 @@ function oppChoice(start) {
             } else {
                 result = oppAttack();
             }
+        }
+        if (aimode == "super-buff") {
+            // SUPER BUFF
+            let firstHealing = getFirstWithValue(p2.inventory,"type","Healing");
+            let firstSupport = getFirstWithValue(p2.inventory,"type","Support");
+            let firstAttack = getFirstWithValue(p2.inventory,"type","Attack");
+            if (firstHealing) {
+                useCard(null,true,firstHealing);
+            }
+            if (firstSupport) {
+                useCard(null,true,firstSupport);
+            }
+            if (firstAttack) {
+                useCard(null,true,firstAttack);
+            }
+            
         }
         console.log(result);
         if (result == false) {
@@ -2072,6 +2155,15 @@ function oppTurn() {
     
     update();
 }*/
+/**
+ * 
+ * @param {HTMLBodyElement} element element for card
+ * @param {Boolean} opp whether or not user is opponent.
+ * @param {Number} index index of card/element
+ * @param {Card} select selected card to use
+ * @param {"p1" | "p2"} selectp selected player for used card
+ * @returns 
+ */
 function useCard(element = null,opp = null,index = null,select = null,selectp) {
     let id;
     let fid;
@@ -2135,7 +2227,7 @@ function useCard(element = null,opp = null,index = null,select = null,selectp) {
         return false;
     } else {
         let card = user.inventory[Object.keys(user.inventory)[index]];
-        console.log(card.effects);
+        console.log(card,index);
         if (card.effects.some(str => str.includes("Stunned")) || card.effects.some(str => str.includes("Frozen"))) {
             return false;
         }
@@ -2149,10 +2241,12 @@ function useCard(element = null,opp = null,index = null,select = null,selectp) {
                 }
             }
             if (element != null) {
+                // add border effect to card
                 element.style.border = "3px solid maroon";
                 window.setTimeout(unborder,500,id);
             }
             if (user == p1 && Object.hasOwn(p1.relics,"frostyhorn") && card.name != "froster") {
+                // if you have frosty horn, immediately make froster's cooldown 0
                 let chosen;
                 for (let i = 0; i < Object.keys(p1.inventory).length; i++) {
                     let card = p1.inventory[Object.keys(p1.inventory)[i]];
@@ -2167,10 +2261,10 @@ function useCard(element = null,opp = null,index = null,select = null,selectp) {
                 
             }
             if (card.type == "Attack") {
-                
                 let attacked = firstOpp(stropp);
                 let extraatk = 0;
                 if (user.mods.some(str => str.includes("RedStarMedallion"))) {
+                    // deal extra damage with redstarmedallion, equivalent to scale*healthdiff/10
                     let cm = cleanseModifier("Norm",user.mods.filter(str => str.includes("RedStarMedallion"))[0]);
                     let zextra;
                     if (user == p1) {
@@ -2182,15 +2276,14 @@ function useCard(element = null,opp = null,index = null,select = null,selectp) {
                 }
                 let extracount = 0;
                 for (let i = 0; i < card.effects.length; i++) {
-                    console.log(card.effects.filter(str => str.includes("ExtraAtk")).length,extracount)
                     if (card.effects.filter(str => str.includes("ExtraAtk")).length > extracount) {
                         let cm = cleanseModifier("Norm",card.effects.filter(str => str.includes("ExtraAtk"))[extracount]);
-                        console.log(cm);
                         extraatk += Math.round(card.atk*(cm[0]/100));
                         extracount++;
                     }
                 }
                 if (arrHas(card.effects,"Bubbly")) {
+                    // do extra atk and gain extra hp if bubbly
                     let cm = cleanseModifier("Norm",arrFirst(card.effects,"Bubbly"));
                     extraatk += Math.round(card.atk*(cm[0]/100));
                     card.hp += Math.round(card.hp*(cm[0]/300));
@@ -2219,11 +2312,14 @@ function useCard(element = null,opp = null,index = null,select = null,selectp) {
                         opponent.health -= add;
                     }
                 } else {
+                    // PRE DAMAGE EFFECTS
+                    // get the attacked card
                     let zeattacked = opponent.inventory[attacked];
                     if (fmain == "p2") {
                         zeattacked = selected;
                         attacked = Object.keys(opponent.inventory)[findex];
                     }
+                    // heal attacked if current card is confused
                     if (card.effects.some(str => str.includes("Confused")) == true) {
                         zeattacked.hp += card.atk*2;
                     } else {
@@ -2292,6 +2388,10 @@ function useCard(element = null,opp = null,index = null,select = null,selectp) {
                     if (card.name == "celestialstriker") {
                         drawCard(opponent,true,"comet");
                     }
+                    if (zeattacked.name == "vine") {
+                        // lose health according to the vine's stat (rebound damage)
+                        card.hp -= zeattacked.stat;
+                    }
                     if (card.cardmods.includes("infernalfoil") && arrHas(zeattacked.effects,"Burning") == false) {
                         if (randNum(1,5) == 5) {
                             extraatk += 25;
@@ -2299,9 +2399,14 @@ function useCard(element = null,opp = null,index = null,select = null,selectp) {
                         }
                     }
                     /* MAIN DAMAGE (deals damage to opponent themselves) */
+
+                    predamagehp = zeattacked.hp;
+                    preeffects = zeattacked.effects;
+                    console.log(zeattacked.hp,predamagehp,);
                     zeattacked.hp -= card.atk+extraatk;
                     if (arrHas(zeattacked.effects,"Bubbly")) {
-                        zeattacked.hp += card.atk+extraatk;
+                        // heal for x% of the damage taken based off of bubbly effect scale 
+                        zeattacked.hp += formateffect("Attributes",arrFirst(zeattacked.effects,"Bubbly"))[0]*(card.atk+extraatk);
                     }
                     
                     if (card.name == "solarprism") {
@@ -2357,7 +2462,8 @@ function useCard(element = null,opp = null,index = null,select = null,selectp) {
                             // shocks every card, dealing 1/7 of coil's attack with extra shock.
                             let tempchosen = opponent.inventory[Object.keys(opponent.inventory)[i]];
                             tempchosen.hp -= Math.ceil(card.atk/7);
-                            if (tempchosen.effects.some(str => str.includes("Shock")) == true) {
+                            tempchosen = addEffect(tempchosen,"Shock",1,1,true);
+                            /*if (tempchosen.effects.some(str => str.includes("Shock")) == true) {
                                 let zeval = tempchosen.effects.filter(str => str.includes("Shock"))[0];
                                 let index = tempchosen.effects.indexOf(zeval);
                                 let args = formateffect("Attributes",zeval);
@@ -2368,16 +2474,18 @@ function useCard(element = null,opp = null,index = null,select = null,selectp) {
                             }
                             if (tempchosen.effects.some(str => str.includes("Shock")) == false) {
                                 tempchosen.effects.push("Shock{1,1}");
-                            }
+                            }*/
                         }
                         
                     }
                     if (card.name == "oblivion" && index != null && index == 0) {
+                        // if oblivion is at the front it will do what it does
                         zeattacked += card.atk;
                         user.mana += card.manause;
                         card.ammo += 1;
                     }
                     if (card.name == "oblivion" && index != 0 && zeattacked.hp - card.atk <= 0) {
+                        // if oblivion is not at the front it will use less mana and cooldown
                         card.cool -= 1;
                         card.manause -= 0.5
                         if (card.cool < 1) {
@@ -2389,9 +2497,13 @@ function useCard(element = null,opp = null,index = null,select = null,selectp) {
                     }
                     if (card.name == "flamethrower") {
                         let substr = "Burning";
+                        // deals extra damage if player has flametouch
                         if (arrHas(user.mods,"FlameTouch")) {
                             zeattacked.hp -= 7;
                         }
+                        // add burning effect to enemy
+                        zeattacked = addEffect(zeattacked,"Burning",1,1,true);
+                        /*
                         if (zeattacked.effects.some(str => str.includes(substr)) == true) {
                             let zeval = zeattacked.effects.filter(str => str.includes(substr))[0];
                             let index = zeattacked.effects.indexOf(zeval);
@@ -2402,13 +2514,15 @@ function useCard(element = null,opp = null,index = null,select = null,selectp) {
                         }
                         if (zeattacked.effects.some(str => str.includes(substr)) == false) {
                             zeattacked.effects.push("Burning{1,1}");
-                        }
+                        }*/
                         
                     }
                     if (card.name == "ninja") {
-                        if (card.effects.some(str => str.includes("Camouflaged")) == false) {
+                        // add camouflaged effect for 2 turns
+                        card = addEffect(card,"Camouflaged",1,2,false);
+                        /*if (card.effects.some(str => str.includes("Camouflaged")) == false) {
                             card.effects.push("Camouflaged{1,2}");
-                        }
+                        }*/
                     }
                     if (card.name == "juggernaut" || card.name == "sniper") {
                         for (let i = 0; i < 4; i++) {
@@ -2538,6 +2652,12 @@ function useCard(element = null,opp = null,index = null,select = null,selectp) {
                         user.health += add/1;
                         user.health = Math.round(user.health);
                     }
+                    // IF CURRENT ATTACKED CARD IS PHASED, TAKE NO DAMAGE
+                    if (arrHas(zeattacked.effects,"Phased")) {
+                        console.log(zeattacked.hp,predamagehp,);
+                        zeattacked.hp = predamagehp;
+                        zeattacked.effects = preeffects;
+                    }
                     if (zeattacked.hp <= 0) {
                         if (card.name == "soulkeeper") {
                             user.mana += 0.5;
@@ -2576,6 +2696,7 @@ function useCard(element = null,opp = null,index = null,select = null,selectp) {
                             }
                         }
                     }
+                    
                 }
                 if (extraatk > 0 && 1 + 1 == 3) {
                     card.atk -= extraatk;
@@ -2946,12 +3067,13 @@ function discard(player, index = null) {
         id = focused.getAttribute("id");
         index = Number(id.replace("c",""))-1;
     }
+    let card = user.inventory[Object.keys(user.inventory)[index]];
     if (user.inventory[Object.keys(user.inventory)[index]] != undefined) {
         if (Object.hasOwn(card,"discardable") && card.discardable == false) {
             console.log("Card is not discardable!");
             return false
         }
-        let card = user.inventory[Object.keys(user.inventory)[index]];
+        
         delete user.inventory[Object.keys(user.inventory)[index]];
         user.mana += 1;
         user.discards -= 1;
@@ -2967,11 +3089,12 @@ function setStartMod(mod) {
     }
     if (mod == "uncleman") {
         drawCard("p1",true,"factory","addToDeck");
-        p1.maxhealth = 500;
-        p1.health = 500;
+        p1.maxhealth = 200;
+        p1.health = 200;
         p1.maxdiscards = 2;
+        p1.coins = 100;
         p1.discards = 2;
-        p1.managain = 7;
+        p1.managain = 4;
     }
     if (currentmode == "Hard") {
         p1.health *= 0.7;

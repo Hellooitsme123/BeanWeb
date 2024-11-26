@@ -1,5 +1,11 @@
+const INF = Number.MAX_VALUE;
+const EPSILON = Number.EPSILON;
 function byId(id) {
     return document.getElementById(id);
+}
+function stepRound(num,step) {
+    let step_count = Math.round(num/step);
+    return step*step_count;
 }
 function randNum(min, max) {
     return Math.floor(Math.random() * (max - min + 1) ) + min;
@@ -11,6 +17,7 @@ function roundToPlace(val,digit) {
     return Math.round((val + Number.EPSILON) * (10**digit)) / 100;
 }
 function getNestedProperty(obj, props) {
+    props = structuredClone(props);
     if (props.length === 1) {
         return obj[props[0]];
     }
@@ -39,6 +46,13 @@ function tryAccess(obj,key) {
         return false;
     }
 }
+function accessDefault(obj,key,before) {
+    if (obj.hasOwnProperty(key)) {
+        return obj[key];
+    } else {
+        return before;
+    }
+}
 function clearChildren(myNode) {
     while (myNode.firstChild) {
         myNode.removeChild(myNode.lastChild);
@@ -62,4 +76,36 @@ function arrEqual(arr1,arr2) {
         }
     }
     return true;
+}
+function objectToArray(object) {
+    let arr = [];
+    for (let i =0; i < Object.keys(object).length; i++) {
+        arr.push(object[Object.keys(object)[i]]);
+    }
+    return arr;
+}
+function arrRemove(arr,value) {
+    return arr.filter(item => item !== value);
+}
+/**
+ * setAdd() -> adds a new value to an array at the last index. if it is already in the array, it does not add it.
+ * @param {array} arr - array
+ * @param {*} value - value to add to array
+ * @example
+ * array = [1,2,3]
+ * setAdd(array,2) -> returns [1,2,3]
+ * setAdd(array,4) -> returns [1,2,3,4]
+ */
+function setAdd(arr,value) {
+    if (arr.includes(value) == false) {
+        arr.push(value);
+        return arr;
+    }
+    return arr
+}
+function degToRad(deg) {
+    return deg * Math.PI / 180;
+}
+function radToDeg(rad) {
+    return rad * 180 / Math.PI;
 }
