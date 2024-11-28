@@ -1,11 +1,3 @@
-function byId(id) {
-    return document.getElementById(id);
-} 
-function randNum(min, max) {
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-}
 function lamelRay(collection) {
     let classes = [].slice.call(collection);
     return classes;

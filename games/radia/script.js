@@ -69,6 +69,9 @@ function keyDownHandler(e) {
     } else if (e.key == "Down" || e.key == "ArrowDown") {
         downPressed = true;
     }
+    if (e.key == "q" && player.dashAvailable == true) {
+        player.dashActive = true;
+    }
 }
 function keyUpHandler(e) {
     if (e.key == "Right" || e.key == "ArrowRight") {
@@ -420,6 +423,22 @@ function draw() {
         byId("gameOver").style.display = "block";
         byId("scoreHeader").innerHTML = `Final Score: ${Math.round(score)}`;
     }
+    let dashImpact = 1; // currently make dash impact speed by x1
+    // COOLDOWN DASH
+    // cooldown is 15 seconds
+    if (player.dashAvailable == false) {
+        player.dashActive = false;
+        player.dashCD -= 1;
+    }
+    if (player.dashCD == 0) {
+        player.dashCD = 750;
+        player.dashAvailable = true;
+    }
+    if (player.dashActive == true) {
+        player.dashCD = 750;
+        player.dashAvailable = false;
+        dashImpact = 40; // make dash impact speed by x40
+    }
     score += 0.05; // 5 score per second
     score = stepRound(score,0.01);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -470,13 +489,26 @@ function draw() {
 
     // handle player movement
     if (rightPressed && player.x < canvas.width - charWidth) {
-        player.x += player.speed;
+        player.x += player.speed*dashImpact;
     } if (leftPressed && player.x > 0) {
-        player.x -= player.speed;
+        player.x -= player.speed*dashImpact;
     } if (downPressed && player.y < canvas.height - charHeight) { // down and up must be swapped for some reason
-        player.y += player.speed;
+        player.y += player.speed*dashImpact;
     } if (upPressed && player.y > 0) {
-        player.y -= player.speed;
+        player.y -= player.speed*dashImpact;
+    }
+    // make sure player is not out fo boudns
+    if (player.x > canvas.width - charWidth) {
+        player.x = canvas.width - charWidth;
+    }
+    if (player.x < 0) {
+        player.x = 0;
+    }
+    if (player.y > canvas.height - charHeight) {
+        player.y = canvas.height - charHeight;
+    }
+    if (player.y < 0) {
+        player.y = 0;
     }
     /* change positioning to random
     x += dx;

@@ -172,7 +172,7 @@ var locationplacing = {
                 set: ["mysteryloc","roadtocoda4","mysteryfight","lordkarena","lordkvictory","roadtocoda5","roadtocoda6","mysteryloc2","trafficlordappear","trafficlordvictory"],
                 mysteryloc: ["strangealtar","unclemanstatue","none"],
                 mysteryloc2: ["crowattack","cardtornado","none"],
-                mysteryfight: ["forest1,banditsvictory","leafo,leafovictory","forestclearing,forestcastle,wisespiritsvictory","forest1,banditsvictory","leafoappear,leafovictory","forestclearing,forestcastle,wisespiritsvictory","lostcave"],
+                mysteryfight: ["forest1,banditsvictory","leafo,leafovictory"/*,"forestclearing,forestcastle,wisespiritsvictory"*/,"forest1,banditsvictory","leafoappear,leafovictory","forestclearing,forestcastle,wisespiritsvictory","lostcave"],
             },
         },
     },
@@ -513,7 +513,8 @@ function morphType(str) {
     return str;
 }
 function randKey(obj,con = null) {
-    var keys = Object.keys(obj);
+    let keys = Object.keys(obj);
+    let passedKeys = [];
     if (con) {
         for (let i =0; i < keys.length; i++) {
             let key = keys[i];
@@ -521,29 +522,35 @@ function randKey(obj,con = null) {
             // prop?val=false
             // prop?=false;
             let conditions = con.split(";");
+            let keyPassed = true; // by default, let key pass
             for (let j = 0; j < conditions.length; j++) {
                 let tempcon = conditions[j].split("?");
                 let secondary = tempcon[1].split("=");
-                secondary[1] = morphType(secondary[1]);
+                secondary[1] = morphType(secondary[1]); // secondary is the property to check and value to get
+                // if conditions are not met, key will be unpassed
                 if (tempcon[0] == "subobj") {
                     if (obj[key][secondary[0]] == secondary[1]) {
-                        keys.splice(keys.indexOf(key),1);
+                        keyPassed =false;
                     }
                     // check for booleans
                     if ((obj[key][secondary[0]] == true && secondary[1] == "true") || (obj[key][secondary[0]] == false && secondary[1] == "false")) {
-                        keys.splice(keys.indexOf(key),1);
+                        keyPassed =false;
                     } 
                 }
                 if (tempcon[0] == "prop") {
                     if (obj[key] == secondary[0]) {
-                        keys.splice(keys.indexOf(key),1);
+                        keyPassed =false;
                     }
                 }
             }
+            if (keyPassed) { // if key passed, add it to passed keys array
+                passedKeys.push(key);
+            }
         }
+    } else {
+        passedKeys = structuredClone(keys);
     }
-    
-    return obj[keys[ keys.length * Math.random() << 0]];
+    return obj[passedKeys[passedKeys.length * Math.random() << 0]]; // get random key from passed keys
 };
 function randNum(min, max) {
     min = Math.ceil(min);
@@ -685,8 +692,8 @@ function fullSD(element,successor,t1,t2) {
  */
 function addEffect(card,effectname,s,t,u=false) {
     if (card.effects.some(str => str.includes(effectname)) == true && u == true) {
-        let zeval = tempchosen.effects.filter(str => str.includes(effectname))[0];
-        let index = tempchosen.effects.indexOf(zeval);
+        let zeval = card.effects.filter(str => str.includes(effectname))[0];
+        let index = card.effects.indexOf(zeval);
         let args = formateffect("Attributes",zeval);
         args[0] = Number(args[0]);
         args[0] += 1;
@@ -937,16 +944,16 @@ function drawCard(player,specific = false,choice = null,otherargs = ["None"]) {
     if (otherargs[0] == "None" && player == "p1" && reloading == true) {
         return false;
     }
-    let table = "inventory";
+    let table = "inventory"; // by default add to inventory, but add to deck if argument is given
     if (otherargs.includes("addToDeck")) {
         table = "deck";
     } 
-    if (Object.keys(Game[player][table]).length >= 10) {
+    if (Object.keys(Game[player][table]).length >= 10) { // prevent overflow of cards (no more than 10)
         return "Too many cards!";
     }
 
     let chosenkey;
-    chosenkey = randKey(Game[player].deck);
+    chosenkey = randKey(Game[player].deck); // gets random key from player's deck andadds it to the deck
     if (otherargs[0] == "None" && player == "p1") {
         chosenkey = p1.deck[p1.drawarr[p1.drawarrindex]];
         p1.drawarrindex++;
@@ -957,12 +964,12 @@ function drawCard(player,specific = false,choice = null,otherargs = ["None"]) {
             battletext.innerHTML = "Next Card: "+p1.drawarr[p1.drawarrindex];
         }
     }
-    if (otherargs.includes("addToDeck")) {
+    if (otherargs.includes("addToDeck")) { // if addToDeck is true, chooses a random one from the shop
         chosenkey = randKey(shopcards);
 
         
     }
-    if (specific == true) {
+    if (specific == true) { // if specific is true, adds the given card
         chosenkey = cards[choice];
         if (otherargs.includes("addToDeck")) {
             chosenkey = shopcards[choice];
@@ -970,11 +977,12 @@ function drawCard(player,specific = false,choice = null,otherargs = ["None"]) {
         if (Object.keys(Game[player].deck).includes(choice) && otherargs.includes("addToDeck") == false) {
             chosenkey = Game[player].deck[choice];
         }
-    }
-    let key = {};
-    assign(key,chosenkey);
+    }    let key = {};
+    assign(key,chosenkey); // assign the values
     key.effects = [];
-    if (otherargs.includes("addToDeck")) {
+    if (otherargs.includes("addToDeck")) { 
+        key.level = 0; // set's the card's level to be 0
+        // add special masks with 1/100 chance
         let masks = ["mask-1","mask-2"];
         if (randNum(1,100) == 100) {
             key.maskeffect = randItem(masks);
@@ -1002,7 +1010,6 @@ function drawCard(player,specific = false,choice = null,otherargs = ["None"]) {
         key["cardmods"] = [];
     }
     playAudio("sounds/draw-card.mp3");
-    console.log(otherargs);
     if (otherargs[0] == "None") {
         if (player == "p1") {
             
@@ -2301,12 +2308,12 @@ function useCard(element = null,opp = null,index = null,select = null,selectp) {
                 if (attacked == "Opp") {
                     opponent.health -= card.atk+extraatk;
                     if (card.name == "cultist") {
-                        let add = 0;
+                        let add = -card.stat; // balance out for own cultist
                         let chosen;
-                        for (let i = 0; i < Object.keys(user.inventory).length; i++) {
+                        for (let i = 0; i < Object.keys(user.inventory).length; i++) { // add 8 extra damage per cultist, undodgeable
                             let tempchosen = user.inventory[Object.keys(user.inventory)[i]];
                             if (tempchosen.name == "cultist") {
-                                add += 30;
+                                add += card.stat;
                             }
                         }
                         opponent.health -= add;
@@ -2402,12 +2409,12 @@ function useCard(element = null,opp = null,index = null,select = null,selectp) {
 
                     predamagehp = zeattacked.hp;
                     preeffects = zeattacked.effects;
-                    console.log(zeattacked.hp,predamagehp,);
                     zeattacked.hp -= card.atk+extraatk;
                     if (arrHas(zeattacked.effects,"Bubbly")) {
                         // heal for x% of the damage taken based off of bubbly effect scale 
-                        zeattacked.hp += formateffect("Attributes",arrFirst(zeattacked.effects,"Bubbly"))[0]*(card.atk+extraatk);
+                        zeattacked.hp += formateffect("Attributes",arrFirst(zeattacked.effects,"Bubbly"))[0]*(card.atk+extraatk)/100;
                     }
+                    console.log(zeattacked);
                     
                     if (card.name == "solarprism") {
                         opponent.health -= card.atk;
@@ -3208,20 +3215,20 @@ function enterAdventureScreen() {
                 /*let tempobj = {};
                 assign(tempobj,card);
                 card = tempobj;*/
-                let chance = randNum(1,3);
+                let chance = randNum(1,3); // 1/3 chance of increasing stats
                 if (chance > 2) {
                     let chance2 = randNum(1,10);
-                    if (chance2 > 0) {
+                    if (chance2 > 0) { // guaranteed to provide 0.7-1.3x buff
                         if (Object.hasOwn(card,"atk")) {
-                            card.atk *= randNum(7,20)/10;
+                            card.atk *= randNum(7,13)/10;
                             card.atk = Math.round(card.atk);
                         }
                         if (Object.hasOwn(card,"heal")) {
-                            card.heal *= randNum(7,20)/10;
+                            card.heal *= randNum(7,13)/10;
                             card.heal = Math.round(card.heal);
                         }
                     } 
-                    if (chance2 > 4) {
+                    if (chance2 > 4) { // 60% chance of decreasing cooldown by 1
                         let prevcool = card.cool;
                         card.cool -= randNum(1,3);
                         if (card.cool < 1 && prevcool != 0) {
@@ -3230,17 +3237,17 @@ function enterAdventureScreen() {
                         if (card.cool < 0) {
                             card.cool = 0;
                         }
-                        card.hp *= randNum(7,20)/10;
+                        card.hp *= randNum(7,13)/10; // also further applies buff
                         card.hp = Math.round(card.hp);
                     }
-                    if (chance2 > 7) {
+                    if (chance2 > 7) { // 30% chance of decreasing manause by 0.5-1.5
                         let prevuse = card.manause;
-                        card.manause -= randNum(1,6)/2;
-                        if (card.manause < 0.5 && prevuse >= 0.5) {
-                            card.manause = 0.5;
+                        if (card.manause >= 1) {
+                            card.manause -= randNum(1,3)/2;
                         }
-                        if (card.manause < 0) {
-                            card.manause = 0;
+                        // ensures manause stays above 0.5 (cannot make below)
+                        if (prevuse >= 0.5 && card.manause < 0.5) {
+                            card.manause = 0.5;
                         }
                     }
                 }
@@ -3282,35 +3289,35 @@ function enterAdventureScreen() {
                 assign(tempobj,card);
                 card = tempobj;*/
                 let chance = randNum(1,10);
-                if (chance >= 4) {
+                if (chance >= 6) { // 50% chance of getting stat buff
                     let chance2 = randNum(1,10);
-                    if (chance2 > 0) {
+                    if (chance2 > 0) { // guaranteed to increase stats by 1-1.4x
                         if (Object.hasOwn(card,"atk")) {
-                            card.atk *= randNum(10,20)/10;
+                            card.atk *= randNum(10,14)/10;
                             card.atk = Math.round(card.atk);
                         }
                         if (Object.hasOwn(card,"heal")) {
-                            card.heal *= randNum(10,20)/10;
+                            card.heal *= randNum(10,14)/10;
                             card.heal = Math.round(card.heal);
                         }
                     } 
-                    if (chance2 > 4) {
+                    if (chance2 > 4) { // 60% chance of decreasing cooldown from 1-2
                         let prevcool = card.cool;
-                        card.cool -= randNum(1,3);
+                        card.cool -= randNum(1,2);
                         if (card.cool < 1 && prevcool != 0) {
                             card.cool = 1;
                         }
-                        card.hp *= randNum(10,20)/10;
+                        card.hp *= randNum(10,14)/10; // further applies buff
                         card.hp = Math.round(card.hp);
                     }
-                    if (chance2 > 7) {
+                    if (chance2 > 7) { // 30% chance of decreasing mana use
                         let prevuse = card.manause;
-                        card.manause -= randNum(1,6)/2;
-                        if (card.manause < 0.5 && prevuse >= 0.5) {
-                            card.manause = 0.5;
+                        if (card.manause >= 1) {
+                            card.manause -= randNum(1,3)/2;
                         }
-                        if (card.manause < 0) {
-                            card.manause = 0;
+                        // ensures manause stays above 0.5 (cannot make below)
+                        if (prevuse >= 0.5 && card.manause < 0.5) {
+                            card.manause = 0.5;
                         }
                     }
                 }
@@ -3405,13 +3412,19 @@ function enterAdventureScreen() {
                 element.classList.add("tooltipholder");
             });
         }
-        if (curspecial1 == "beancandispenser") {
+        if (curspecial1 == "speedingcar") {
+            specialdiv.style.display = "block";
+            byId("sc3").style.display = "none";
+            byId("sc1").innerHTML = "<h2>Run Quickly</h2><p>Get out of the car's way, damaging cards in the process.</p>";
+            byId("sc2").innerHTML = "<h2>Stay Still</h2><p>The car can't hurt you, right?</p>";
+        }
+        if (curspecial1 == "beancandispenser") { // give 50 health for 20 coda coins
             specialdiv.style.display = "block";
             byId("sc2").style.display = "none";
             byId("sc3").style.display = "none";
             byId("sc1").innerHTML = "<h2>Bean Dispenser</h2><p>+50 health, but at the cost of 20 coda coins. Capped at max health.</p>";
         }
-        if (curspecial1 == "drinkrobot") {
+        if (curspecial1 == "drinkrobot") { // give two options: good cola and fake cola
             specialdiv.style.display = "block";
             byId("sc3").style.display = "none";
             byId("sc1").innerHTML = "<h2>FEEBOLE COLA</h2><p>A cola that many Feebolians drink. Sounds like ebola. 25 cost.</p>";
@@ -3421,7 +3434,7 @@ function enterAdventureScreen() {
             byId("sc2").setAttribute("data-cost",100);
             byId("sc2").setAttribute("data-heal",-70);
         }
-        if (curspecial1 == "fakecoins") {
+        if (curspecial1 == "fakecoins") { // cause fight with fakecoins
             specialdiv.style.display = "block";
             byId("sc3").style.display = "none";
             byId("sc2").style.display = "none";
@@ -3816,19 +3829,33 @@ function updateAdventureScreen() {
             if (sCondition("upgcard")[0]) {
                 if (curlocation.name == "unclerictorappear") {
                     if (curspecial1 == "upgcard" && speciallock < 3) {
-                        if (p1.coins < 30) {
-                            invspecial.innerHTML = "INSUFFICIENT FUNDS";
+                        let card = p1.deck[element.getAttribute("data-card")];
+                        let upgradeStats = card.upgrades[card.level+1];
+                        if (card.level >= 1) { // ensure card cannot be over upgraded
+                            return false;
+                        }
+                        // subtract money by cost
+                        if (p1.coins < upgradeStats.cost) {
+                            invspecial.innerHTML = `INSUFFICIENT FUNDS ${upgradeStats.cost}`;
                             return false;
                         } else {
-                            p1.coins -= 30;
+                            p1.coins -= upgradeStats.cost;
                         }
+                        // prevent card from being upgraded again
                         if (typeof speciallock == "boolean") {
                             speciallock = 1;
                         } else {
                             speciallock++;
                         }
-                        let card = p1.deck[element.getAttribute("data-card")];
-                        card.hp *= 1.2;
+                        card.level += 1;
+                        for (let i = 0; i < upgradeStats.stats.length; i++) {
+                            let upgStat = upgradeStats.stats[i];
+                            let upgAttr = upgStat[0]; // get attributes and values
+                            let upgValue = upgStat[1];
+                            card[upgAttr] += upgValue;
+                        }
+
+                        /*card.hp *= 1.2;
                         card.hp = Math.round(card.hp);
                         if (Object.hasOwn(card,"atk")) {
                             card.atk *= 1.2;
@@ -3840,7 +3867,7 @@ function updateAdventureScreen() {
                         }
                         if (Object.hasOwn(card,"stat")) {
                             card.stat += card.statincrease;
-                        }
+                        }*/
                         updateAdventureScreen();
                     } else {
                         invspecial.innerHTML = "MAX CARD UPGRADES REACHED";
@@ -3848,6 +3875,7 @@ function updateAdventureScreen() {
                 }
                 if (curlocation.name == "cosmeticshop") {
                     if (curspecial2 == "upgcard" && speciallock2 < 2) {
+                        // speciallock means you cannot upgrade more than twice (or once if a card has been bought)
                         if (speciallock == true && speciallock2 == 1) {
                             return false;
                         } 
@@ -3856,6 +3884,7 @@ function updateAdventureScreen() {
                         } else {
                             speciallock2++;
                         }
+                        // buff stats by 1.1;
                         let card = p1.deck[element.getAttribute("data-card")];
                         card.hp *= 1.1;
                         card.hp = Math.round(card.hp);
@@ -3868,7 +3897,7 @@ function updateAdventureScreen() {
                             card.heal = Math.round(card.heal);
                         }
                         if (Object.hasOwn(card,"stat")) {
-                            card.stat += card.statincrease;
+                            card.stat += card.statincrease/2; // increase stats 1/2 the standard amount
                         }
                         updateAdventureScreen();
                     } else {
@@ -4302,6 +4331,32 @@ Array.from(document.getElementsByClassName("specialcard")).forEach(function(elem
             drawCard("p1",false,null,["addToDeck","doubleStats"]);
             updateAdventureScreen();
         }
+        if (sCondition("speedingcar")[0] == true && speciallock == false) { // damage card or take damage
+            speciallock = true;
+            let zeoption = element.getAttribute("id");
+            if (zeoption == "sc1") { // first option, debuffs cards
+                for (let i =0; i < 2; i++) {
+                    let card = randKey(p1.deck);
+                    card.hp *= randNum(6,9)/10;
+                    if (Object.hasOwn(card,"atk")) {
+                        card.atk *= randNum(7,9)/10;
+                    }
+                    if (Object.hasOwn(card,"heal")) {
+                        card.heal *= randNum(7,9)/10;
+                    }
+                    if (Object.hasOwn(card,"cool") && randNum(1,2) == 1) {
+                        card.cool += randNum(0,1);
+                    }
+                    if (Object.hasOwn(card,"coolleft")) {
+                        card.coolleft += randNum(0,1);
+                    }
+                }
+            } else {
+                p1.health -= 80; // take damage from car
+            }
+            
+            updateAdventureScreen();
+        }
         if (sCondition("beancandispenser")[0] == true && p1.coins >= 30) {
             p1.coins -= 30;
             p1.health += 50;
@@ -4326,8 +4381,7 @@ Array.from(document.getElementsByClassName("specialcard")).forEach(function(elem
             speciallock = true;
             p1.maxhealth = 1;
             p1.health = 1;
-            p1.coins = 2000;
-            for (let z = 0; z < Object.keys(p1.deck).length; z++) {
+            for (let z = 0; z < Object.keys(p1.deck).length; z++) { // make all cards gain triple stats, but set health to 1.
                 let chosencard = p1.deck[Object.keys(p1.deck)[z]];
                 chosencard.hp *= 3;
                 if (Object.hasOwn(chosencard,"atk")) {
@@ -4342,7 +4396,7 @@ Array.from(document.getElementsByClassName("specialcard")).forEach(function(elem
             }
             updateAdventureScreen();
         }
-        if (sCondition("risk")[0] == true && Object.keys(p1.deck).length > 1) {
+        if (sCondition("risk")[0] == true && Object.keys(p1.deck).length > 1) { // delete all cards except one, that card becomes the paragon.
             let card = randKey(p1.deck);
             Object.keys(p1.deck).forEach(function(key) {
                 if (p1.deck[key] != card) {
@@ -4356,17 +4410,9 @@ Array.from(document.getElementsByClassName("specialcard")).forEach(function(elem
             if (Object.hasOwn(card,"cool")) {
                 card.cool = 1;
             }
-            if (Object.hasOwn(card,"coolleft")) {
-                card.coolleft = 0;
-            }
-            if (Object.hasOwn(card,"manause") && card.manause > 1) {
-                card.manause-=0.5;
-            }
-            p1.health += 100;
-            p1.maxhealth += 100;
             updateAdventureScreen();
         }
-        if (sCondition("unclemanstatue")[0] == true) {
+        if (sCondition("unclemanstatue")[0] == true) { // give erandom card at cost of 100 hp
             speciallock = true;
             let card = randKey(cards);
             drawCard("p1",true,card.name,"addToDeck");
@@ -4376,7 +4422,7 @@ Array.from(document.getElementsByClassName("specialcard")).forEach(function(elem
             }
             updateAdventureScreen();
         }
-        if (sCondition("flamebean")[0] == true) {
+        if (sCondition("flamebean")[0] == true) { // give flamebean relic
             speciallock = true;
             p1.health -= 50;
             let key = {};
@@ -4384,7 +4430,7 @@ Array.from(document.getElementsByClassName("specialcard")).forEach(function(elem
             p1.relics["flamebean"] = key;
             updateAdventureScreen();
         }
-        if (sCondition("celestial")[0] == true) {
+        if (sCondition("celestial")[0] == true) { // add celestial striker to deck
             p1.health -= 100;
             speciallock = true;
             drawCard("p1",true,"celestialstriker","addToDeck");

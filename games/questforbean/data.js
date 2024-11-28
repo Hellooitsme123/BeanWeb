@@ -355,7 +355,7 @@ var locations = {
         name: "cosmeticshop",
         formal: "Cosmetic Shop",
         desc: "A relaxing store smothered with pink, aesthetic vibes that provide a variety of cosmetics, just happening to offer free card upgrades on Monday afternoons.",
-        loretext: "Walking down the road, you saw a pink, cottage store named 'Lavender's Cosmetic Shop'. Next to the entrance, you saw a sign that said that free card upgrades were offered on Monday afternoons. It just happened to be a Monday afternoon, so you decided it would be best to get a free card upgrade before fighting against others with possibly better decks in the tavern. || You entered the store, and all of a sudden your stress was gone. It was just too relaxing. You came in to the person at the cash register, and you began talking with her. || You: So, is it true that there are free card upgrades on Mondays? || Lavender: Yeah. Only the first 10 people get it though. Fortunately, you are one of the first 10 people here. || You: Cool! So, how do I get it? || Lavender: Just give me 2 cards, and I can upgrade them. You can also get 1 card and 1 card upgrade instead. || Click a card to upgrade its stats by 10%, or choose a card to get for free. ",
+        loretext: "Walking down the road, you saw a pink, cottage store named 'Lavender's Cosmetic Shop'. Next to the entrance, you saw a sign that said that free card upgrades were offered on Monday afternoons. It just happened to be a Monday afternoon, so you decided it would be best to get a free card upgrade before fighting against others with possibly better decks in the tavern. || You entered the store, and all of a sudden your stress was gone. It was just too relaxing. You came in to the person at the cash register, and you began talking with her. || You: So, is it true that there are free card upgrades on Mondays? || Lavender: Yeah. Only the first 10 people get it though. Fortunately, you are one of the first 10 people here. || You: Cool! So, how do I get it? || Lavender: Just give me 2 cards, and I can slightly buff them. You can also get 1 card and 1 card upgrade instead. || Click a card to upgrade its stats by 10%, or choose a card to get for free. ",
         special: "shop|gaincard|upgcard",
         proceedtext: "Leave the store and go visit the tavern.",
         nextloc: "tavern",
@@ -426,6 +426,7 @@ var locations = {
         formal: "Speeding Car",
         desc: "They lurk along the roads.",
         loretext: "Hey, what's that strange, blue blip? || Why's it getting bigger? Is it going towards me? Is this my calling? || Wait.. what's that noise? || Hold up. IT'S COMING FOR- || Whew. That was close. What kind of person would drive that recklessly? They almost killed me! || They? Was there even a person in that car? || Hmmm.. Maybe..",
+        special: "speedingcar",
         proceedtext: "Continue. That car was nothing.",
         nextloc: "tallmart",
         locimg: "speedingcar.png",
@@ -1372,6 +1373,14 @@ var cards = {
         type: "Attack",
         img: "spearman.png",
         sound: "sword.mp3",
+        upgrades: {
+            1: {
+                stats: [["atk",10],["hp",8]],
+                cost: 150,
+                desc: "Basic damage increase, throws one extra spear every 3 attacks.",
+            }
+        },
+        subtypes: ["basic"],
     },
     wizard: {
         name: "wizard",
@@ -1388,6 +1397,14 @@ var cards = {
         type: "Attack",
         img: "wizard.png",
         sound:"spell1.mp3",
+        upgrades: {
+            1: {
+                stats: [["atk",5],["hp",12]],
+                cost: 200,
+                desc: ".",
+            }
+        },
+        subtypes: ["magic"],
     },
     turret: {
         name: "turret",
@@ -1401,12 +1418,20 @@ var cards = {
         coolleft: 0,
         stat: 6,
         statincrease: 1,
+        statdesc: "How much damage is gained each shot.",
         desc:"A turret that deals lethal bursts of damage, assuring that no cards get destroyed.",
         funnyname: "TURRETATION",
         type: "Attack",
         img: "turret.png",
         sound: "shoot.mp3",
-        subtypes: ["mechanical"]
+        upgrades: {
+            1: {
+                stats: [["atk",5],["hp",5]],
+                cost: 220,
+                desc: "Adds 25% chance of triple shooting."
+            }
+        },
+        subtypes: ["mechanical","shoot"]
     },
     sniper: {
         name: "sniper",
@@ -1423,6 +1448,14 @@ var cards = {
         type: "Attack",
         img: "sniper.png",
         sound: "shoot.mp3",
+        upgrades: {
+            1: {
+                stats: [["atk",25],["hp",10]],
+                cost: 250,
+                desc: ""
+            }
+        },
+        subtypes: ["shoot"],
     },
     soulkeeper: {
         name: "soulkeeper",
@@ -1436,10 +1469,20 @@ var cards = {
         coolleft: 1,
         stat: 3,
         statincrease: 0.5,
+        statdesc: "Amount of damage gained each kill.",
+        invistimer: 5,
         desc:"A creature that harvests the dead, growing stronger with each kill.",
         funnyname: "SOUL KEEPERINITY",
         type: "Attack",
         img: "soulkeeper.png",
+        upgrades: {
+            1: {
+                stats: [["atk",7],["hp",10],["stat",3]],
+                cost: 300,
+                desc: "Every 5 kills, go invisible for 2 turns, harnessing mana from your opponents.",
+            }
+        },
+        subtypes: ["magic","soul"],
     },
     healorb: {
         name: "healorb",
@@ -1487,6 +1530,14 @@ var cards = {
         type: "Attack",
         img: "juggernaut.png",
         sound: "bash.mp3",
+        upgrades: {
+            1: {
+                stats: [["atk",20],["hp",25]],
+                cost: 320,
+                desc: "Unlocks super bash, with a 1/5 chance each attack to spend 3 more mana and deal damage to 3 opponents, stunning them.",
+            }
+        },
+        subtypes: ["shield"],
     },
     flamethrower: {
         name: "flamethrower",
@@ -1503,6 +1554,14 @@ var cards = {
         type: "Attack",
         img: "flamethrower.png",
         sound: "burn.mp3",
+        upgrades: {
+            1: {
+                stats: [["atk",4],["hp",15]],
+                cost: 300,
+                desc: "Throw a bomb every 5 turns that flamifies 4 different opponent cards.",
+            }
+        },
+        subtypes: ["fire"],
     },
     charger: {
         name: "charger",
@@ -1512,12 +1571,23 @@ var cards = {
         ammo: 1,
         maxammo: 1,
         manause: 2,
+        stat: 10,
+        statincrease: 5,
+        statdesc: "Amount of damage gained per turn.",
         cool: 2,
         coolleft: 0,
         desc:"A card that slowly charges up damage, and uses all of it in one attack.",
         funnyname: "CHARGERINEKIT",
         type: "Attack",
         img: "charger.png",
+        upgrades: {
+            1: {
+                stats: [["atk",5],["hp",10],["stat",5]],
+                cost: 250,
+                desc: "20% chance of mana charge, zpaping all enemies draining 5 mana from opponent.",
+            }
+        },
+        subtypes: ["mana","electriciy"],
     },
     solarprism: {
         name: "solarprism",
@@ -1534,6 +1604,14 @@ var cards = {
         type: "Attack",
         img: "solarprism.png",
         sound: "laser.mp3",
+        upgrades: {
+            1: {
+                stats: [["atk",5],["hp",10]],
+                cost: 280,
+                desc: "1/3 chance of solar beam that deals 50 damage (uses 2 mana however).",
+            }
+        },
+        subtypes: ["solar"],
     },
     weakener: {
         name: "weakener",
@@ -1552,6 +1630,14 @@ var cards = {
         type: "Attack",
         img: "weakener.png",
         sound: "curse1.mp3",
+        upgrades: {
+            1: {
+                stats: [["atk",7],["hp",10],["stat",5]],
+                cost: 320,
+                desc: "20% chance of sending a weakness wave, stealing all enemies' attack.",
+            }
+        },
+        subtypes: ["magic"],
     },
     supplycrate: {
         name: "supplycrate",
@@ -1564,6 +1650,7 @@ var cards = {
         funnyname: "SUPPLY CRATORIANITE",
         type: "Support",
         img: "supplycrate.png",
+        obtainable: false,
     },
     atkpotion: {
         name: "atkpotion",
@@ -1578,6 +1665,14 @@ var cards = {
         funnyname: "ATTACK POTIONORIONIO",
         type: "Support",
         img: "atkpotion.png",
+        upgrades: {
+            1: {
+                stats: [["hp",10],["stat",25]],
+                cost: 150,
+                desc: "Damage multiplier goes from x1.5 to x1.75",
+            }
+        },
+        subtypes: ["magic"],
     },
     factory: {
         name: "factory",
@@ -1586,13 +1681,22 @@ var cards = {
         manause: 2,
         ammo: 1,
         maxammo: 1,
+        statincrease: 25,
+        statdesc: "Increased damage of creation.",
         coolleft: 0,
         cool: 2,
         desc:"An old factory known for producing efficient and deadly robots.",
         funnyname: "FACTORIDIGEN",
         type: "Support",
         img: "factory.png",
-        subtypes: ["mechanical"],
+        upgrades: {
+            1: {
+                stats: [["manause",-0.5],["hp",20],["stat",25]],
+                cost: 320,
+                desc: "Cheaper cost + robots that deal 25% more damage.",
+            }
+        },
+        subtypes: ["mechanical","creator"],
     },
     robot: {
         name: "robot",
@@ -1609,6 +1713,14 @@ var cards = {
         type: "Attack",
         obtainable: false,
         img: "robot.png",
+        upgrades: {
+            1: {
+                stats: [["atk",15],["hp",15]],
+                cost: 150,
+                desc: "Has overall better stats.",
+            }
+        },
+        subtypes: ["mechanical","creation"],
     },
     managenerator: {
         name: "managenerator",
@@ -1625,7 +1737,14 @@ var cards = {
         funnyname: "MANA GENERATICONIC",
         type: "Support",
         img: "managenerator.png",
-        subtypes: ["mechanical"],
+        upgrades: {
+            1: {
+                stats: [["hp",20],["stat",0.5]],
+                cost: 175,
+                desc: "Generates 0.5 more mana.",
+            }
+        },
+        subtypes: ["mechanical","mana"],
     },
     energycapsule: {
         name: "energycapsule",
@@ -1640,6 +1759,7 @@ var cards = {
         funnyname: "ENERGY CAPSULIBANULI",
         type: "Support",
         img: "energycapsule.png",
+        obtainable: false,
     },
     dysonsphere: {
         name: "dysonsphere",
@@ -1648,12 +1768,23 @@ var cards = {
         manause: 3,
         ammo: 1,
         maxammo: 1,
+        stat: 0,
+        statincrease: 25,
+        statdesc: "Increased damage of creation.",
         coolleft: 0,
         cool: 2,
         desc:"Swirling around the sun, it creates solar prisms that consume its life force.",
         funnyname: "DYSON SPHERINICAL",
         type: "Support",
         img: "dysonsphere.png",
+        upgrades: {
+            1: {
+                stats: [["manause",-0.5],["hp",20],["stat",25]],
+                cost: 320,
+                desc: "Cheaper cost + prisms deal 25% more damage.",
+            }
+        },
+        subtypes: ["solar","creator"],
     },
     etherealguardian: {
         name: "etherealguardian",
@@ -1669,6 +1800,14 @@ var cards = {
         funnyname: "ETHEREAL GUARDIANOSOS",
         type: "Attack",
         img: "etherealguardian.png",
+        upgrades: {
+            1: {
+                stats: [["hp",15],["atk",10]],
+                cost: 300,
+                desc: "[ability not found]",
+            }
+        },
+        subtypes: ["light","shield"],
     },
     jester: {
         name: "jester",
@@ -1684,6 +1823,14 @@ var cards = {
         funnyname: "JESTERIPIDES",
         type: "Attack",
         img: "jester.png",
+        upgrades: {
+            1: {
+                stats: [["atk",15],["hp",10]],
+                cost: 300,
+                desc: "[ability not found]",
+            }
+        },
+        subtypes: ["trick"],
     },
     cultist: {
         name: "cultist",
@@ -1693,12 +1840,23 @@ var cards = {
         ammo: 1,
         maxammo: 1,
         manause: 2,
+        stat: 8,
+        statincrease: 5,
+        statdesc: "Amount of damage cultist gains per cultist.",
         cool: 2,
         coolleft: 0,
         desc:"One of the hidden conspirers that get stronger the more allies they have.",
         funnyname: "CULTISHTIDIAN",
         type: "Attack",
         img: "cultist.png",
+        upgrades: {
+            1: {
+                stats: [["atk",10],["hp",15],["stat",5]],
+                cost: 300,
+                desc: "[ability not found]",
+            }
+        },
+        subtypes: ["cultist"],
     },
     reaper: {
         name: "reaper",
@@ -1714,7 +1872,15 @@ var cards = {
         funnyname: "REAPERITIATE",
         type: "Attack",
         img: "reaper.png",
-        sound: "scythe.mp3"
+        sound: "scythe.mp3",
+        upgrades: {
+            1: {
+                stats: [["atk",10],["hp",15]],
+                cost: 500,
+                desc: "Has a 25% chance of instant-killing.",
+            }
+        },
+        subtypes: ["magic"],
     },
     froster: {
         name: "froster",
@@ -1731,6 +1897,14 @@ var cards = {
         type: "Attack",
         img: "froster.png",
         sound: "freeze.mp3",
+        upgrades: {
+            1: {
+                stats: [["atk",10],["hp",20]],
+                cost: 250,
+                desc: "[ability not found[",
+            }
+        },
+        subtypes: ["frost"],
     },
     ninja: {
         name: "ninja",
@@ -1746,6 +1920,14 @@ var cards = {
         funnyname: "NINJAMITY",
         type: "Attack",
         img: "ninja.png",
+        upgrades: {
+            1: {
+                stats: [["atk",15],["hp",10]],
+                cost: 300,
+                desc: "Ninja deals extra 20% damage when camouflaged.",
+            }
+        },
+        subtypes: ["trick"],
     },
     oblivion: {
         name: "oblivion",
@@ -1837,6 +2019,14 @@ var cards = {
         funnyname: "BANDITODOBI",
         type: "Attack",
         img: "bandit.png",
+        upgrades: {
+            1: {
+                stats: [["atk",15],["hp",10]],
+                cost: 300,
+                desc: "Steal extra mana [not added yet]",
+            }
+        },
+        subtypes: ["trick"],
     },
     armageddon: {
         name: "armageddon",
@@ -1865,6 +2055,14 @@ var cards = {
         funnyname: "RITUALIMITY",
         type: "Action",
         img: "ritual.png",
+        upgrades: {
+            1: {
+                stats: [["hp",15]],
+                cost: 200,
+                desc: "Sacrifice 20 more health, spawn an extra cultist.",
+            }
+        },
+        subtypes: ["cultist"],
     },
     teslacoil: {
         name: "teslacoil",
@@ -1880,6 +2078,14 @@ var cards = {
         funnyname: "TESLA COILONOSCOPY",
         type: "Attack",
         img: "teslacoil.png",
+        upgrades: {
+            1: {
+                stats: [["atk",10],["hp",15]],
+                cost: 220,
+                desc: "[ability not found]",
+            }
+        },
+        subtypes: ["electricity"],
     },
     cannoneer: {
         name: "cannoneer",
@@ -1896,6 +2102,14 @@ var cards = {
         type: "Attack",
         img: "cannoneer.png",
         sound: "cannon.mp3",
+        upgrades: {
+            1: {
+                stats: [["atk",10],["hp",10]],
+                cost: 280,
+                desc: "Stuns 3 enemies every 2 hits.",
+            }
+        },
+        subtypes: ["basic","bomb"],
     },
     bubblemancer: {
         name: "bubblemancer",
@@ -1913,6 +2127,14 @@ var cards = {
         type: "Healing",
         img: "bubblemancer.png",
         sound: "bubbles.mp3",
+        upgrades: {
+            1: {
+                stats: [["heal",10],["hp",20]],
+                cost: 280,
+                desc: "[ability not found]",
+            }
+        },
+        subtypes: ["heal"],
     },
     celestialstriker: {
         name: "celestialstriker",
@@ -1931,6 +2153,14 @@ var cards = {
         obtainable: false,
         img: "celestialstriker.png",
         sound: "stars.mp3",
+        upgrades: {
+            1: {
+                stats: [["atk",10],["hp",15]],
+                cost: 320,
+                desc: "[ability not found]",
+            }
+        },
+        subtypes: ["cosmic","cultist"],
     },
     comet: {
         name: "comet",
@@ -1945,6 +2175,14 @@ var cards = {
         //obtainable: false,
         img: "comet.png",
         sound: "cannon.mp3",
+        upgrades: {
+            1: {
+                stats: [["atk",10],["hp",10]],
+                cost: 280,
+                desc: "[ability not found]",
+            }
+        },
+        subtypes: ["cosmic"],
     },
     hotpotato: {
         name: "hotpotato",
@@ -1958,6 +2196,14 @@ var cards = {
         //obtainable: false,
         img: "hotpotato.png",
         sound: "potato.mp3",
+        upgrades: {
+            1: {
+                stats: [["hp",15]],
+                cost: 200,
+                desc: "[ability not found]",
+            }
+        },
+        subtypes: ["trick"],
     },
     phaser: {
         name: "phaser",
@@ -1977,6 +2223,14 @@ var cards = {
         obtainable: false,
         img: "phaser.png",
         sound: "phase.mp3",
+        upgrades: {
+            1: {
+                stats: [["atk",10],["hp",15],["stat",20]],
+                cost: 350,
+                desc: "[ability not found]",
+            }
+        },
+        subtypes: ["magic"],
     },
     vine: {
         name: "vine",
@@ -1996,8 +2250,16 @@ var cards = {
         obtainable: false,
         img: "vine.png",
         sound: "vine.mp3",
+        upgrades: {
+            1: {
+                stats: [["atk",5],["hp",10],["stat",8]],
+                cost: 320,
+                desc: "[ability not found]",
+            }
+        },
+        subtypes: ["plant"],
     },
-}
+};
 var modifiers = {
     "flametouch": {
         formal: "FlameTouch",
@@ -2035,4 +2297,4 @@ var modifiers = {
         desc: "Healing cards have increased healing power.",
         img: "healing.png",
     },*/
-}
+};
