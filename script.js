@@ -109,3 +109,8 @@ function degToRad(deg) {
 function radToDeg(rad) {
     return rad * 180 / Math.PI;
 }
+function objExtract(obj,extract) {
+    for (let subobj in obj) {
+        console.log(`${subobj}: ${obj[subobj][extract]}`);
+    }
+}

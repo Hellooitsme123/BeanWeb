@@ -7,6 +7,7 @@ var currentBlock = "stone";
 var availableBlocks = [];
 var runBtn = byId('runBtn');
 var stopBtn = byId('stopBtn');
+var clearBtn = byId('clearBtn');
 var currentCharacter = characters[currentLevel.character];
 var start = [];
 var end = [];
@@ -260,6 +261,17 @@ gameContainer.addEventListener('click', function (event) {
         updateBlockCount();
     }
 });
+stopBtn.addEventListener("click",function() {
+    if (!arrEqual(map,oldMap) && oldMap.length > 0) {
+        map = structuredClone(oldMap);
+        renderMap(map);
+        return;
+    }
+});
+clearBtn.addEventListener("click",function() {
+    map = structuredClone(currentLevel.map);
+    renderMap(map);
+});
 gameContainer.addEventListener('contextmenu', function (event) {
     if (!arrEqual(map,oldMap) && oldMap.length > 0) {
         map = structuredClone(oldMap);
@@ -351,6 +363,14 @@ function shortestPathWithPoints(grid, start, end) {
                 // sets the first portal to dirt
                 tempPathgrid[r][c] = 0;
                 // makes it so you can revisit the portal
+                for (let i = 0; i < visited.length; i++) {
+                    for (let j = 0; j < visited[i].length; j++) {
+                        if ([i,j] != [r,c]) {
+                            visited[i][j] = false;
+                        }
+                        
+                    }
+                }
                 visited[r][c] = false;
                 queue.push([...farthest,tempPathgrid,visited,[...path,[farthest[0],farthest[1]]]]);
                 //queue_visited.push([r,c]);
