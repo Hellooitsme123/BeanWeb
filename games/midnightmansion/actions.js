@@ -10,7 +10,7 @@ places = {
                 "open":{
                     "success": {
                         "text": "You view the desk, seeing lots of dust on its plain, wooden surface. You open it and find a paper, saying, '97-25-11'.",
-                        "result": () => inventory.push("code-paper-1"),
+                        "result": () => !inventory.includes("code-paper-1") && inventory.push("code-paper-1"),
                         
                     },
                     "con": () => true,
@@ -69,22 +69,141 @@ places = {
                     },
                 }
             },
+            "kitchen": {
+                "type": "open",
+                "formal": "Kitchen",
+                "open": {
+                    "success": {
+                        "text": "Do you want to enter the kitchen?",
+                        "result": () => eventOptions([["Enter",() => curPlace = places.kitchen,"You enter the kitchen."],["Stay",() => true,"You stay in the hallway."]])
+                    },
+                }
+            },
             "desk": {
                 "type": "view",
                 "formal": "Dusty Desk",
-                "open": {
+                "view": {
                     "success": {
                         "text": "You view the dusty desk with coins and books. You take a coin and leave.",
-                        "result": () => inventory.push("coin"),
-                        
+                        "result": () => !opened.includes("hallway_desk") && inventory.push("coin") && opened.push("hallway_desk"),
                     }
                 }
             }
         }
     },
+    "kitchen": {
+        "formal": "Kitchen",
+        "viewtext": "A fairly large kitchen featuring counters on the corners and an island in the middle. There are doors on each side. You see pans and knives hanging from the cabinets.",
+        "actions": {
+            "cabinet": {
+                "type": "open",
+                "formal": "Cabinet",
+                "open": {
+                    "success": {
+                        "text": "Opening the cabinet, you see plates and utensils."
+                    }
+                }
+            },
+            "cabinet2": {
+                "type": "open",
+                "formal": "Cabinet",
+                "open": {
+                    "success": {
+                        "text": "Pans are pots are in the cabinet, but you manage to find something hiding behind them: a red heart-shaped key.",
+                        "result": () => !opened.includes("kitchen_cabinet") && inventory.push("red_heart_key") && opened.push("kitchen_cabinet"),
+                    },
+                }
+            },
+            "pantry_door": {
+                "type": "open",
+                "formal": "Pantry Door",
+                "open": {
+                    "success": {
+                        "text": "There is a door to the left, leading to the pantry. Do you open it?",
+                        "result": () => eventOptions([["Enter",() => curPlace = places.pantry,"You enter the pantry."],["Stay",() => true,"You stay in the kitchen."]])
+                    },
+                }
+            },
+            "right_door": {
+                "type": "open",
+                "formal": "Right Door",
+                "open": {
+                    "success": {
+                        "text": "There is a door to the right, leading to the dining room. Do you open it?",
+                        "result": () => eventOptions([["Enter",() => curPlace = places.kitchen,"You enter the dining room."],["Stay",() => true,"You stay in the kitchen."]])
+                    },
+                }
+            },
+            "polished_door": {
+                "type": "open",
+                "formal": "Polished Door",
+                "open": {
+                    "success": {
+                        "text": "There is a door in front of you. Do you open it?",
+                        "result": () => eventOptions([["Enter",() => curPlace = places.kitchen,"You enter the dining room."],["Stay",() => true,"You stay in the kitchen."]])
+                    },
+                    "failure": {
+                        "text": "The door in front of you seems new, having a shiny polish. However, it's locked.",
+                    },
+                    "con": () => inventory.includes("polished_key")
+                }
+            },
+            "hallway_door": {
+                "type": "open",
+                "formal": "Hallway Door",
+                "open": {
+                    "success": {
+                        "text": "Do you want to enter the hallway?",
+                        "result": () => eventOptions([["Enter",() => curPlace = places.hallway,"You enter the hallway."],["Stay",() => true,"You stay in the kitchen."]])
+                    },
+                }
+            },
+        }
+    },
+    "pantry": {
+        "formal": "Pantry",
+        "viewtext": "A square room full of rows of food and ingredients. However, you can't stop but feel something off about the food..",
+        "actions": {
+            "kitchen": {
+                "type": "open",
+                "formal": "Kitchen",
+                "open":{
+                    "success":{
+                        "text": "You look back at the kitchen.",
+                        "result": () => eventOptions([["Enter",() => curPlace = places.kitchen,"You enter the kitchen."],["Stay",() => true,"You stay in the pantry."]])
+                    }
+                }
+            }
+        }
+    },
+    "dining_room": {
+        "formal": "Dining Room",
+        "viewtext": "A long, open room with a table in the center, with various seats and a vase of flowers in the middle.",
+        "actions": {
+            "kitchen": {
+                "type": "open",
+                "formal": "Kitchen",
+                "open":{
+                    "success":{
+                        "text": "You look back at the kitchen.",
+                        "result": () => eventOptions([["Enter",() => curPlace = places.kitchen,"You enter the kitchen."],["Stay",() => true,"You stay in the dining room."]])
+                    }
+                }
+            }
+        }
+    },
+    "living_room": {
+
+    },
 }
 items = {
     "code-paper-1": {
         "formal": "Code Paper 1",
-    }
+    },
+    "coin": {
+        "formal": "Coin",
+    },
+    "red_heart_key": {
+        "formal": "Red Heart Key",
+    },
 }

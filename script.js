@@ -39,11 +39,11 @@ function includeSubIndex(val,index,inc) {
     }
     return includes;
 }
-function tryAccess(obj,key) {
+function tryAccess(obj,key,other=false) {
     if (obj.hasOwnProperty(key)) {
         return obj[key];
     } else {
-        return false;
+        return other;
     }
 }
 function accessDefault(obj,key,before) {

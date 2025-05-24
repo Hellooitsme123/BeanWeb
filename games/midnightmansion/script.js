@@ -5,6 +5,7 @@ var actionList = byId("actionlist");
 var invList = byId("inventory");
 var curPlace = places.spawn;
 var inventory = [];
+var opened = [];
 function start() {
     update();
 }
@@ -41,8 +42,8 @@ function update() {
 }
 function doAction(elem) {
     action_data = curPlace.actions[elem.getAttribute("data-action")];
-    spec_action = action_data[action_data.type]
-    if (Object.hasOwn(spec_action,"con") == false || spec_action.con() == true) {
+    spec_action = action_data[action_data.type];
+    if (Object.hasOwn(spec_action,"con") == false || (Object.hasOwn(spec_action,"con") && spec_action.con() == true)) {
         eventP.innerHTML = spec_action.success.text;
         if (Object.hasOwn(spec_action.success,"result")) {
             spec_action.success.result();

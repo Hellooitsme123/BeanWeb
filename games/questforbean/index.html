@@ -69,6 +69,15 @@
                     Open Shop
                 </button>
             </div>
+            <div id="offer-wrapper" class="hide">
+                <div id="cardoffer" class="hide" data-taken="no">
+    
+                </div>
+                <div id="relicoffer" class="hide" data-taken="no">
+    
+                </div>
+            </div>
+            
             <div id="special" class="hide">
                 <h2 id="specialtitle">SPECIAL</h2>
                 <div id="sc1" class="specialcard">
@@ -114,6 +123,7 @@
 
             </div>
             <h4 id="inventoryspecialtext"></h4>
+            <button type="button" id="magnify" class="open-modal-btn" data-target="magnify-overlay">🔍</button>
             <h4 id="playerpower" class="hide">Power: 0</h4>
             <h3>Inventory</h3>
             <div id="plrinventory">
@@ -124,6 +134,7 @@
                 
             </div>
         </div>
+        
         <div id="backpack-toggle">Hi</div>
         <div id="event-overlay" class="modal-overlay hide">
             <div id="event-wrapper" class="modal-wrapper">
@@ -179,6 +190,52 @@
             </div>
             
         </div>
+        <div id="magnify-overlay" class="modal-overlay hide">
+            <div id="magnify-wrapper" class="modal-wrapper">
+                <div class="close-btn-wrapper">
+                    <button class="close-modal-btn" data-target="magnify-overlay">
+                        Close
+                    </button>
+                </div>
+                <div class="tab">
+                    <button class="tablinks" onclick="openTab(event,'overviewtab')">
+                        Overview
+                    </button>
+                    <button class="tablinks" onclick="openTab(event,'upgradestab')">
+                        Upgrades
+                    </button>
+                </div>
+                <div id="overviewtab" class="tabcontent">
+                    <div id="emth-wrapper"><h1 class="m-0" id="event-modal-tab1-header">Overview</h1></div>
+                    
+                    <hr>
+                    <div class="modal-content" id="modal-content3">
+                        <h2 style="text-align:center;">Card Overview</h2>
+                        <div id="card-overview-wrapper" class="asp-1">
+                            <div id="magnify-overview-display" class="asp-main">
+
+                            </div>
+                        </div>
+                        <div id="card-info-wrapper">
+                            <h3 id="magnify-name">Name</h3>
+                            <p id="magnify-desc">Desc</p>
+                            <h4>Stats</h4>
+                            <hr>
+                            <p id="magnify-stats"></p>
+                        </div>
+                        
+                        
+                    </div>
+                </div>
+                <div id="upgradestab" class="tabcontent">
+                    <div id="emth-wrapper"><h1 class="m-0" id="event-modal-tab1-header">Upgrades</h1></div>
+                    <div id="magnify-upgrades-wrapper">
+
+                    </div>
+                </div>
+            </div>
+            
+        </div>
     </div>
     
     <div id="modes" class="hide">
@@ -225,13 +282,13 @@
             </button>
             
         </div>
-        <p id="versiontext">v0.3.2 - THE REALIZATION</p>
+        <p id="versiontext">v0.3.3 - death</p>
     </div>
     <div id="game" class="hide">
         <h2 id="battletitle">FIGHT AGAINST</h2>
         <p id="p1">Player 1: 500 health</p>
         <p id="p2">Player 2: 500 health</p>
-        
+        <p id="battle-event"></p>
         <h4 id="whichturn">YOUR TURN</h4>
         <p id="battletext"></p>
         <!--        <div>
@@ -313,44 +370,61 @@
                 </button>
             </div>
             <div id="changelogtab" class="tabcontent">
-                <h1>Update v0.3.2 - THE REALIZATION</h1>
+                <h1>Update v0.3.3 - death</h1>
                 <hr>
                 <div class="modal-content" id="modal-content">
-                    <h1>REMINDER FOR DEV</h1>
-                    <p>add formal upgrade system because slay the spire</p>
                     <h3>Important Note</h3>
-                    <p>It was realized</p>
-                    <h3>-New cards</h3>
+                    <p>.text-quote{"If a card is not good, it should not exist."} - UncleMan</p>
+                    <h3>New Cards</h3>
                     <ul>
-                        <li>Unfinished cards have now been removed</li>
+                        <li>.text-purp{??? See for yourself.}</li>
+                        <li>Bus got reworked, now moves the selected card to the back.</li>
                     </ul>
-                    <h3>-New relics</h3>
+                    <h3>Removed Cards</h3>
                     <ul>
-                        <li>Many relics got scrapped</li>
+                        <li>.text-negative{Removed} clone box (from the loot tables)</li>
                     </ul>
-                    <h3>-Bean power</h3>
+                    <h3>New relics</h3>
                     <ul>
-                        <li>Bean relics have been deleted</li>
+                        <li>Added .text-yell{legendary} bean cans (no effect as of yet, do not buy)</li>
+                        <li>Added Greg's Box, Engineer's Wrench, Phaser Shot, and Golden Shovel</li>
+                        <li>Reworked a few relics</li>
                     </ul>
-                    <h3>RIP GAME</h3>
+                    <h3>New Locations</h3>
                     <ul>
-                        <li>Many locations have been rendered obsolete and therefore removed rip game ggs</li>
+                        <li>A few locations added and deleted.</li>
+                        <li>Stage 2, Coda, has been expanded. .text-blue{Filo has now been added.}</li>
                     </ul>
                     <h3>Other Additions:</h3>
                     <ul>
-                        <li>Rip game</li>
+                        <li>.text-xl{MAGNIFY}</li>
+                        <li>Relics now have proper loot tables and costs. Cards now have proper loot tables.</li>
+                        <li>Most cards now have official upgrades instead of simple stat boosts</li>
+                        <li>Subclasses like mechanical, magic, etc have been added.</li>
+                        <li>Enemies can now have cards with custom attributes</li>
+                        <li>Implemented a slightly more efficient way to give special effects to cards</li>
+                        <li>Added (WIP) battle event text</li>
+                        <li>Added inventory order to fix my code (didn't work)</li>
                     </ul>
                     <h3>Balance Changes:</h3>
                     <ul>
-                        <li>Cultist nerfed, buff per cultist from +30 -> +8 damage, no longer counts own cultist as extra damage.</li>
+                        <li>Cultist .text-negative{nerfed}, buff per cultist from .text-negative{+30 -> +8 damage}, no longer counts own cultist as extra damage.</li>
+                        <li>Juggernaut and Cannon .text-negative{nerfed, only attacks 1 card}. Supply crate and energy capsule buffed (find out for yourself)</li>
+                        <li>Buffed healing cards .text-positive{(+10 heal for healbubble and healorb)}</li>
+                        <li>Nerfed some of the power events (e.g. Risk, Gain Power)</li>
+                        <li>.text-negative{Nerfed} golden slime (hp .text-negative{300->240}), .text-positive{buffed} phaser wizard (hp .text-positive{70->90}), .text-positive{buffed} leafo (vines hp .text-positive{24->40})</li>
                     </ul>
                     <h3>Bug Fixes:</h3>
                     <ul>
-                        <li>There's no bugs if there's no game</li>
-                        <li>There's actually a lot of bugs but I haven't fixed any of them</li>
+                        <li>Fixed unobtainable cards appearing in shop</li>
+                        <li>Fixed heal bubbles & hot potatoes</li>
+                        <li>Fixed getting negative cash in some events</li>
+                        <li>Fixed dying but not dying</li>
+                        <li>Fixed using up reload when summoning cards</li>
+                        <li>Bus now works!</li>
                     </ul>
                     <h3>Next Update?</h3>
-                    <p>Add everything back</p>
+                    <p>Complete Adding Stage 2 Part 2</p>
                     <h3><s>Other Information:</s></h3>
                     <div class="tab tab-mini hide">
                         <button class="tablinks-mini tablinks" onclick="openMiniTab(event,'cardstab')">
@@ -418,9 +492,9 @@
                     </ul>
                     <h3>Other Not Shown Mechanics</h3>
                     <ul>
-                        <li>Reloading - At the start of each round and reload, your hand consists of .text-bold{inventory length}*.text-bold{1.5}+1 cards. 1 card is added to your hand at the end of each turn. If you spend all cards in your hand, you will have to end turn to reload.</li>
+                        <li>Reloading - At the start of each round and reload, your hand consists of .text-bold{inventory length} cards. 1 card is added to your queue at the end of each turn. If you spend all cards in your hand, you will have to end turn to reload.</li>
                         <li>Relics - They give special effects like extra damage and health, or an upgrade for one specific card.</li>
-                        <li>Enemy Modifiers - Some enemies have special abilities, like Lord K's .text-bold{Meteor Strike} and Traffic Lord's .text-bold{Turn Block}. As of current only a few are displayed.</li>
+                        <li>Enemy Modifiers - Some enemies have special abilities, like Lord K's .text-bold{.text-red{Meteor Strike}} and Traffic Lord's .text-bold{Turn Block}. As of current only a few are displayed.</li>
                         <li>[UPCOMING] Card Modifiers - You can add modifiers to your cards like an .text-bold{Infernal Foil}, which makes it resistant to fire. Coming soon.</li>
                     </ul>
                     <h3>What Else?</h3>

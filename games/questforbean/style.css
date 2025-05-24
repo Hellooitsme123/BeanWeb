@@ -42,9 +42,9 @@ body,html {
     0 -0.07em black;*/
     -webkit-background-clip: text !important;
     -webkit-text-fill-color: transparent;
-    background: linear-gradient(rgb(0, 0, 0),rgb(0, 0, 0));
+    background: linear-gradient(67deg,rgb(115, 0, 0),rgb(255, 5, 5));
     -webkit-text-stroke-width: 1px;
-    -webkit-text-stroke-color: rgb(255, 255, 255);
+    -webkit-text-stroke-color: rgb(255, 166, 166);
 }
 #background {
 }
@@ -223,10 +223,10 @@ background: #555;
     clip-path: ellipse(3rem 10% at right center) !important;
     opacity: 0.8;
 }
-#event-overlay {
+.modal-overlay {
     z-index: 2;
 }
-#event-wrapper {
+.modal-wrapper {
     background: rgb(246, 236, 228);
 }
 #special, #special2 {
@@ -273,6 +273,52 @@ background: #555;
 }
 .specialcard > h2 {
     font-size: 21px;
+}
+/* OFFERINGS */
+#offer-wrapper {
+    width: 100%;
+    height: 40%;
+    margin: 0;
+    padding-top:10px;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    z-index: 8;
+}
+#cardoffer {
+    padding: 0 !important;
+    width: 140px;
+    height: 160px;
+    border: 2px solid black;
+    border-radius: 10px;
+    text-align: center;
+    font-size: 12px;
+    transition: border 0.3s ease-in-out;
+    background-blend-mode: multiply;
+    position: relative;
+    margin-left: 2%;
+    margin-right: 2%;
+    box-sizing:content-box !important;
+}
+#cardoffer:hover {
+    border: 5px solid black;
+}
+#relicoffer {
+    padding: 0 !important;
+    width: 120px;
+    height: 120px;
+    text-align: center;
+    font-size: 8px;
+    border: 2px solid black;
+    border-radius: 10px;
+    transition: border 0.3s ease-in-out;
+    position: relative;
+    margin-left: 2%;
+    margin-right: 2%;
+
+}
+#relicoffer:hover {
+    border: 4px solid black;
 }
 @media (max-width: 1000px) {
     .modes, .startmods {
@@ -547,6 +593,21 @@ button:hover {
 .text-yell {
     color: rgb(187, 187, 0);
 }
+.text-positive {
+    color: rgb(38, 247, 55);
+    font-weight: bold;
+}
+.text-negative {
+    color: rgb(247, 38, 55);
+    font-weight: bold;
+}
+.text-quote {
+    padding: 2px;
+    background: lightgrey;
+    outline: 0.5px solid grey;
+    font-style: italic;
+
+}
 .text-woah {
     -webkit-background-clip: text !important;
     -webkit-text-fill-color: transparent;
@@ -684,4 +745,17 @@ button:hover {
     border: 2px solid black;
     margin-top: 0.5vh;
     margin-bottom: 0.5vh;
+}
+#magnify {
+    font-size: 24px;
+    border: none;
+}
+#card-overview-wrapper {
+    width:50%;
+    height:200px;
+    display:inline;
+}
+#card-info-wrapper{
+    width:50%;
+    display:inline;
 }

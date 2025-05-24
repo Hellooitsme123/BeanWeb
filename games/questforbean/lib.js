@@ -68,6 +68,36 @@ const lib = {
             value = fn(value);
         }
         return value;
+    },
+    enhUpgrade(original,change) {
+        if (typeof original == 'number') {
+            return original + change;
+        }
+        if (typeof original == 'object') {
+            let newValue = structuredClone(original);
+            for (let i = 0; i < original.length; i++) {
+                newValue[i] += change[i];
+            }
+            return newValue;
+        }
+    },
+    levelUp(card,levels) {
+        for (let i =0; i < levels; i++) {
+            let upgrading = card.upgrades;
+            if (upgrading[card.level+1] == undefined) {
+                break
+            }
+            let upgradeStats = card.upgrades[card.level+1];
+            card.level += 1;
+            for (let i = 0; i < upgradeStats.stats.length; i++) {
+                let upgStat = upgradeStats.stats[i];
+                let upgAttr = upgStat[0]; // get attributes and values
+                let upgValue = upgStat[1];
+                card[upgAttr] = lib.enhUpgrade(card[upgAttr],upgValue); // enhanced upgrade function for array compatibility
+            }
+        } 
+        return card;
+        
     }
 };
 const logPoints = {
