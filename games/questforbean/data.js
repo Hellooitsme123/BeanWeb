@@ -10,7 +10,7 @@ var enemies = {
         mana: 6,
         discards: 0,
         inventory: {},
-        simpledeck: ["spearman?level=1","turret"],
+        simpledeck: ["spearman","turret"],
         deck: {},
         mods: [],
         fightimg: "",
@@ -26,7 +26,7 @@ var enemies = {
         mana: 7,
         discards: 0,
         inventory: {},
-        simpledeck: ["etherealguardian?level=1","froster","jester"],
+        simpledeck: ["etherealguardian","froster","jester"],
         deck: {},
         mods: ["Strength{20}","QuickUse{1}"],
         fightimg: "goldenslimefight.png",
@@ -42,7 +42,7 @@ var enemies = {
         mana: 10,
         discards: 0,
         inventory: {},
-        simpledeck: ["phaser","reaper?level=1","bubblemancer"],
+        simpledeck: ["phaser","reaper","bubblemancer"],
         deck: {},
         mods: ["Strength{20}","Tank{-20}"],
         fightimg: "",
@@ -88,7 +88,7 @@ var enemies = {
         mana: 7,
         discards: 1,
         inventory: {},
-        simpledeck: ["flamethrower","healbubble","weakener","soulkeeper","etherealguardian"],
+        simpledeck: ["flamethrower?level=1","weakener?level=1","soulkeeper","etherealguardian"],
         deck: {},
         mods: ["FlameTouch{3,2}","QuickUse{1}"],
     },
@@ -103,7 +103,7 @@ var enemies = {
         mana: 0,
         discards: 1,
         inventory: {},
-        simpledeck: ["teslacoil","bandit","weakener","wizard","bus"],
+        simpledeck: ["teslacoil?level=1","bandit","weakener","wizard","bus"],
         deck: {},
         mods: ["Tank{20}","QuickUse{1}","SoulLantern{20}"],
     },
@@ -149,7 +149,7 @@ var enemies = {
         mana: 12,
         discards: 1,
         inventory: {},
-        simpledeck: ["solarprism","oblivion","wizard","spearman","managenerator","healbubble"],
+        simpledeck: ["solarprism?level=1","oblivion","wizard","spearman","managenerator","healbubble"],
         deck: {},
         mods: ["FlameTouch{2,1}"],
     },
@@ -212,7 +212,7 @@ var enemies = {
         inventory: {},
         simpledeck: ["bandit","wizard","spearman","flamethrower","ninja"],
         deck: {},
-        mods: ["Strength{250}","QuickUse{-1}"],
+        mods: ["Strength{250}","QuickUse{-1}","Meteor{50}"],
     },
     "trafficlord": {
         name: "trafficlord",
@@ -227,7 +227,7 @@ var enemies = {
         inventory: {},
         simpledeck: ["bandit","wizard","spearman","flamethrower","ninja","managenerator","solarprism"],
         deck: {},
-        mods: ["Strength{50}","QuickUse{1}","Tank{20}","Healing{20}"],
+        mods: ["Strength{50}","QuickUse{1}","Tank{20}","Healing{20}","CardBlock{33}","CardDisable{10}"],
     },
     "cursedtome": {
         name: "cursedtome",
@@ -613,6 +613,16 @@ var locations = {
         proceedtext: "Explore more.",
         nextloc: "danceclubexit",
     },
+    "danceclubbasement": {
+        name: "danceclubbasement",
+        formal: "Deric's Dance Club Basement",
+        desc: "A hidden basement below all the dancing.",
+        loretext: "Seeing a suspicious dent in the floor, you decided to investigate. Upon opening the trapdoor, you found yourself in a desolate basement, away from all the life and partying. You could still hear the muffled yells and stomping, but your mind was more focused on the eeriness. || In front of you was a figure that almost blended with the wall, having a dark and dirty cloak, with their head bent down. They were not moving. || .text-bold{.text-large{???:}} Do you want to make a deal? || .text-bold{.text-large{You:}} What kind of deal? || .text-bold{.text-large{???:}} Give me a card of yours, and you will get an upgrade for 80% off.<hr> || Click the card you will sacrifice and then the card you will upgrade.",
+        special: "upgcard",
+        sacrificedcard: undefined,
+        proceedtext: "Explore more.",
+        nextloc: "danceclubexit",
+    },
     "danceclubroof": {
         name: "danceclubroof",
         formal: "Dance Club Roof",
@@ -804,6 +814,16 @@ var locations = {
         loretext: "Whew. Those bandits were pretty annoying. Maybe they had information on Lord K. Should've asked them before they fled. Whatever, it's fine. All that matters is that you're alive.",
         proceedtext: "Keep exploring the forest.",
         nextloc: "lordkarena",
+    },
+    "collectorshut": {
+        name: "collectorshut",
+        formal: "Collector's Hut",
+        desc: "A random hut in the middle of nowhere, featuring a light and a strange person inside.",
+        loretext: "You stumbled upon a strange, worn down hut. Without entering, you could see a yellow light and a faint sillhouette inside. Getting closer, you could make out slight outlines of presumably trinkets and treasure. || .text-bold{Collector:} Do you want to see my treasure? Come inside.",
+        special: "store|buycard|buyrelic",
+        relicloottable:"collector",
+        cardloottable: "collector",
+        proceedtext: "Continue",
     },
     "lostcave": {
         name: "lostcave",
@@ -1429,10 +1449,10 @@ var relics = {
         formal: "Rusty Watch",
         desc: "An old, rusty watch. You might need to dust it off.",
         advdesc: "This watch gives an awareness of time to its users. Right now, it is .EXEC{new Date().getHours()}:.EXEC{new Date().getMinutes()}.",
-        secretdesc: "Unlocks ...",
+        secretdesc: "On 3rd buy, skip 20% of opponent turns.",
         rarity: 2,
         attr: 0,
-        attrincrease: 0,
+        attrincrease: 1,
         attrtype: "int",
         img: "watch.png",
     },
@@ -1443,7 +1463,7 @@ var relics = {
         advdesc: "You may only gain knowledge once you have bought this jar. <br>.EXEC{if (Object.keys(p1.relics).includes('knowledgejar')) randItem(importantoknowledgo)}",
         rarity: 2,
         attr: 0,
-        attrincrease: 0,
+        attrincrease: 1,
         attrtype: "int",
         img: "knowledgejar.png",
     },
@@ -1520,7 +1540,7 @@ var relics = {
         name: "flamebean",
         formal: "Flame Bean",
         desc: "A  legendary bean can containing fiery powers.",
-        advdesc: "When attacking, have a 1/4 chance of dealing explosive damage, which deals 25 damage to 3 random opponent cards and applies extreme burn to them.",
+        advdesc: "All cards are immune to fire. When burning is inflicted on a card, reflect 2x of that to a random enemy card.",
         rarity: 5,
         attr: 0,
         attrincrease: 0,
@@ -1560,6 +1580,8 @@ var cards = {
         ammo: 1,
         maxammo: 1,
         manause: 1,
+        stat: 0,
+        statdesc: "Bleed level applied on attack.",
         cool: 1,
         coolleft: 0,
         desc:"A simple soldier with a spear, dealing high damage with quick movements.",
@@ -1573,7 +1595,13 @@ var cards = {
                 stats: [["atk",10],["hp",8]],
                 cost: 150,
                 desc: "Basic damage increase, throws one extra spear every 3 attacks.",
-            }
+            },
+            2: {
+                name: "Bleeding Spike",
+                stats: [["atk",10],["hp",8],["stat",1]],
+                cost: 150,
+                desc: "Applies Bleed I, causing enemies to lose 5% of their hp every second.",
+            },
         },
         subtypes: ["basic"],
     },
@@ -1585,6 +1613,8 @@ var cards = {
         ammo: 2,
         maxammo: 2,
         manause: 1.5,
+        stat: 1,
+        statdesc: "Mana Harness Amount",
         cool: 2,
         coolleft: 0,
         desc:"An apprentice in magic, shooting deadly arcane blasts while using low mana.",
@@ -1594,10 +1624,20 @@ var cards = {
         sound:"spell1.mp3",
         upgrades: {
             1: {
+                name: "Dazzle Ray",
                 stats: [["atk",10],["hp",15]],
                 cost: 240,
-                desc: "Dazes 3 cards, harnessing their mana.",
-            }
+                desc: "Dazes 3 cards, harnessing their mana when the cards are used.",
+            },
+            2: {
+                name: "Mana Mage",
+                stats: [["manause",-0.5],["stat",1]],
+                cost: 200,
+                desc: "Decreased mana usage, stronger mana harness.",
+            },
+            3: {
+                name: "Soul Power"
+            },
         },
         subtypes: ["magic"],
     },
@@ -1621,10 +1661,17 @@ var cards = {
         sound: "shoot.mp3",
         upgrades: {
             1: {
-                stats: [["atk",5],["hp",5]],
+                name: "Triple Shot",
+                stats: [["atk",5],["hp",5],["stat",2]],
                 cost: 220,
                 desc: "Adds 25% chance of triple shooting."
-            }
+            },
+            2: {
+                name: "MarcoTurret-500",
+                stats: [["maxammo",3],["stat",4],["cool",1]],
+                cost: 500,
+                desc: "More shots increase damage, but slower firing."
+            },
         },
         subtypes: ["mechanical","shoot"]
     },
@@ -1645,9 +1692,16 @@ var cards = {
         sound: "shoot.mp3",
         upgrades: {
             1: {
+                name: "Large Caliber",
                 stats: [["atk",25],["hp",10]],
-                cost: 250,
-                desc: ""
+                cost: 150,
+                desc: "Deals more damage per shot."
+            },
+            2: {
+                name: "Shrapnel Shot",
+                stats: [["atk",15],["hp",10]],
+                cost: 400,
+                desc: "Bullet splits into three and deals 1/5 extra damage to 3 random cards.",
             }
         },
         subtypes: ["shoot"],
@@ -1673,14 +1727,16 @@ var cards = {
         img: "soulkeeper.png",
         upgrades: {
             1: {
+                name: "Soul Harvest",
                 stats: [["atk",7],["hp",10],["stat",3]],
                 cost: 300,
                 desc: "Every 5 kills, go invisible for 2 turns, harnessing the life of your opponents. Take 10% of damage you deal as hp and atk.",
             },
             2: {
+                name: "Spirit Army",
                 stats: [["atk",3],["hp",10],["stat",2]],
                 cost: 300,
-                desc: "Ability: summon souls that deal 1/4th damage and have 1/4th hp.",
+                desc: "Ability: After 10 kills, every 4th kill summon a soul that deals 1/4th damage and has 1/4th hp.",
             }
         },
         subtypes: ["magic","soul"],
@@ -1720,6 +1776,7 @@ var cards = {
         img: "healorb.png",
         upgrades: {
             1: {
+                name: "Scrumptious Orbs",
                 stats: [["heal",20],["hp",10]],
                 cost: 100,
                 desc: "Add a random positive effect when applied.",
@@ -1760,6 +1817,7 @@ var cards = {
         sound: "bash.mp3",
         upgrades: {
             1: {
+                name: "Super Bash",
                 stats: [["atk",20],["hp",25],["cool",-1]],
                 cost: 320,
                 desc: "Unlocks super bash, with a 1/5 chance each attack to spend 3 more mana and deal damage to 3 opponents, stunning them.",
@@ -1784,10 +1842,17 @@ var cards = {
         sound: "burn.mp3",
         upgrades: {
             1: {
+                name: "Firebomb",
                 stats: [["atk",4],["hp",15]],
-                cost: 300,
+                cost: 250,
                 desc: "Throw a bomb every 5 turns that flamifies 4 different opponent cards.",
-            }
+            },
+            2: {
+                name: "Fahrenheit 452",
+                stats: [["atk",2],["hp",15]],
+                cost: 400,
+                desc: "Every repeated attack on the enemy increases their burn.",
+            },
         },
         subtypes: ["fire"],
     },
@@ -1810,9 +1875,10 @@ var cards = {
         img: "charger.png",
         upgrades: {
             1: {
+                name: "Shock Blast",
                 stats: [["atk",5],["hp",10],["stat",5]],
                 cost: 250,
-                desc: "20% chance of mana charge, zpaping all enemies draining 5 mana from opponent.",
+                desc: "20% chance of mana charge, zapping all enemies draining 5 mana from opponent.",
             }
         },
         subtypes: ["mana","electriciy"],
@@ -1834,6 +1900,7 @@ var cards = {
         sound: "laser.mp3",
         upgrades: {
             1: {
+                name: "Solar Beam",
                 stats: [["atk",5],["hp",10]],
                 cost: 280,
                 desc: "1/3 chance of solar beam that deals 50 damage (uses 2 mana however).",
@@ -1860,10 +1927,11 @@ var cards = {
         sound: "curse1.mp3",
         upgrades: {
             1: {
+                name: "Dullness",
                 stats: [["atk",7],["hp",10],["stat",5]],
                 cost: 320,
                 desc: "20% chance of sending a weakness wave, stealing all enemies' attack.",
-            }
+            },
         },
         subtypes: ["magic"],
     },
@@ -1883,6 +1951,7 @@ var cards = {
         obtainable: false,
         upgrades: {
             1: {
+                name: "Larger Crates",
                 stats: [["hp",30],["stat",5]],
                 cost: 250,
                 desc: "Gives 50% more ammo",
@@ -1897,6 +1966,7 @@ var cards = {
         cool: 0,
         coolleft: 0,
         stat: 50,
+        statdesc: "Damage Multiplier",
         statincrease: 10,
         desc:"A strong potion that boosts an ally's attack by 50%.",
         funnyname: "ATTACK POTIONORIONIO",
@@ -1904,6 +1974,7 @@ var cards = {
         img: "atkpotion.png",
         upgrades: {
             1: {
+                name: "Rage Vial",
                 stats: [["hp",10],["stat",25]],
                 cost: 150,
                 desc: "Damage multiplier goes from x1.5 to x1.75",
@@ -2659,6 +2730,24 @@ var modifiers = {
         desc: "Healing cards have increased % healing power.",
         img: "GreenPotion.jpg",
     },
+    "cardblock": {
+        formal: "Card Block",
+        name: "cardblock",
+        desc: "Has a chance to increase cool down of cards.",
+        img: "",
+    },
+    "carddisable": {
+        formal: "Card Disable",
+        name: "carddisable",
+        desc: "Has a chance to remove card from fight deck.",
+        img: "",
+    },
+    "meteor": {
+        formal: "Meteor",
+        name: "meteor",
+        desc: "The meteor deals damage directly to the player every few turns.",
+        img: "",
+    }
 };
 var relicLootTable = {
     emberring: 1,
@@ -2715,7 +2804,7 @@ var relicCosts = {
 };
 // in process of implementation
 var relicLootTables = {
-    "standard": {
+    "standard": { // excluded: frostyhorn
         emberring: 1,
         grandfatheroak: 2,
         lifecapsule: 1,
@@ -2728,21 +2817,18 @@ var relicLootTables = {
         gamblersdice: 2,
         soullantern: 2,
         hammerhammer: 1,
-        frostyhorn: 2,
-        quincyspillar: 1,
         orbmix: 1,
         morningglory: 1,
         blueprint: 3,
         engineerswrench: 3,
         watch: 2,
         knowledgejar: 2,
-        quincychainsaw: 3,
         redstarstaff: 4,
         beamturret: 3,
-        flamebean: 5,
-        lightningbean: 5,
+        flamebean: 7,
+        lightningbean: 7,
     },
-    "tallmart": {
+    "tallmart": { // excluded: frostyhorn
         emberring: 1,
         grandfatheroak: 2,
         lifecapsule: 1,
@@ -2755,7 +2841,6 @@ var relicLootTables = {
         gamblersdice: 2,
         soullantern: 2,
         hammerhammer: 1,
-        frostyhorn: 2,
         quincyspillar: 1,
         orbmix: 1,
         morningglory: 1,
@@ -2766,9 +2851,14 @@ var relicLootTables = {
         quincychainsaw: 3,
         redstarstaff: 4,
         beamturret: 3,
-        flamebean: 5,
-        lightningbean: 5,
-    }
+        phasershot: 5,
+        flamebean: 10,
+        lightningbean: 10,
+    },
+    "collector": {
+        watch: 1,
+        knowledgejar: 1,
+    },
 }
 var cardLootTables = {
     "standard": {
@@ -2802,14 +2892,19 @@ var cardLootTables = {
         cannoneer: 8,
         bus: 4,
     },
+    "collector": {
+        bus: 10,
+        gold: 10,
+        clonebox: 10,
+    },
     "filo": {
-        // excluded: reaper, froster, oblivion, bus, clonebox, drawback, flamethrower, jester, healbubble, wizard
+        // excluded: reaper, froster, oblivion, bus, clonebox, drawback, jester, healbubble, wizard
         spearman: 4,
         turret: 6,
         sniper: 3,
         soulkeeper: 4,
         healorb: 8,
-        juggernaut: 8,
+        juggernaut: 5,
         bubblemancer: 6,
         solarprism: 4,
         weakener: 6,
@@ -2820,6 +2915,7 @@ var cardLootTables = {
         energycapsule: 4,
         dysonsphere: 8,
         etherealguardian: 8,
+        flamethrower: 8,
         cultist: 8,
         ninja: 7,
         armageddon: 6,

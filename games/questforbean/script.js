@@ -123,7 +123,7 @@ randKey(cards)[??WHERE@return.obtainable!=false~~];
 
 
 */
-var importantoknowledgo = ["The select mode allows you to do more strategic moves.","High attack is not always the best.","Solar Prism and Supply Crate is a good way to evade mana use.","Try to get more cards of your type, they synergize.", "Energy capsule gives charger multiplied damage.","Golden Shovel + Greg's Box = Infinite Money?","Get more cards. 1 or 2 will not suffice.","CONSUME"];
+var importantoknowledgo = ["The select mode allows you to do more strategic moves.","High attack is not always the best.","Solar Prism and Supply Crate is a good way to evade mana use.","Try to get more cards of your type, they synergize.", "Energy capsule gives charger multiplied damage.","Golden Shovel + Greg's Box = Infinite Money?","Get more cards. 1 or 2 will not suffice.","CONSUME","The watch is not useless. Maybe buy it more.."];
 
 // GET SOUNDS
 
@@ -177,11 +177,12 @@ var locationplacing = {
             },
             stage2: {
                 name: "CityOutskirts",
-                set: ["roadtocoda3","danceclub","mysteryfight","mysteryloc","danceclub2","djneonvictory","mysteryloc2","danceclubexit","hotel","beanfactory","cheesedinovictory","unclerictorappear","mysteryloc3"],
+                set: ["roadtocoda3","danceclub","mysteryfight","mysteryloc","danceclub2","djneonvictory","danceclubbasement","mysteryloc2","mysteryloc3","danceclubexit","hotel","beanfactory","cheesedinovictory","unclerictorappear","mysteryloc4"],
                 mysteryfight: ["helloitsmeappear,helloitsmevictory","danceclubsign,fakecoinsvictory"],
                 mysteryloc: ["beancandispenser","neonrobot","slotmachine","none"],
                 mysteryloc2: ["danceclubroof","danceclubspill","none"],
-                mysteryloc3: ["securityguard","shippingsector"],
+                mysteryloc3: ["collectorshut","none"],
+                mysteryloc4: ["securityguard","shippingsector"],
             },
             stage3: {
                 name: "LordKSearch",
@@ -197,10 +198,11 @@ var locationplacing = {
         stages: {
             stage1: {
                 name: "CodaCity",
-                set: ["coda","hotel2","jamodarcards","jamodarcards2","mysteryloc","jamodarcards3","jamodarcardsroof","ancientlibrary","constructionsite","mysteryloc2","stoneguardianappear","stoneguardianvictory","pathnorth"],
+                set: ["coda","hotel2","jamodarcards","jamodarcards2","mysteryloc","jamodarcards3","jamodarcardsroof","mysteryloc2","ancientlibrary","constructionsite","mysteryloc3","stoneguardianappear","stoneguardianvictory","pathnorth"],
                 // stoneguardian could possibly be mysteryfight
                 mysteryloc: ["jamodarcardsvendingmachine","jamodarcardsdealer"],
-                mysteryloc2: ["bridge","maskedpeople"],
+                mysteryloc3: ["bridge","maskedpeople"],
+                mysteryloc2: ["collectorshut","none"],
             },
             stage1a: {
                 name: "AncientLibrary",
@@ -216,7 +218,7 @@ var locationplacing = {
         },
     }
 };
-var keywords = ["anyshops","mysteryloc","mysteryloc2","mysteryloc3","mysteryfight","mysteryfight2","testfight"];
+var keywords = ["anyshops","mysteryloc","mysteryloc2","mysteryloc3","mysteryloc4","mysteryfight","mysteryfight2","testfight"];
 var locationsarr = [];
 var curlocationindex = 0;
 var curlocationstage = 1;
@@ -465,8 +467,8 @@ for (let k =0; k < Object.keys(enemies).length; k++) {
 
 var reloading = false;
 var battletext = byId("battletext");
-var keynames = ["name","formal","atk","hp","manause","ammo","maxammo","cool","coolleft","type","heal","uses","obtainable","storedmana","sound","level"];
-var keyformal = ["Name","Formal Name","Attack","Health","Mana Use","Ammo","Maximum Default Ammo","Cooldown","Starting Cooldown","Card Type","Heal","Uses","Obtainable By Drawing Cards","Stored Mana","Sound","Level"];
+var keynames = ["name","formal","atk","hp","manause","ammo","maxammo","cool","coolleft","type","heal","uses","obtainable","storedmana","sound","level","stat","statdesc","cost"];
+var keyformal = ["Name","Formal Name","Attack","Health","Mana Use","Ammo","Maximum Default Ammo","Cooldown","Starting Cooldown","Card Type","Heal","Uses","Obtainable By Drawing Cards","Stored Mana","Sound","Level","Stat","Stat Description","Cost"];
 var openBtn = document.querySelectorAll(".open-modal-btn");
 var modal = document.querySelectorAll(".modal-overlay");
 var closeBtn = document.querySelectorAll(".close-modal-btn");
@@ -476,9 +478,9 @@ function openModal(e) {
     byId(e.target.getAttribute("data-target")).style.background = "rgba(0,0,0,0.7)";
     byId(e.target.getAttribute("data-target")).style.top = "0px";
     byId(e.target.getAttribute("data-target").replace("-overlay","-wrapper")).style.top = "50%";
-    if (backpackactive) {
+    /*if (backpackactive) {
         backpackToggle();
-    }
+    }*/
 }
 function closeModal(e, clickedOutside) {
     let target;
@@ -503,7 +505,12 @@ function openTab(evt, tabName) {
       tablinks[i].className = tablinks[i].className.replace(" active", "");
     }
     document.getElementById(tabName).style.display = "block";
-    evt.currentTarget.className += " active";
+    if (typeof evt == "string") {
+        byId(evt).className += " active";
+    } else {
+        evt.currentTarget.className += " active";
+    }
+    
 }
 function openMiniTab(evt, tabName) {
     var i, tabcontent, tablinks;
@@ -532,13 +539,11 @@ for (let i =0; i < openBtn.length; i++) {
 }
 function magnify(card) {
     magnify_on = false;
-    byId(byId("magnify").getAttribute("data-target")).classList.remove("hide");    
+    byId(byId("magnify").getAttribute("data-target")).classList.remove("hide");   
+    openTab("overview-tablink","overviewtab") 
     byId("magnify-overlay").style.background = "rgba(0,0,0,0.7)";
     byId("magnify-overlay").style.top = "0px";
     byId("magnify-wrapper").style.top = "50%";
-    if (backpackactive) {
-        backpackToggle();
-    }
     displayCard(byId("magnify-overview-display"),card);
     byId("magnify-name").innerHTML = card.formal;
     byId("magnify-desc").innerHTML = card.desc;
@@ -563,14 +568,20 @@ function magnify(card) {
         let upgradeDiv = document.createElement("div");
         let h2 = document.createElement("h2");
         let h4 = document.createElement("h4");
+        let h4a = document.createElement("h4");
         let p = document.createElement("p");
+        if (card.level > i) {
+            h2.style.color = "limegreen";
+            h2.style.fontWeight = "bolder";
+        }
         h2.innerHTML = `Level ${i+1}: ${tryAccess(cardUpgrade,"name","")}`;
         h4.innerHTML = cardUpgrade.desc;
+        h4a.innerHTML = "Cost: "+cardUpgrade.cost;
         for (let j = 0; j <cardUpgrade.stats.length;j++) {
             let stat = cardUpgrade.stats[j];
             let parity;
             if (stat[1] < 0) {
-                parity = "-"
+                parity = "";
             } else {
                 parity = "+";
             }
@@ -586,6 +597,7 @@ function magnify(card) {
         }
         upgradeDiv.appendChild(h2);
         upgradeDiv.appendChild(h4);
+        upgradeDiv.appendChild(h4a);
         upgradeDiv.appendChild(p);
         console.log(upgradeDiv.innerHTML);
         byId("magnify-upgrades-wrapper").appendChild(upgradeDiv);
@@ -618,6 +630,14 @@ for (let i =0; i < modal.length; i++) {
 function arrHas(arr,substr) {
     return arr.some(str => str.includes(substr));
 }
+/**
+ * Gets the first element in an array with the given substring
+ * @param {Array} arr 
+ * @param {String} substr 
+ * @returns {*} Item from array with given substring
+ * @example const arr = ["hello","jello","he","jeopardy"];
+ * arrFirst(arr,"je") -> returns "jello"
+ */
 function arrFirst(arr,substr) {
     return arr.filter(str => str.includes(substr))[0];
 }
@@ -767,7 +787,13 @@ function assign(object, source) {
 }
 function reload() {
     /*Reloads the cards. The draw arr is equivalent to the deck's length */
-    p1.drawarr = sample(Object.keys(p1.deck),Object.keys(p1.deck).length);
+    if (Object.keys(p1.relics).includes("lightningbean")) {
+        for (let i = 0; i < p1.inventoryorder.length; i++) {
+            let chosen = p1.inventory[p1.inventoryorder[i]];
+            chosen.coolleft = 0;
+        }
+    }
+    p1.drawarr = sample(Object.keys(p1.battledeck),Object.keys(p1.battledeck).length);
     // EXTRA ARR, may be added later and removed in hard mode
     //let extraarr = sample(Object.keys(p1.deck),Math.min(Math.round(Object.keys(p1.deck).length/2),1));
     //p1.drawarr.concat(extraarr);
@@ -813,10 +839,14 @@ function fullSD(element,successor,t1,t2) {
  * @param {*} s -> scale of effect
  * @param {*} t -> time left
  * @param {*} u -> upgrade or not
- * @param {*} us -> scale upgraded
- * @param {*} ut -> time upgraded
+ * @param {*} us -> scale upgrade amount
+ * @param {*} ut -> time upgrade amount
  * 
  * Adds given effect effectname{s,t} to card. If effect is already present, boolean u decides whether or not to scale onto the effect -> effectname{cs+1,ct+t}
+ * @example addEffect(card,"Poison",1,2,false)
+ * // Adds Poison{1,2} to the opponent card. If card already has, then do nothing.
+ * @example addEffect(card,"Burn",1,2,true)
+ * // Adds Burn{1,2} to card. If card already has, increase the stats by 1.
  */
 function addEffect(card,effectname,s,t,u=false,us=1,ut=1) {
     if (card.effects.some(str => str.includes(effectname)) == true && u == true) {
@@ -1049,7 +1079,11 @@ function displayRelic(elem,relic) {
     elem.className = "tooltipholder";
     let relictooltip = document.createElement("span");
     relictooltip.className = "tooltip";
-    let zehtml = `<h3 style="font-size:22px;margin:0;">${relic.formal}</h3><p style="font-size:14px;">${relic.desc}<br><br>${relic.advdesc}<br><br>Current relic stats: ${relic.attr.toString()}</p>`;
+    let secretdesc ="";
+    if (tryAccess(p1.relics,"knowledgejar",true)) {
+        secretdesc = `<br><i>${tryAccess(relic,"secretdesc")}</i>`;
+    }
+    let zehtml = `<h3 style="font-size:22px;margin:0;">${relic.formal}</h3><p style="font-size:14px;">${relic.desc}<br><br>${relic.advdesc}<br><br>Current relic stats: ${relic.attr.toString()}${secretdesc}</p>`;
     let tries = 0;
     do {
         console.log("YE");
@@ -1268,6 +1302,12 @@ function drawCard(player,specific = false,choice = null,otherargs = ["None"]) {
     if (otherargs.includes("addToDeck") || otherargs.includes("ignoreReload")) {
         key["cardmods"] = [];
     }
+    if (Array.isArray(otherargs) && otherargs.length > 0) {
+        if (arrHas(otherargs,"query")) {
+            key = changePropertiesByQuery(key,arrFirst(otherargs,"query"));
+        }   
+    }
+    
     playAudio("sounds/draw-card.mp3");
     if (otherargs[0] == "None") {
         if (player == "p1") {
@@ -1404,9 +1444,6 @@ function drawCard(player,specific = false,choice = null,otherargs = ["None"]) {
         }
         if (Object.hasOwn(key,"heal")) {
             key.heal *= 2;
-        }
-        if (Object.hasOwn(key,"stat")) {
-            key.stat += key.statincrease*2;
         }
     }
     key.hp = Math.round(key.hp);
@@ -1672,6 +1709,7 @@ function startBattle(enemy) {
     p1.mods = [];
     battletitle.innerHTML = "Fight Against "+zeopp.formal;
     p1.mana = p1.startingmana;
+    p1.battledeck = structuredClone(p1.deck);
     ultrawrapimg.src = "img/background/"+zeopp.fightimg;
     assign(Game.p2,zeopp);
     Game.p2.inventoryorder = [];
@@ -1733,7 +1771,7 @@ function endBattle(outcome) {
         //window.setTimeout(enterAdventureScreen,200);
         gametitle.innerHTML = "Victory!";
         playbtn.innerHTML = "CONTINUE";
-        openBtn[1].style.display = "none";
+        byId("changelog-btn").style.display = "none";
         let enemy = enemies[p2.name];
         p1.coins += Math.round((randNum(10,20)/10)*(enemy.health/10));
         p1.coins += enemy.coinsgive;
@@ -1764,7 +1802,7 @@ function endBattle(outcome) {
         //window.setTimeout(enterAdventureScreen,200);
         gametitle.innerHTML = "You Lose..";
         playbtn.innerHTML = "RESTART";
-        openBtn[1].style.display = "none";
+        byId("changelog-btn").style.display = "none";
     }
 }
 /*
@@ -1820,6 +1858,10 @@ function firstOpp(player) {
         return "Opp";
     }
 }
+/**
+ * Calculates all effects and events when a player's turn ends.
+ * @param {*} player The player that just ended their turn
+ */
 function turnover(player) {
     // argument 'player' means the player that just ended their turn
     turns++;
@@ -1851,13 +1893,16 @@ function turnover(player) {
         showEventText("DEATH MODE!","deathmode");
     }
     let plr;
+    let opp;
     if (player == "p1") {
         plr = p1;
+        opp = p2;
         reloading = false;
         battletext.innerHTML = "Next Card: "+p1.drawarr[p1.drawarrindex];
         p1.drawarr.push(randItem(Object.keys(p1.deck)));
     } else {
         plr = p2;
+        opp = p1;
     }
     plr.mana = stepRound(plr.mana,0.1);
     if (plr == p1) {
@@ -2019,13 +2064,14 @@ function turnover(player) {
     if (plr.name == "trafficlord" && randNum(1,3) == 3) {
         let card = randKey(p1.inventory);
         card.coolleft += 2;
-        showEventText("Card Blocked!","danger");
+        showEventText(`${card.formal} Blocked!`,"danger");
     }
-    if (plr.name == "trafficlord" && randNum(1,10) == 10 && Object.keys(p1.inventory).length > 1) {
-        let card = randKey(p1.deck);
-        let key = getKeyByValue(p1.deck,card);
-        delete p1.deck[key];
-        showEventText("Card DELETED!","danger");
+    if (plr.name == "trafficlord" && randNum(1,10) == 10 && Object.keys(p1.battledeck).length > 1) {
+        let card = randKey(p1.battledeck);
+        let key = getKeyByValue(p1.battledeck,card);
+        showEventText(`${card.formal} Disabled!`,"danger");
+        delete p1.battledeck[key];
+        
     }
     
     plr.discards = plr.maxdiscards;
@@ -2052,6 +2098,12 @@ function turnover(player) {
             console.log(effect);
             // [0] == scale; [1] == timeleft
             if (flatfx == "Burning") {
+                if (player == "p1" && Object.keys(p1.relics).includes("flamebean")) {
+                    let chosenReflect = opp.inventory[randItem(opp.inventoryorder)];
+                    addEffect(chosenReflect,"Burning",args[0],args[1]*2,true,args[0],args[1]*2);
+                    zecard.hp += Number(args[0])*8; // cancels out damage done
+                    args[1] = 0;
+                }
                 zecard.hp -= Number(args[0])*8;
                 if (zecard.cardmods.includes("infernalfoil")) {
                     zecard.hp += Number(args[0])*14;
@@ -2072,6 +2124,12 @@ function turnover(player) {
                         zecard.atk = 5;
                     }
                 }
+            }
+            if (flatfx == "Bleeding") {
+                // scale value = % of hp lost
+                zecard.hp -= Math.round(zecard.hp*(args[0]/100));
+                // added with the default 1, loses 5 scale per turn.
+                args[0] -= 4; 
             }
             if (flatfx == "Fear") {
                 zecard.coolleft += 1;
@@ -2160,7 +2218,10 @@ function turnover(player) {
         }
     }
     if (plr.name == "trafficlord" && randNum(1,6) == 6) {
-        p1.mana = 0;
+        p1.mana -= 5;
+        if (p1.mana < 0){
+            p1.mana = 0;
+        }
         p1.discards = 0;
         showEventText("MANA DRAIN!","mana");
     }
@@ -2423,6 +2484,11 @@ function oppChoice(start) {
 function oppTurn() {
     // states: spend, save, neutral
     turnover("p1");
+    if (tryAccess(p1.relics,"watch") != false && p1.relics.watch.attr >= 2 && randNum(1,5) == 5) {
+        playerTurn();
+        turnover("p2");
+        return;
+    }
     if (currentmode == "Custom" && customtype == "interest") {
         p1.mana -= 3;
         p1.mana *= 1.2;
@@ -2679,8 +2745,14 @@ function useCard(element = null,opp = null,index = null,select = null,selectp) {
                         let cm = cleanseModifier("Norm",arrFirst(user.mods,"SoulLantern"));
                         zeattacked.hp -= Math.round(card.atk*(cm/100));
                     }
-                    if (card.name == "spearman" && card.level >= 1 && randNum(1,3) == 1) { // deal 2x damage every 3 shots
-                        zeattacked.hp -= card.atk;
+                    if (card.name == "spearman") { 
+                        if (card.level >= 1 && randNum(1,3) == 1) {// deal 2x damage every 3 shots
+                            showEventText("Double Strike!","critical");
+                            zeattacked.hp -= card.atk;
+                        }
+                        if (card.level >= 2) {
+                            addEffect(zeattacked,"Bleeding",5,2); // bleeding 5% for 2 turns
+                        }
                     }
                     if (user == p1 && Object.hasOwn(p1.relics,"mammothtusk") && card.name == "spearman") {
                         let count = 0;
@@ -2823,28 +2895,51 @@ function useCard(element = null,opp = null,index = null,select = null,selectp) {
                             let chosencard = randKey(opponent.inventory);
                             chosencard.hp -= Math.round(card.atk/2); // deal half of attack
                             // harness 
-                            addEffect(chosencard,"Harness",1,3,true,0,2);
+                            addEffect(chosencard,"Harness",card.stat,3,true,0,2);
                         }
                     }
                     if (card.name == "weakener") {
                         // steals attack, if not takes 30 hp
                         let chosen;
-                        for (let i = 0; i < Object.keys(opponent.inventory).length; i++) {
-                            let tempchosen = opponent.inventory[Object.keys(opponent.inventory)[i]];
-                            if (tempchosen.type == "Attack") {
-                                chosen = tempchosen;
-                                break;
+                        weakenAmount = 1;
+                        if (card.level >= 1 && randNum(1,5) == 5) {
+                            showEventText("Weakening Wave!","critical");
+                            weakenAmount = 5;
+                        }
+                        let sampleInventory = structuredClone(opponent.inventory);
+                        for (let i = 0; i< weakenAmount; i++) {
+                            for (let j = 0; j < Object.keys(sampleInventory).length; j++) {
+                                let tempchosen = opponent.inventory[Object.keys(sampleInventory)[j]];
+                                if (tempchosen.type == "Attack" || tempchosen.type == "Heal") {
+                                    chosen = tempchosen;
+                                    delete sampleInventory[Object.keys(sampleInventory)[j]];
+                                    break;
+                                }
+                                
+                            }
+                            console.log(chosen);
+                            if (chosen == null) {
+                                opponent.health -= 30;
+                            } else {
+                                if (chosen.type == "Attack") {
+                                    console.log("chosenweaken",card.stat*2);
+                                    chosen.atk -= Math.round(card.stat*2);
+                                    card.atk += card.stat;
+                                    if (chosen.atk < 5) {
+                                        chosen.atk = 5;
+                                    }
+                                }
+                                if (chosen.type == "Heal") {
+                                    chosen.heal -= Math.round(card.stat*2);
+                                    card.atk += card.stat;
+                                    if (chosen.heal < 5) {
+                                        chosen.heal = 5;
+                                    }
+                                }
                             }
                         }
-                        if (chosen == null || chosen.type != "Attack") {
-                            opponent.health -= 30;
-                        } else {
-                            chosen.atk -= Math.round(card.stat*2);
-                            card.atk += card.stat;
-                            if (chosen.atk < 5) {
-                                chosen.atk = 5;
-                            }
-                        }
+                        
+                        
                         
                     }
                     if (card.name == "teslacoil") {
@@ -2945,9 +3040,12 @@ function useCard(element = null,opp = null,index = null,select = null,selectp) {
                             }
                         }
                     }
-                    if (card.name == "soulkeeper" && arrHas(card.effects,"Camouflaged")) {
-                        card.hp = Math.round(card.hp+(card.atk/10));
-                        card.atk = Math.round(card.atk+(card.atk/20));
+                    if (card.name == "soulkeeper") {
+                        if (arrHas(card.effects,"Camouflaged")) {
+                            card.hp = Math.round(card.hp+(card.atk/10));
+                            card.atk = Math.round(card.atk+(card.atk/20));
+                        }
+                        
                     }
                     if (card.name == "sniper") {
                         let pierce = 4;
@@ -2980,6 +3078,13 @@ function useCard(element = null,opp = null,index = null,select = null,selectp) {
                                 
                             } else {
                                 opponent.health -= Math.min(Math.round(damage/5),50);
+                            }
+                        }
+                        // shrapnel
+                        if (card.level >= 2) {
+                            for (let i = 0; i < 3; i++) {
+                                let chosen = randKey(opponent.inventory);
+                                chosen.hp -= card.atk/5;
                             }
                         }
                         for (let i = 0; i < Object.keys(opponent.inventory).length; i++) {
@@ -3124,6 +3229,9 @@ function useCard(element = null,opp = null,index = null,select = null,selectp) {
                                 addEffect(card,"Camouflaged",1,2);
 
                             }
+                            if (card.level >= 2 && card.killcount > 10 && (card.killcount-10) % 4 == 0) {
+                                drawCard(strmain,true,"soul",["ignoreReload"]);
+                            }
                         }
                         if (zeattacked.cardmods.includes("diamondfoil") && randNum(1,4) == 4){
                             // diamond foil cards have 1/4 chance of getting deleted after dying
@@ -3199,13 +3307,16 @@ function useCard(element = null,opp = null,index = null,select = null,selectp) {
                         }
                     }
                 } else {
-                    if (card.name != "bubblemancer") {
-                        zechosen.hp += card.heal;
-                        if (card.level >= 1 && card.name == "healorb") {
-                            let goodeffects = ["Bubbly","Phased","Strength","Regeneration"];
-                            addEffect(zechosen,randItem(goodeffects),5,2);
+                    if (!arrHas(card.effects,"Poison")) { // you cannot heal poison, only bubblemancer can fix
+                        if (card.name != "bubblemancer") {
+                            zechosen.hp += card.heal;
+                            if (card.level >= 1 && card.name == "healorb") {
+                                let goodeffects = ["Bubbly","Phased","Strength","Regeneration"];
+                                addEffect(zechosen,randItem(goodeffects),5,2);
+                            }
                         }
                     }
+                    
                     
                 }
                 
@@ -3713,7 +3824,11 @@ function enterAdventureScreen() {
             
         }
     } else {
-        proceedtxt.innerHTML = "Travel To Next Location: "+locations[curlocation.nextloc].formal;
+        let nextIndex = curlocationindex+1;
+        if (nextIndex == locationsarr.length) {
+            nextIndex = curlocationindex;
+        }
+        proceedtxt.innerHTML = "Travel To Next Location: "+locations[locationsarr[nextIndex]].formal;
         travelbtn.innerHTML = "Travel";
     }
     proceeddesc.innerHTML = curlocation.proceedtext;
@@ -4314,6 +4429,7 @@ function updateAdventureScreen() {
         element.addEventListener('click', function() {
             if (magnify_on) {
                 magnify(p1.deck[element.getAttribute("data-card")]);
+                return;
             }
             if (curspecial1 == "destroycard") {
                 if (Object.keys(p1.deck).length == 1){
@@ -4426,13 +4542,67 @@ function updateAdventureScreen() {
                             card.heal *= 1.1;
                             card.heal = Math.round(card.heal);
                         }
-                        if (Object.hasOwn(card,"stat")) {
-                            card.stat += card.statincrease/2; // increase stats 1/2 the standard amount
-                        }
                         invspecial.innerHTML = "CARD UPGRADED!";
                         updateAdventureScreen();
                     } else {
                         invspecial.innerHTML = "MAX CARD UPGRADES REACHED";
+                    }
+                }
+                if (curlocation.name == "danceclubbasement") {
+                    if (curspecial1 == "upgcard" && curlocation.sacrificedcard != undefined) {
+                        let card = p1.deck[element.getAttribute("data-card")];
+                        let upgradeStats = card.upgrades[card.level+1];
+                        if (card.upgrades[card.level+1] == undefined) {  // ensure card cannot be over upgraded
+                            invspecial.innerHTML = `CARD IS AT MAX LEVEL`;
+                            return false;
+                        }
+                        // subtract money by cost
+                        if (p1.coins < Math.round(upgradeStats.cost/5)) {
+                            invspecial.innerHTML = `INSUFFICIENT FUNDS, NEED ${Math.round(upgradeStats.cost/5)}`;
+                            return false;
+                        } else {
+                            p1.coins -= Math.round(upgradeStats.cost/5);
+                        }
+                        // prevent card from being upgraded again
+                        if (typeof speciallock == "boolean") {
+                            speciallock = 1;
+                        } else {
+                            speciallock++;
+                        }
+                        card.level += 1;
+                        for (let i = 0; i < upgradeStats.stats.length; i++) {
+                            let upgStat = upgradeStats.stats[i];
+                            let upgAttr = upgStat[0]; // get attributes and values
+                            let upgValue = upgStat[1];
+                            card[upgAttr] = lib.enhUpgrade(card[upgAttr],upgValue); // enhanced upgrade function for array compatibility
+                        }
+
+                        /*card.hp *= 1.2;
+                        card.hp = Math.round(card.hp);
+                        if (Object.hasOwn(card,"atk")) {
+                            card.atk *= 1.2;
+                            card.atk = Math.round(card.atk);
+                        }
+                        if (Object.hasOwn(card,"heal")) {
+                            card.heal *= 1.2;
+                            card.heal = Math.round(card.heal);
+                        }
+                        if (Object.hasOwn(card,"stat")) {
+                            card.stat += card.statincrease;
+                        }*/
+                        curlocation.sacrificedcard = undefined;
+                        invspecial.innerHTML = "CARD UPGRADED!";
+                        updateAdventureScreen();
+                    } else {
+                        if (Object.keys(p1.deck).length < 2) {
+                            invspecial.innerHTML = "Can't sacrifice last card!";
+                            return;
+                        }
+                        let card = p1.deck[element.getAttribute("data-card")];
+                        curlocation.sacrificedcard = card;
+                        delete p1.deck[element.getAttribute("data-card")];
+                        invspecial.innerHTML = "CARD HAS BEEN SACRIFICED";
+                        updateAdventureScreen();
                     }
                 }
                 if (curlocation.name == "jamodarcards2") {
@@ -4492,9 +4662,6 @@ function updateAdventureScreen() {
                     if (Object.hasOwn(card,"heal")) {
                         card.heal *= 1.5;
                         card.heal = Math.round(heal);
-                    }
-                    if (Object.hasOwn(card,"stat")) {
-                        card.stat += card.statincrease*2;
                     }
                 } else {
                     delete p1.deck[element.getAttribute("data-card")];
@@ -4636,6 +4803,9 @@ togglecardmode.addEventListener('click',function() {
 drawbtn.addEventListener('click',function(){
     if (p1.mana >= 3 && turn == 1 && Object.keys(p1.inventory).length < 10 && reloading == false) {
         p1.mana -= 3;
+        if (Object.keys(p1.relics).includes("lightningbean")) {
+            p1.mana += 1;
+        }
         if (currentmode == "Custom" && customtype == "industrial") {
             drawCard("p1",true,"factory");
         } else {
@@ -4931,9 +5101,6 @@ Array.from(document.getElementsByClassName("specialcard")).forEach(function(elem
                 if (Object.hasOwn(chosencard,"heal")) {
                     chosencard.heal *= 2;
                 }
-                if (Object.hasOwn(chosencard,"stat")) {
-                    chosencard.stat += chosencard.statincrease*4;
-                }
             }
             updateAdventureScreen();
         }
@@ -5023,12 +5190,12 @@ Array.from(document.getElementsByClassName("specialcard")).forEach(function(elem
             speciallock = true;
             let zeoption = element.getAttribute("id");
             if (zeoption == "sc2" && Object.keys(p1.deck).length > 2) {
-                let zecards = sample(Object.keys(p1.deck),2);
+                let zecards = sample(Object.keys(p1.deck),randNum(1,2));
                 for (let i =0; i < zecards.length; i++) {
                     delete p1.deck[zecards[i]];
                 }
             } else {
-                let zecards = sample(Object.keys(p1.deck),2);
+                let zecards = sample(Object.keys(p1.deck),randNum(1,2));
                 for (let i =0; i < zecards.length; i++) {
                     delete p1.deck[zecards[i]];
                 }
@@ -5205,7 +5372,7 @@ travelbtn.addEventListener("click", function() {
                 //window.setTimeout(enterAdventureScreen,200);
                 gametitle.innerHTML = "You Lose..";
                 playbtn.innerHTML = "RESTART";
-                openBtn[1].style.display = "none";
+                byId("changelog-btn").style.display = "none";
                 return false;
             } else {
                 p1.coins -= 600;
@@ -5214,7 +5381,7 @@ travelbtn.addEventListener("click", function() {
                 //window.setTimeout(enterAdventureScreen,200);
                 gametitle.innerHTML = "Coda At Last!";
                 playbtn.innerHTML = "CONTINUE";
-                openBtn[1].style.display = "none";
+                byId("changelog-btn").style.display = "none";
                 nextLoc();
                 
                 currenttext = "";
@@ -5491,21 +5658,18 @@ Array.from(document.getElementsByClassName("cheat-btn")).forEach(function(elemen
             update();
         }
         if (zecheat == 2) {
-            drawCard("p1",true,byId("cheat-input-2").value,["addToDeck"]);
-            updateAdventureScreen();
+            drawCard("p1",true,byId("cheat-input").value,["addToDeck"]);
         }
         if (zecheat == 3) {
-            p1.coins += 1000;
-            updateAdventureScreen();
+            p1.coins += Number(byId("cheat-input").value);
         }
         if (zecheat == 4) {
-            p1.coins += 1000;
-            p1.deck = {};
-            drawCard("p1",true,"celestialstriker",["addToDeck","doubleStats"]);
-            drawCard("p1",true,"celestialstriker",["addToDeck","doubleStats"]);
-            enterAdventureScreen();
-            updateAdventureScreen();
+            p1.deck[byId("cheat-input").value] = lib.levelUp(p1.deck[byId("cheat-input").value],1);
         }
+        if (zecheat == 5) {
+            addRelic("p1",byId("cheat-input").value);
+        }
+        updateAdventureScreen();
     });
 });
 dragElement(document.getElementById("cheat-menu"));

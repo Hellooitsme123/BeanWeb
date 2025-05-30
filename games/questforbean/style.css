@@ -33,8 +33,9 @@ body,html {
     position: absolute;
     bottom: 0px;
     left: 0px;
+    font-family:"Courier New";
     font-weight:bolder;
-    font-size: 25px; /*20*/
+    font-size: 30px; /*20*/
     /*text-shadow:
     0.07em 0 black,
     0 0.07em black,
@@ -42,9 +43,9 @@ body,html {
     0 -0.07em black;*/
     -webkit-background-clip: text !important;
     -webkit-text-fill-color: transparent;
-    background: linear-gradient(67deg,rgb(115, 0, 0),rgb(255, 5, 5));
-    -webkit-text-stroke-width: 1px;
-    -webkit-text-stroke-color: rgb(255, 166, 166);
+    background: linear-gradient(67deg,rgb(0, 52, 80),rgb(0, 238, 255));
+    -webkit-text-stroke-width: 0.5px;
+    -webkit-text-stroke-color: rgb(151, 255, 241);
 }
 #background {
 }
@@ -224,7 +225,7 @@ background: #555;
     opacity: 0.8;
 }
 .modal-overlay {
-    z-index: 2;
+    z-index: 100;
 }
 .modal-wrapper {
     background: rgb(246, 236, 228);
@@ -749,6 +750,9 @@ button:hover {
 #magnify {
     font-size: 24px;
     border: none;
+}
+#magnify-overlay {
+    z-index: 100!important;
 }
 #card-overview-wrapper {
     width:50%;

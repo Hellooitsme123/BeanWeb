@@ -198,10 +198,10 @@
                     </button>
                 </div>
                 <div class="tab">
-                    <button class="tablinks" onclick="openTab(event,'overviewtab')">
+                    <button id="overview-tablink" class="tablinks" onclick="openTab(event,'overviewtab')">
                         Overview
                     </button>
-                    <button class="tablinks" onclick="openTab(event,'upgradestab')">
+                    <button id="upgrades-tablink" class="tablinks" onclick="openTab(event,'upgradestab')">
                         Upgrades
                     </button>
                 </div>
@@ -273,7 +273,7 @@
         <div id="background">
             <h1 id="gametitle">QUEST FOR BEAN</h1>
             <div class="open-modal-btn-wrapper">
-                <button class="open-modal-btn" data-target="modal-overlay">
+                <button id="changelog-btn" class="open-modal-btn" data-target="modal-overlay">
                     Changelog
                 </button>
             </div>
@@ -282,7 +282,7 @@
             </button>
             
         </div>
-        <p id="versiontext">v0.3.3 - death</p>
+        <p id="versiontext">v0.3.3a - death2</p>
     </div>
     <div id="game" class="hide">
         <h2 id="battletitle">FIGHT AGAINST</h2>
@@ -370,7 +370,7 @@
                 </button>
             </div>
             <div id="changelogtab" class="tabcontent">
-                <h1>Update v0.3.3 - death</h1>
+                <h1>Update v0.3.3a - death2</h1>
                 <hr>
                 <div class="modal-content" id="modal-content">
                     <h3>Important Note</h3>
@@ -382,34 +382,37 @@
                     </ul>
                     <h3>Removed Cards</h3>
                     <ul>
-                        <li>.text-negative{Removed} clone box (from the loot tables)</li>
+                        <li>.text-negative{Removed} clone box & drawback (from the loot tables)</li>
                     </ul>
                     <h3>New relics</h3>
                     <ul>
-                        <li>Added .text-yell{legendary} bean cans (no effect as of yet, do not buy)</li>
+                        <li>Added .text-yell{legendary} bean cans</li>
                         <li>Added Greg's Box, Engineer's Wrench, Phaser Shot, and Golden Shovel</li>
                         <li>Reworked a few relics</li>
                     </ul>
                     <h3>New Locations</h3>
                     <ul>
                         <li>A few locations added and deleted.</li>
+                        <li>Dance Club Basement now allows you to sacrifice a card for a cheaper upgrade.</li>
+                        <li>Collector's Hut allows you to get rare items.</li>
                         <li>Stage 2, Coda, has been expanded. .text-blue{Filo has now been added.}</li>
                     </ul>
                     <h3>Other Additions:</h3>
                     <ul>
-                        <li>.text-xl{MAGNIFY}</li>
+                        <li>.text-large{.text-bold{MAGNIFY}}, you can now see a more detailed description of cards.</li>
+                        <li>Added .text-yell{Collector's Pool}, a less bloated loot table for rarer cards.</li>
                         <li>Relics now have proper loot tables and costs. Cards now have proper loot tables.</li>
                         <li>Most cards now have official upgrades instead of simple stat boosts</li>
                         <li>Subclasses like mechanical, magic, etc have been added.</li>
                         <li>Enemies can now have cards with custom attributes</li>
                         <li>Implemented a slightly more efficient way to give special effects to cards</li>
                         <li>Added (WIP) battle event text</li>
-                        <li>Added inventory order to fix my code (didn't work)</li>
+                        <li>Added inventory order</li>
                     </ul>
                     <h3>Balance Changes:</h3>
                     <ul>
                         <li>Cultist .text-negative{nerfed}, buff per cultist from .text-negative{+30 -> +8 damage}, no longer counts own cultist as extra damage.</li>
-                        <li>Juggernaut and Cannon .text-negative{nerfed, only attacks 1 card}. Supply crate and energy capsule buffed (find out for yourself)</li>
+                        <li>Juggernaut and Cannon .text-negative{nerfed, only attacks 1 card}. Supply crate and energy capsule buffed to create synergy</li>
                         <li>Buffed healing cards .text-positive{(+10 heal for healbubble and healorb)}</li>
                         <li>Nerfed some of the power events (e.g. Risk, Gain Power)</li>
                         <li>.text-negative{Nerfed} golden slime (hp .text-negative{300->240}), .text-positive{buffed} phaser wizard (hp .text-positive{70->90}), .text-positive{buffed} leafo (vines hp .text-positive{24->40})</li>
@@ -478,6 +481,8 @@
                         <li><i>x</i> AMMO/USES - How many times a card can be used before going on cooldown. Cards like turret and flamethrower can be used multiple times before going on cooldown, but it will cost quite a bit of mana to exhaust all of the ammo. Ammo regens by 1 each turn.</li>
                         <li><i>x</i> MU - Mana use. Mana is an important aspect of the game, as if you don't have enough, you can't use cards. You start with a base 10 starting mana each battle and 5 mana gained each turn. This card, spearman, only uses 1 mana. Other cards use 2, 3, 4, and more.</li>
                     </ul>
+                    <h3>Magnify</h3>
+                    <p>The magnifying glass 🔎 in your adventure inventory allows you to further see the information of cards. Click on it first, and then click on a card in your inventory. This will show tabs including all of the card's stats and all of the card's upgrades.</p>
                     <h3>Other Mechanics</h3>
                     <p>There are other mechanics used in a card battle, which are shown here:</p>
                     <img src="img/tutorial/othermechanics.png" width="400" height="245" style="border: 3px solid black;">
@@ -525,10 +530,11 @@
     <div id="cheat-menu" class="hide">
         <h2 id="cheat-menu-header">Cheat Menu</h1>
         <button class="cheat-btn" type="button" data-cheat="1">Kill Opponent</button>
-        <input type="text" class="cheat-input" id="cheat-input-2" placeholder="Enter card here..">
+        <input type="text" class="cheat-input" id="cheat-input" placeholder="Enter info here..">
         <button class="cheat-btn" type="button" data-cheat="2">Gain Card</button>
-        <button class="cheat-btn" type="button" data-cheat="3">+1000 coins</button>
-        <button class="cheat-btn" type="button" data-cheat="4">Starter Pack</button>
+        <button class="cheat-btn" type="button" data-cheat="3">Gain Coins</button>
+        <button class="cheat-btn" type="button" data-cheat="5">Gain Relic</button>
+        <button class="cheat-btn" type="button" data-cheat="4">Upgrade</button>
     </div>
     <audio id="sfx1">
         <source src="sounds/draw-card.mp3" type="audio/mpeg">
