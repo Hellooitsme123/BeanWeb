@@ -57,7 +57,9 @@ var statsdiv = byId("plrstats");
 var inventorydiv = byId("plrinventory");
 var inventorytable;
 var relicdiv = byId("plrrelics"); //
+var itemdiv = byId("plritems");
 var relictable;
+var itemtable;
 var speciallock = false;
 var speciallock2 = false;
 var curspecial1 = null;
@@ -71,6 +73,7 @@ var shopmult = 1;
 var shopmod = null;
 // new run vars
 var startmod;
+var unlocksLoaded = false;
 // CARD MODES
 var cardmode = 1; // 1 == use, 2 == select;
 var togglecardmode = byId("togglecardmode");
@@ -93,6 +96,7 @@ var Game = {
         discards: 1,
         inventory: {},
         inventoryorder: [],
+        items: {},
         deck: {},
         battledeck: {},
         relics: {},
@@ -155,6 +159,8 @@ var template = {
     deck: {},
     battledeck: {},
 }
+var loadedUnlocks = "";
+var currentUnlocks = "";
 function randItem(arr) {
     return arr[Math.floor(Math.random()*arr.length)];
 }
@@ -211,7 +217,7 @@ var locationplacing = {
             },
             stage2: {
                 name: "FiloFields",
-                set: ["pathnorth2","filofields","mysteryfight","mysteryloc","filoriver","filocenter"],
+                set: ["pathnorth2","filofields","mysteryfight","mysteryloc","filoriver","filocenter","filomeats","filodesert","redstarburstappear","redstarburstvictory"],
                 mysteryfight: ["grasslurker,grasslurkervictory"],
                 mysteryloc: ["strongwinds"]
             }
@@ -223,39 +229,43 @@ var locationsarr = [];
 var curlocationindex = 0;
 var curlocationstage = 1;
 var curlocationpart = 1;
+var curlocation;
 
-for (let i = 0; i < 100; i++) {
-    let zestage = locationplacing[curlocationstage].stages["stage"+curlocationpart];
-    let zeloc = zestage.set[i];
-    if (arrHas(keywords,zeloc)) {
-        console.log(zeloc,randItem(zestage[zeloc]));
-        zeloc = randItem(zestage[zeloc]);
-        
-    }
-    if (zeloc.includes(",")) {
-        zeloc = zeloc.split(",");
-        for (let j = 0; j < zeloc.length; j++) {
-            if (arrHas(keywords,zeloc[j])) {
-                zeloc[j] = randItem(zestage[zeloc[j]]);
-            }
+function createLocations() {
+    for (let i = 0; i < 100; i++) {
+        let zestage = locationplacing[curlocationstage].stages["stage"+curlocationpart];
+        let zeloc = zestage.set[i];
+        if (arrHas(keywords,zeloc)) {
+            console.log(zeloc,randItem(zestage[zeloc]));
+            zeloc = randItem(zestage[zeloc]);
+            
         }
-    } else {
-        
-    }
-    if (zeloc != "none") {
-        if (typeof zeloc == "string") {
-            locationsarr.push(zeloc);
+        if (zeloc.includes(",")) {
+            zeloc = zeloc.split(",");
+            for (let j = 0; j < zeloc.length; j++) {
+                if (arrHas(keywords,zeloc[j])) {
+                    zeloc[j] = randItem(zestage[zeloc[j]]);
+                }
+            }
         } else {
-            for (let k =0; k < zeloc.length; k++) {
-                locationsarr.push(zeloc[k]);
+            
+        }
+        if (zeloc != "none") {
+            if (typeof zeloc == "string") {
+                locationsarr.push(zeloc);
+            } else {
+                for (let k =0; k < zeloc.length; k++) {
+                    locationsarr.push(zeloc[k]);
+                }
             }
         }
+        if (zestage.set.length == i+1) {
+            break;
+        }
     }
-    if (zestage.set.length == i+1) {
-        break;
-    }
+    curlocation = locations[locationsarr[curlocationindex]];
 }
-var curlocation = locations[locationsarr[curlocationindex]];
+
 /**
  * logPoint(type,success)
  * @param {String} type type of log point
@@ -863,6 +873,15 @@ function addEffect(card,effectname,s,t,u=false,us=1,ut=1) {
     }
     return card;
 }
+function addMod(player,mod,attr) {
+    if (arrHas(Game[player].mods,mod)) {
+        let oldMod = arrFirst(Game[player].mods,mod);
+        Game[player].mods.remove(oldMod);
+        Game[player].mods.push(increaseModifier("Norm",oldMod,attr));
+    } else {
+        Game[player].mods.push(mod+"{"+attr.toString()+"}")
+    }
+}
 for (let i = 0; i < Object.keys(cards).length;i++) {
     let para = document.createElement("p");
     para.innerHTML = "<h3>"+cards[Object.keys(cards)[i]].formal+":</h3><p>"+cards[Object.keys(cards)[i]].desc+"</p><h4>Attributes</h4>";
@@ -994,9 +1013,20 @@ function displayCard(elem,card) {
             background-image:url("img/cards/solarprism.png");
             background-size: 140px 160px;
         }*/
+        elem.style.position = "relative";
+        let imgwrapper = document.createElement("img");
+        elem.appendChild(imgwrapper);
+        imgwrapper.style.position = "absolute";
+        imgwrapper.style.top = "0";
+        imgwrapper.style.left = "0";
+        imgwrapper.style.width = "140px";
+        imgwrapper.style.height = "160px";
+        imgwrapper.style.zIndex = "-100";
+        imgwrapper.style.opacity = "0.8";
+        imgwrapper.src = `img/cards/${tryAccess(card,"img",card.name).replace('.png','')}.png`;
         let tempimg;
         if (card.img != "") {
-            tempimg = "url(img/cards/"+card.name+".png)";  
+            //tempimg = "url(img/cards/"+card.name+".png)";  
             elem.style.backgroundSize = "140px 160px";
             if (card.name == "oblivion" && card.manause == 0.5 && card.cool == 1) {
                 tempimg = "url('img/cards/enragedoblivion.png')";
@@ -1174,12 +1204,50 @@ function checkDead() {
         
     }
 }
-
+/**
+ * 
+ * @param {Object} player 
+ * @param {String} relic 
+ * @param {*} changes 
+ */
 function addRelic(player,relic,changes=null) {
     Game[player].relics[relic] = structuredClone(relics[relic]);
     if (changes) {
         Game[player].relics[relic].attr = changes;
     }
+}
+/**
+ * 
+ * @param {Object} player 
+ * @param {String} relic 
+ * @param {*} changes 
+ */
+function addItem(player,item,attr) {
+    if (tryAccess(Game[player].items,item) != false) {
+        if (attr) {
+            if (Array.isArray(attr) == false) {
+                Game[player].items[item].attr += attr;
+            } else {
+                for (let i = 0; i < attr.length; i++) {
+                    Game[player].items[item].attr[i] += attr[i];
+                }
+            }
+            
+        }
+    } else {
+        Game[player].items[item] = structuredClone(items[item]);
+        if (attr) {
+            if (Array.isArray(attr) == false) {
+                Game[player].items[item].attr += attr;
+            } else {
+                for (let i = 0; i < attr.length; i++) {
+                    Game[player].items[item].attr[i] += attr[i];
+                }
+            }
+            
+        }
+    }
+    
 }
 
 function drawCard(player,specific = false,choice = null,otherargs = ["None"]) {
@@ -1756,6 +1824,24 @@ function startBattle(enemy) {
         let relic = p1.relics["soullantern"];
         p1.mods.push("SoulLantern{"+relic.attr+"}");
     }
+    // ITEMS
+    for (let i = 0; i < Object.keys(p1.items).length; i++) {
+        let item = p1.items[Object.keys(p1.items)[i]];
+        if (item.attrname == "Battles Left") {
+            item.attr -= 1;
+            if (item.attr < 0) {
+                delete p1.items[Object.keys(p1.items)[i]];
+            }
+            if (item.name == "flaming") {
+                addMod("p1","FlameTouch",[2,2]);
+            }
+            if (item.name == "fullstomach") {
+                addMod("p1","Strength",20);
+                addMod("p1","QuickUse",1);
+            }
+        }
+    }
+    
     update();
 }
 function endBattle(outcome) {
@@ -1803,6 +1889,15 @@ function endBattle(outcome) {
         gametitle.innerHTML = "You Lose..";
         playbtn.innerHTML = "RESTART";
         byId("changelog-btn").style.display = "none";
+    }
+    // ITEMS
+    for (let i = 0; i < Object.keys(p1.items).length; i++) {
+        let item = p1.items[Object.keys(p1.items)[i]];
+        if (item.attrname == "Battles Left") {
+            if (item.attr <= 0) {
+                delete p1.items[Object.keys(p1.items)[i]];
+            }
+        }
     }
 }
 /*
@@ -2531,6 +2626,73 @@ function oppTurn() {
 }*/
 /**
  * 
+ * @param {Card} card The card that deals damage
+ * @param {Card} attacked The card that is attacked
+ * @param {Number} damage The damage dealt
+ * @param {"p1" | "p2"} stropp The player who was the victim
+ * @param {"p1" | "p2"} strmain The player who dealt the damage
+ */
+function damageCard(card,attacked,damage,stropp=null,strmain=null) {
+    let user = Game[strmain];
+    let opponent = Game[stropp];
+    if (card.sound != undefined) {
+        playAudio("sounds/"+card.sound);
+    } else {
+        playAudio("sounds/sword.mp3");
+    }
+    if (arrHas(card.effects,"Predicted")) {
+        attacked.hp += damage
+        card.hp -= Math.round(formateffect("Attributes",arrFirst(card.effects,"Predicted"))[0]*damage);
+    }
+    attacked.hp -= damage
+    if (attacked.hp <= 0) {
+        if (card.name == "soulkeeper") {
+            card.killcount += 1;
+            user.mana += 0.5;
+            user.mana = Number(user.mana.toFixed(1));
+            if (card.hp < 75+card.stat*5) {
+                card.hp += Math.round(card.stat*2.3); // 7
+            }
+            if (user.health < user.maxhealth-25) {
+                user.health += card.stat; // 3
+            }
+            if (card.atk < 55+card.stat*5) {
+                card.atk += Math.round(card.stat*1.3); // 4
+            }
+            if (card.killcount % 5 == 0 && card.level >= 1) {
+                addEffect(card,"Camouflaged",1,2);
+
+            }
+            if (card.level >= 2 && card.killcount > 10 && (card.killcount-10) % 4 == 0) {
+                drawCard(strmain,true,"soul",["ignoreReload"]);
+            }
+        }
+        if (attacked.cardmods.includes("diamondfoil") && randNum(1,4) == 4){
+            // diamond foil cards have 1/4 chance of getting deleted after dying
+            delete opponent.deck[attacked];
+        }
+        if (attacked.effects.some(str => str.includes("Guarded")) == false) {
+            delete opponent.inventory[attacked];
+            if (currentmode == "Custom" && customtype == "flagship" && strmain == "p2") {
+                opponent.health = -100;
+            }
+        } else {
+            let zeval = attacked.effects.filter(str => str.includes("Guarded"))[0];
+            let index = attacked.effects.indexOf(zeval);
+            attacked.effects.splice(index,1);
+            attacked.hp = 30;
+        }
+    } else {
+        if (user == p1 && Object.hasOwn(p1.relics,"morningglory") && turns == 0) {
+            p1.coins -= 15;
+            if (p1.coins < 0) {
+                p1.coins = 0;
+            }
+        }
+    }
+}
+/**
+ * 
  * @param {HTMLBodyElement} element element for card
  * @param {Boolean} opp whether or not user is opponent.
  * @param {Number} index index of card/element
@@ -2728,11 +2890,6 @@ function useCard(element = null,opp = null,index = null,select = null,selectp) {
                     // heal attacked if current card is confused
                     if (card.effects.some(str => str.includes("Confused")) == true) {
                         zeattacked.hp += card.atk*2;
-                    } else {
-                        playAudio("sounds/sword.mp3");
-                        if (card.sound != undefined) {
-                            playAudio("sounds/"+card.sound);
-                        }
                     }
                     if (user.mods.some(str => str.includes("FlameTouch"))) {
                         let cm = cleanseModifier("Norm",user.mods.filter(str => str.includes("FlameTouch"))[0]);
@@ -2789,7 +2946,8 @@ function useCard(element = null,opp = null,index = null,select = null,selectp) {
                             } else {
                                 chosencard = opponent.inventory[Object.keys(opponent.inventory)[i]];
                             }
-                            chosencard.hp -= Math.round(card.atk*attackMult); // deal attackmult% of damage
+                            damageCard(card,chosencard,Math.round(card.atk*attackMult));
+                            //chosencard.hp -= Math.round(card.atk*attackMult); // deal attackmult% of damage
                             if (arrHas(chosencard.effects,"Stunned") == false && superCannon) { // apply stun if super cannon
                                 chosencard.effects.push("Stunned{1,2}");
                             }
@@ -2819,36 +2977,43 @@ function useCard(element = null,opp = null,index = null,select = null,selectp) {
                         addEffect(card,"Poison",Math.round(zeattacked.poison/5),1,true,zeattacked.poison,2);
                         // worsen opponent's poison
                     }
+                    if (card.name == "solarprism") {
+                        let beamDamage = card.atk;
+                        if (card.level >= 1 && randNum(1,3) == 1) { // deal 25 more damage if it is a super beam
+                            beamDamage += 25;
+                            extraatk += 25;
+                        }
+                        opponent.health -= beamDamage;
+                    }
+                    if (card.name == "radiantfists") {
+                        addEffect(zeattacked,"Predicted",card.stat,1,true,1,1);
+                        // predicts opponent's attack
+                    }
                     if (card.cardmods.includes("infernalfoil") && arrHas(zeattacked.effects,"Burning") == false) {
                         if (randNum(1,5) == 5) {
                             extraatk += 25;
                             zeattacked.effects.push("Burning{3,1}");
                         }
                     }
+
                     
                     /* MAIN DAMAGE (deals damage to opponent themselves) */
 
                     predamagehp = zeattacked.hp;
                     preeffects = zeattacked.effects;
-                    zeattacked.hp -= card.atk+extraatk;
+                    damageCard(card,zeattacked,card.atk+extraatk,stropp,strmain);
+                    //zeattacked.hp -= card.atk+extraatk;
                     if (arrHas(zeattacked.effects,"Bubbly")) {
                         // heal for x% of the damage taken based off of bubbly effect scale 
                         zeattacked.hp += formateffect("Attributes",arrFirst(zeattacked.effects,"Bubbly"))[0]*(card.atk+extraatk)/100;
                     }
                     console.log(zeattacked);
                     
-                    if (card.name == "solarprism") {
-                        let beamDamage = card.atk;
-                        if (card.level >= 1 && randNum(1,3) == 1) { // deal 25 more damage if it is a super beam
-                            beamDamage += 25;
-                            zeattacked.hp -= 25;
-                        }
-                        opponent.health -= beamDamage;
-                    }
+                    
                     /* UNMAIN DAMAGE */
                     if (card.name == "turret" && card.level >= 1 && randNum(1,4) == 1) { // 25% chance to triple shot
-                        zeattacked.hp -= 2*card.atk;
-                        opponent.health -= 2*card.atk;
+                        window.setTimeout(damageCard,200,card,zeattacked,card.atk);
+                        window.setTimeout(damageCard,400,card,zeattacked,card.atk);
                         showEventText("Triple Shot!","critical");
                     }
                     if (card.name == "charger") {
@@ -3211,7 +3376,7 @@ function useCard(element = null,opp = null,index = null,select = null,selectp) {
                         zeattacked.hp = predamagehp;
                         zeattacked.effects = preeffects;
                     }
-                    if (zeattacked.hp <= 0) {
+                    /*if (zeattacked.hp <= 0) {
                         if (card.name == "soulkeeper") {
                             card.killcount += 1;
                             user.mana += 0.5;
@@ -3256,7 +3421,7 @@ function useCard(element = null,opp = null,index = null,select = null,selectp) {
                                 p1.coins = 0;
                             }
                         }
-                    }
+                    }*/
                     
                 }
                 if (extraatk > 0 && 1 + 1 == 3) {
@@ -3461,10 +3626,14 @@ function useCard(element = null,opp = null,index = null,select = null,selectp) {
                     }
                 }
                 if (card.name == "clonebox") {
-                    if (index != null && index == 0) {
+                    let cloneIndex = index;
+                    if (selected != null) {
+                        cloneIndex = findex;
+                    }
+                    if (cloneIndex == 0) {
                         drawCard(strmain,true,"oblivion",["ignoreReload"])
                     } else {
-                        drawCard(strmain,true,user.inventory[Object.keys(user.inventory)[0]].name,["ignoreReload"]);
+                        drawCard(strmain,true,user.inventory[user.inventoryorder[cloneIndex]],["ignoreReload","setcard"]);
                     }
                     
                     card.ammo -= 1;
@@ -3710,14 +3879,30 @@ function setStartMod(mod) {
         drawCard("p1",true,"spearman","addToDeck");
         drawCard("p1",true,"spearman","addToDeck");
     }
-    if (mod == "uncleman") {
-        drawCard("p1",true,"factory","addToDeck");
-        p1.maxhealth = 200;
-        p1.health = 200;
-        p1.maxdiscards = 2;
+    if (mod == "janjo") {
+        for (let i = 0; i < 2; i++) {
+            let chosen = lib.weight(cardLootTables.standard);
+            drawCard("p1",true,chosen,"addToDeck");
+        }
+        let chosenRelic = lib.weight(relicLootTables.standard);
+        addRelic("p1",chosenRelic);
+        p1.maxhealth = 100;
+        p1.health = 100;
+        p1.maxdiscards = 1;
         p1.coins = 100;
-        p1.discards = 2;
-        p1.managain = 4;
+        p1.discards = 1;
+        p1.managain = 4.5;
+    }
+    if (mod == "greg") {
+        addRelic("p1","goldenshovel");
+        drawCard("p1",true,changePropertiesByQuery(structuredClone(cards.spearman),"hp=15"),["addToDeck","setcard"])
+        p1.maxhealth = 300;
+        p1.health = 300;
+        p1.maxdiscards = 1;
+        p1.coins = 0;
+        p1.discards = 1;
+        p1.managain = 5;
+
     }
     if (currentmode == "Hard") {
         p1.health *= 0.7;
@@ -3735,7 +3920,7 @@ function setStartMod(mod) {
     }
     p1.health = Math.round(p1.health);
     p1.maxhealth = Math.round(p1.maxhealth);
-    p1.managain = Math.round(p1.managain);
+    p1.managain = stepRound(p1.managain,0.1);
 }
 /*function transitionScreen(arg) {
     // SET TO DISPLAY; E.G. BOOL TRUE = DISPLAY; BOOL FALSE = DON'T DISPLAY;
@@ -4045,7 +4230,7 @@ function enterAdventureScreen() {
                     return false;
                 }
                 //let relic = randKey(relics,"subobj?obtainable=false"); // old random method
-                let relic = relics[lib.weight(relicLootTable,6)]; // new weighted method
+                let relic = relics[lib.weight(relicLootTables[tryAccess(curlocation,"relicloottable","standard")],6)]; // new weighted method
                 console.log(relic);
                 let chance = randNum(1,10);
                 element.innerHTML = `<h2>${relic.formal}</h2>`;
@@ -4189,7 +4374,7 @@ function enterAdventureScreen() {
             byId("sc1").innerHTML = "<h2>Mystery Box</h2><p>Lose 120 coda coins, but get a random card with DOUBLE stats.</p>";
         }
         
-        if (zelist.includes(curspecial1) || zelist.includes(curspecial2) && shopmod != "showopt") {
+        if (zelist.includes(curspecial1) || zelist.includes(curspecial2) && shopmod != "showopt" && !tryAccess(curlocation,"excludegui")) {
             specialdiv.style.display = "none";
             specialdiv2.style.display = "none";
             if (curlocation.name == "cosmeticshop") {
@@ -4221,13 +4406,19 @@ function enterAdventureScreen() {
             specialdiv.style.display = "block";
             byId("sc3").style.display = "none";
             byId("sc1").innerHTML = "<h2>Keep Going</h2><p>Push further, but lose a card and a few coins along the way.</p>";
-            byId("sc2").innerHTML = "<h2>Succumb to the Winds</h2><p>-50 max health.</p>";
+            byId("sc2").innerHTML = "<h2>Succumb to the Winds</h2><p>-30 max health.</p>";
         }
         if (curspecial1 == "filoriver") {
             specialdiv.style.display = "block";
             byId("sc2").style.display = "none";
             byId("sc3").style.display = "none";
             byId("sc1").innerHTML = "<h2>Pay the Subscription</h2><p>Pay.</p>";
+        }
+        if (curspecial1 == "filomeats") {
+            specialdiv.style.display = "block";
+            byId("sc1").innerHTML = "<h2 class='text-brown'>Crispy BBQ Steak</h2><p>+50 max health & full stomach for 5 battles. Costs 100 CC</p>";
+            byId("sc2").innerHTML = "<h2 class='text-yell'>Honey Chicken Wings</h2><p>+75 max health & full stomach for 3 battles. Costs 100 CC</p>";
+            byId("sc3").innerHTML = "<h2 class='text-red'>Flaming Reaper Chicken</h2><p>-50 max health & flaming for 10 battles. Costs 50 CC";
         }
         // IMPORTANT
         if (curspecial1 == "setpart" || curspecial1 == "setloc") {
@@ -4390,7 +4581,7 @@ function updateAdventureScreen() {
             
             let currelic = p1.relics[Object.keys(p1.relics)[(j*4)+i]];
             
-            relic.innerHTML = "<span class='title'>"+currelic.formal+":</span><br>"+currelic.rarity+" RARITY | ";
+            relic.innerHTML = "<span class='title'>"+currelic.formal+":</span><br>"+currelic.rarity+" RARITY";
             relic.innerHTML += "<br><hr><span class='desc'>"+currelic.desc+"</span>";
             let tempimg;
             if (currelic.img != "") {
@@ -4422,6 +4613,54 @@ function updateAdventureScreen() {
             } while (tries < 50 && zehtml.includes(".EXEC"));
             relictooltip.innerHTML = zehtml;
             relic.appendChild(relictooltip);
+            
+        }
+    }
+    // ITEMS
+    if (itemtable != null) {
+        itemtable.remove();
+    }
+    
+    itemtable = document.createElement('table');
+    itemtable.id = "itemstable";
+    itemdiv.appendChild(itemtable);
+    
+    let finaltr3;
+    for (let j = 0; j < Math.ceil(Object.keys(p1.items).length/4); j++) {
+        let zerow = document.createElement('tr');
+        if (j-Math.ceil(Object.keys(p1.items).length/4) == 1) {
+            finaltr3 = zerow;
+        }
+        itemtable.appendChild(zerow);
+        for (let i = 0; i < 4; i++) {
+            if ((j*4)+i > Object.keys(p1.items).length-1) {
+                break;
+            }
+            let item = document.createElement('td');
+            item.style.width = "120px";
+            item.style.height = "120px";
+            
+            let curitem = p1.items[Object.keys(p1.items)[(j*4)+i]];
+            
+            item.innerHTML = "<span class='title'>"+curitem.formal+":</span>";
+            item.innerHTML += "<br><hr><span class='desc'>"+curitem.desc+"</span>";
+            let tempimg;
+            if (curitem.img != "") {
+                tempimg = "url(img/items/"+curitem.name+".png)";  
+                item.style.backgroundSize = "120px 120px";
+            } else {
+                tempimg = "url()";
+                item.style.backgroundSize = "120px 120px";
+            }
+            item.style.backgroundSize = "120px 120px";
+            item.style.backgroundImage = tempimg;
+            item.className = "tooltipholder";
+            let itemtooltip = document.createElement("span");
+            itemtooltip.className = "tooltip";
+            zerow.appendChild(item);
+            let zehtml = `<h3 style="font-size:22px;margin:0;">${curitem.formal}</h3><p style="font-size:14px;">${curitem.desc}<br><br>${curitem.advdesc}<br><br>${curitem.attrname}: ${curitem.attr.toString()}</p>`;
+            itemtooltip.innerHTML = zehtml;
+            item.appendChild(itemtooltip);
             
         }
     }
@@ -4467,6 +4706,13 @@ function updateAdventureScreen() {
                     
                 }
                 invspecial.innerHTML = "CARD DESTROYED!";
+                if (card.name == "spearman") {
+                    unlockCounters.a1 += 1;
+                    if (unlockCounters == 3) {
+                        
+                        addUnlock("a1");
+                    }
+                }
                 delete p1.deck[element.getAttribute("data-card")];
                 updateAdventureScreen();
             }
@@ -4548,7 +4794,7 @@ function updateAdventureScreen() {
                         invspecial.innerHTML = "MAX CARD UPGRADES REACHED";
                     }
                 }
-                if (curlocation.name == "danceclubbasement") {
+                if (curlocation.name == "sacrificecard") {
                     if (curspecial1 == "upgcard" && curlocation.sacrificedcard != undefined) {
                         let card = p1.deck[element.getAttribute("data-card")];
                         let upgradeStats = card.upgrades[card.level+1];
@@ -4654,14 +4900,14 @@ function updateAdventureScreen() {
                 let chance = randNum(1,5);
                 if (chance < 3) {
                     card.hp *= 1.5;
-                    card.hp = Math.round(hp);
+                    card.hp = Math.round(card.hp);
                     if (Object.hasOwn(card,"atk")) {
                         card.atk *= 1.5;
-                        card.atk = Math.round(atk);
+                        card.atk = Math.round(card.atk);
                     }
                     if (Object.hasOwn(card,"heal")) {
                         card.heal *= 1.5;
-                        card.heal = Math.round(heal);
+                        card.heal = Math.round(card.heal);
                     }
                 } else {
                     delete p1.deck[element.getAttribute("data-card")];
@@ -4830,6 +5076,10 @@ unselectbtn.addEventListener('click',function() {
 })
 
 playbtn.addEventListener("click",function() {
+    if (unlocksLoaded == false) {
+        loadUnlocks();
+    }
+    
     if (sob == 2 && debouncetimer > 30) {
         if (playbtn.innerHTML == "RESTART") {
             curlocation = locations.home;
@@ -4857,6 +5107,7 @@ playbtn.addEventListener("click",function() {
         window.setTimeout(enterAdventureScreen,200);
     }
     if (sob == 1) {
+        createLocations();
         sob = 2;
         fullSD(menuscreen,modescreen,"none","flex");
     }
@@ -4877,11 +5128,12 @@ Array.from(document.getElementsByClassName("modes")).forEach(function(element) {
     });
 });
 Array.from(document.getElementsByClassName("startmods")).forEach(function(element) {
+    window.setTimeout(annotateText,1000,element.getElementsByTagName('p')[0]);
     element.addEventListener('click', function() {
         if (debouncetimer < 30) {
             return false;
         }
-        let startmod = element.getAttribute("id");
+        startmod = element.getAttribute("data-character");
         setStartMod(startmod);
         fullSD(startmodsscreen,adventurescreen,"none","block");
         window.setTimeout(enterAdventureScreen,200);
@@ -4969,7 +5221,7 @@ Array.from(document.getElementsByClassName("specialcard")).forEach(function(elem
         }
         if (sCondition("buycard")[0] == true && element.hasAttribute("data-card") && element.hasAttribute("data-cost")) {
             let card = element.getAttribute("data-card");
-            if (p1.coins >= Number(element.getAttribute("data-cost"))) {
+            if (p1.coins >= Number(element.getAttribute("data-cost")) || startmod == "greg") {
                 p1.coins -= Number(element.getAttribute("data-cost"));
             } else {
                 return false;
@@ -4980,7 +5232,7 @@ Array.from(document.getElementsByClassName("specialcard")).forEach(function(elem
         }
         if (sCondition("buyrelic")[0] == true && element.hasAttribute("data-relic") && element.hasAttribute("data-cost") && element.style.border == "2px solid black") {
             let relic = element.getAttribute("data-relic");
-            if (p1.coins >= Number(element.getAttribute("data-cost"))) {
+            if (p1.coins >= Number(element.getAttribute("data-cost")) || startmod == "greg") {
                 p1.coins -= Number(element.getAttribute("data-cost"));
             } else {
                 return false;
@@ -5285,6 +5537,29 @@ Array.from(document.getElementsByClassName("specialcard")).forEach(function(elem
                 p1.health -= 50;
             }
         }
+        if (sCondition("filomeats")[0]) {
+            let zeoption = element.getAttribute("id");
+            if (zeoption == "sc1" && p1.coins >= 100) {
+                // option 1: +50 max health, fs for 5 battles
+                p1.maxhealth += 50;
+                p1.health += 50;
+                addItem("p1","fullstomach",5);
+                p1.coins -= 100;
+            } else if (zeoption == "sc2" && p1.coins >= 100) {
+                // option 2: +75 max health, fs for 3 battles
+                p1.maxhealth += 75;
+                p1.health += 75;
+                addItem("p1","fullstomach",3);
+                p1.coins -= 100;
+            } else if (zeoption == "sc3" && p1.coins >= 50) {
+                // option 3: -50 max health, fs 
+                p1.maxhealth -= 50;
+                p1.health -= 50;
+                addItem("p1","flaming",10);
+                p1.coins -= 50;
+                checkDead();
+            }
+        }
         element.style.border = "7px solid black";
         if (con1) {
             currenttext += "<br>"+curlocation.actiontext;
@@ -5365,6 +5640,20 @@ travelbtn.addEventListener("click", function() {
             skipped = true;
         }
         if (curlocation.name == "trafficlordvictory") {
+            p1.coins -= 600;
+            fullSD(adventurescreen,menuscreen,"none","block");
+            sob = 2;
+            //window.setTimeout(enterAdventureScreen,200);
+            gametitle.innerHTML = "Coda At Last!";
+            playbtn.innerHTML = "CONTINUE";
+            byId("changelog-btn").style.display = "none";
+            nextLoc();
+            
+            currenttext = "";
+            textfinished = false;
+            currenttextnum = 0;
+            rerolls = 0;
+            return false;
             if (p1.coins < 600) {
                 resetBattleUI();
                 fullSD(adventurescreen,menuscreen,"none","block");
@@ -5373,21 +5662,6 @@ travelbtn.addEventListener("click", function() {
                 gametitle.innerHTML = "You Lose..";
                 playbtn.innerHTML = "RESTART";
                 byId("changelog-btn").style.display = "none";
-                return false;
-            } else {
-                p1.coins -= 600;
-                fullSD(adventurescreen,menuscreen,"none","block");
-                sob = 2;
-                //window.setTimeout(enterAdventureScreen,200);
-                gametitle.innerHTML = "Coda At Last!";
-                playbtn.innerHTML = "CONTINUE";
-                byId("changelog-btn").style.display = "none";
-                nextLoc();
-                
-                currenttext = "";
-                textfinished = false;
-                currenttextnum = 0;
-                rerolls = 0;
                 return false;
             }
         }
@@ -5750,3 +6024,50 @@ document.addEventListener('keydown', function(event) {
     lastkey = event.key;
 });
 // (2^3)-(1*3)
+function addUnlock(unlock) {
+    if (currentUnlocks.includes(unlock) == false && loadedUnlocks.includes(unlock) == false && Object.keys(unlocks).includes(unlock)) {
+        currentUnlocks += unlock+";";
+        byId("unlocks-txt").value = currentUnlocks;
+        
+        byId("unlock-notif").classList.remove("hide");
+        byId("unlock-notif").style.top = "50%";
+        byId("unlock-notif").style.background = "ghostwhite";
+        byId("unlock-title").innerHTML = unlocks[unlock].formal;
+        byId("unlock-desc").innerHTML = unlocks[unlock].desc;
+    }
+}
+function loadUnlocks() {
+    unlocksLoaded = true;
+    loadedUnlocks = byId("unlocks-txt").value;
+    handleUnlocks(loadedUnlocks);
+    currentUnlocks = loadedUnlocks;
+}
+byId("load-unlocks").addEventListener("click", () => {
+    loadUnlocks();
+    
+});
+byId("save-unlocks").addEventListener("click",() => {
+    let copyText = byId('unlocks-txt');
+    copyText.select();
+    copyText.setSelectionRange(0,99999);
+    navigator.clipboard.writeText(copyText.value);
+    alert("Copied text!");
+});
+
+function handleUnlocks(unlockText) {
+    let unlockArr = unlockText.split(";");
+    for (let i =0; i < unlockArr.length; i++) {
+        let unlock = unlockArr[i];
+        
+        if (Object.keys(unlocks).includes(unlock) == false) {
+            continue;
+        }
+    }
+    for (let i =0; i<Object.keys(unlocks).length;i++) {
+        let unlock = Object.keys(unlocks)[i];
+        if (unlockArr.includes(unlock)) {
+            continue
+        }
+        if (unlock == "a1") delete cardLootTables.standard.bloodstainedspear;
+    }
+}

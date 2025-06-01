@@ -91,6 +91,7 @@ body,html {
     text-align: left;
 }
 .modes > h2, .startmods > h2 {
+    font-weight:bolder;
     font-size: 24px;
     transition: 0.5s cubic-bezier(0.1, 0.2, 0.3, 0.4);
 }
@@ -425,7 +426,20 @@ hr {
     word-wrap:break-word;
     transition: 0.5s ease-in-out;
 }
-
+#unlock-notif {
+    z-index: 200;
+    height: 60%;
+    width: 30%;
+    background: ghostwhite;
+    padding-left: 5%;
+    position: fixed;
+    top: 2000px;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    overflow-y:scroll;
+    word-wrap:break-word;
+    transition: 0.5s ease-in-out;
+}
  
 /*.open-modal-btn-wrapper {
     yes
