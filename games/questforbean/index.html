@@ -77,7 +77,9 @@
     
                 </div>
             </div>
-            
+            <div id="special-wrapper">
+                
+            </div>
             <div id="special" class="hide">
                 <h2 id="specialtitle">SPECIAL</h2>
                 <div id="sc1" class="specialcard">
@@ -255,9 +257,9 @@
             <h2>Hard</h2>
             <p>You have 70% of standard health, while enemies have 20% more health. You gain 0% more mana, and all cards have 80% of their original stats.</p>
         </div>
-        <div id="cataclysmmode" class="modes">
+        <div id="cataclysmmode" class="modes hide">
             <h2>Cataclysm</h2>
-            <p>You have 1/5 of standard health, while enemies have 2x as much health. The enemy gains 140% more mana, and your card stats are decreased by 50%.</p>
+            <p>You have 1/5 of standard health, and your cards decay by 10% every turn. After a card dies, it can no longer be used in the fight. If all cards die, you lose.</p>
         </div><!---
         <div id="easymode">
             <h2>Easy</h2>
@@ -274,7 +276,7 @@
             <hr>
             <p>Start with 2 .text-bold{random} cards and a .text-bold{random} relic. 100 health and 4.5 mana gain.</p>
         </div>
-        <div class="startmods hide" data-character="greg">
+        <div class="startmods" data-character="greg">
             <h2 style="color:rgb(208, 113, 113);">Greg</h2>
             <hr>
             <p>You can go in debt in shops, start with golden shovel relic and a spearman with half health.</p>
@@ -298,7 +300,7 @@
                 PLAY
             </button>
         </div>
-        <p id="versiontext">v0.3.3a - death2</p>
+        <p id="versiontext">v0.4pre - the pivot</p>
     </div>
     <div id="game" class="hide">
         <h2 id="battletitle">FIGHT AGAINST</h2>
@@ -384,74 +386,72 @@
                 <button class="tablinks" onclick="openTab(event,'importanttab')">
                     Important Information
                 </button>
+                <button class="tablinks" onclick="openTab(event,'creditstab')">
+                    Credits
+                </button>
             </div>
             <div id="changelogtab" class="tabcontent">
-                <h1>Update v0.3.3b - death3</h1>
+                <h1>Update v0.4pre - the pivot (ALPHA)</h1>
                 <hr>
                 <div class="modal-content" id="modal-content">
                     <h3>Important Note</h3>
-                    <p>.text-quote{"If a card is not good, it should not exist."} - UncleMan</p>
+                    <p>.text-quote{"The pivot is being made."}</p>
                     <h3>Unlocks</h3>
                     <p>You can now unlock new items! At the end of a run, you will have to click the save unlocks button, which copies a bunch of text. Paste this somewhere safe. In the game's menu, there is a button at the bottom called load unlocks. This loads all the unlocks you have.</p>
                     <h3>Characters</h3>
-                    <p>.text-large{.text-bold{Janjo}} - New playable character! (not Eden from TBoI)</p>
+                    <p>.text-large{.text-bold{Greg}} - New locked character</p>
                     <h3>New Cards</h3>
                     <ul>
                         <li>.text-purp{??? See for yourself.}</li>
+                        <li>Added Rotten Glob (special mechanic not added yet)</li>
+                        <li>Added Clone Box, Reaper, and Froster back into the loot tables (limited to only collector events, however)</li>
                         <li>More art for cards</li>
                     </ul>
                     <h3>Removed Cards</h3>
                     <ul>
-                        <li>.text-negative{Removed} clone box & drawback (from the loot tables)</li>
+                        <li>None in this update</li>
                     </ul>
                     <h3>New relics</h3>
                     <ul>
-                        <li>Added .text-yell{legendary} bean cans</li>
+                        <li>Added divine shield</li>
                         <li>Reworked a few relics</li>
                     </ul>
                     <h3>New Locations</h3>
                     <ul>
                         <li>A few locations added and deleted.</li>
                         <li>Crimson Pedestal now allows you to sacrifice a card for a cheaper upgrade.</li>
-                        <li>Collector's Hut allows you to get rare items.</li>
-                        <li>Stage 2, Coda, has been expanded. .text-blue{Filo has now been added.}</li>
+                        <li>Stage 2 Part 2a, .text-purp{Loda's Fortress}, will begin construction.</li>
+                        <li>Stage 2, Coda, has been expanded. .text-blue{Filo has now been expanded.}</li>
                     </ul>
                     <h3>Other Additions:</h3>
                     <ul>
+                        <li>.text-bold{COMPLETELY Overhauled} special events, making them more customizable than previously. Change won't be noticed much on client side.</li>
                         <li>.text-large{.text-bold{MAGNIFY}}, you can now see a more detailed description of cards.</li>
                         <li>Added .text-yell{Collector's Pool}, a less bloated loot table for rarer cards.</li>
-                        <li>Relics now have proper loot tables and costs. Cards now have proper loot tables.</li>
-                        <li>Most cards now have official upgrades instead of simple stat boosts</li>
                         <li>Added formal damageCard function, making a cleaner way to handle card damage.</li>
                         <li>Added items, which there are not many of currently. May be used later on.</li>
-                        <li>Subclasses like mechanical, magic, etc have been added.</li>
-                        <li>Enemies can now have cards with custom attributes</li>
                         <li>Implemented a slightly more efficient way to give special effects to cards</li>
-                        <li>Added (WIP) battle event text</li>
-                        <li>Added inventory order</li>
                         <li>Cards now have genuine images instead of backgrounds (VERY BUGGY)</li>
                     </ul>
                     <h3>Balance Changes:</h3>
                     <ul>
+                        <li>Heal Orb & Heal Bubble .text-positive{buffed}. Heal Orb MU .text-positive{1 -> 0}. Heal Bubble MU .text-positive{1 -> 0.5}</li>
                         <li>Nerfed many of the lose card events (e.g. Dance Club Spill)</li>
-                        <li>Cultist .text-negative{nerfed}, buff per cultist from .text-negative{+30 -> +8 damage}, no longer counts own cultist as extra damage.</li>
-                        <li>Juggernaut and Cannon .text-negative{nerfed, only attacks 1 card}. Supply crate and energy capsule buffed to create synergy</li>
-                        <li>Buffed healing cards .text-positive{(+10 heal for healbubble and healorb)}</li>
+                        <li>Most card upgrade .text-positive{costs decreased by ~100 CC}</li>
                         <li>Nerfed some of the power events (e.g. Risk, Gain Power)</li>
-                        <li>.text-negative{Nerfed} golden slime (hp .text-negative{300->240}), .text-positive{buffed} phaser wizard (hp .text-positive{70->90}), .text-positive{buffed} leafo (vines hp .text-positive{24->40})</li>
                         <li>.text-positive{Buffed} Grass Lurker</li>
+                        <li>Removed unobtainable cards from appearing in fights</li>
                     </ul>
                     <h3>Bug Fixes:</h3>
                     <ul>
-                        <li>Fixed unobtainable cards appearing in shop</li>
-                        <li>Fixed heal bubbles & hot potatoes</li>
-                        <li>Fixed getting negative cash in some events</li>
-                        <li>Fixed dying but not dying</li>
-                        <li>Fixed using up reload when summoning cards</li>
-                        <li>Bus now works!</li>
+                        <li>Fixed unobtainable cards being accessed during card swap/gain events</li>
+                        <li>Fixed sacrifice card events</li>
+                        <li>Fixed Janjo getting rarest relics instead of commonest relics</li>
+                        <li>Fixed events where you are promised a card but not given one</li>
                     </ul>
                     <h3>Next Update?</h3>
-                    <p>Complete Adding Stage 2 Part 2</p>
+                    <p>Complete Adding Stage 2 Part 3</p>
+                    <p>Change effects & modifiers to objects</p>
                     <h3><s>Other Information:</s></h3>
                     <div class="tab tab-mini hide">
                         <button class="tablinks-mini tablinks" onclick="openMiniTab(event,'cardstab')">
@@ -546,6 +546,26 @@
                     <table><td id="card-test-display">Test Card</td></table>
                     <input id="card-test-display-input" type="text" placeholder="Enter Card Name Here...">
                     <button id="card-test-display-submit">Submit</button>
+                </div>
+            </div>
+            <div id="creditstab" class="tabcontent">
+                
+                <h1>Credits</h1>
+                <hr>
+                <div class="modal-content" id="modal-content4">
+                    <h3>Scripting</h3>
+                    <p>Helloitsme123</p>
+                    <h3>Sounds</h3>
+                    <p>Helloitsme123</p>
+                    <p>Free sounds from Pixabay</p>
+                    <h3>Art</h3>
+                    <p>Print("nerrom") - Cards like juggernaut, turret, spearman. Backgrounds like Coda & DJ Neon</p>
+                    <p>M - Gold card</p>
+                    <p>S - Cards like sniper, bloodstained spear, jester, robot</p>
+                    <p>Helloitsme123 - Cards like bubblemancer, froster. Backgrounds like Crimson Desert</p>
+                    <h3>Ideas</h3>
+                    <p>Helloitsme123 - Majority of features</p>
+                    <p>Xsnipe11, everyone else - A few ideas + feedback & bugtesting</p>
                 </div>
             </div>
         </div>

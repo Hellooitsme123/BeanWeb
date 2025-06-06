@@ -100,6 +100,43 @@ const lib = {
         
     }
 };
+const specialEvent = {
+    /** 
+     * Creates a wrapper for the special div, the base for all the options
+     * @param {String} name Name for the special, like speedingcar
+     */
+    createWrapper(name) {
+        let special = document.createElement("div");
+        special.classList.add("special");
+        special.setAttribute("data-special",name);
+        byId("special-wrapper").appendChild(special);
+        return special;
+    },
+    setTitle(title,elem) {
+        let h2 = document.createElement("h2");
+        h2.innerHTML = title
+        elem.appendChild(h2);
+    },
+    /**
+     * Adds an option to current special.
+     * @param {HTML} html The HTML that shows within the option
+     * @param {String} choice The choice data that is used for scripting
+     * @param {SpecialWrapper} elem Wrapper where the option gets added.
+     */
+    addOption(html,choice,special,elem) {
+        let option = document.createElement("div");
+        console.log(option);
+        option.classList.add("specialcard");
+        option.innerHTML = html;
+        option.setAttribute("data-choice",choice);
+        option.setAttribute("data-special",special);
+        option.addEventListener('click', () => {
+            handleSpecialCard(option);
+        });
+        elem.appendChild(option);
+        return option;
+    }
+} // variable to handle special events
 const logPoints = {
     "oppDraw": {
         console: {success:"oppDraw ran successfully",failure:"oppDraw failed"},

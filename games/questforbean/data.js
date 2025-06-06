@@ -313,7 +313,7 @@ var locations = {
         name: "home",
         formal: "Home",
         desc: "Your humble house. Where everything all starts.",
-        loretext: "A few days ago, UncleMan threatened to evict you, saying that you're a lazy couch potato that does nothing. Since becoming a homeless beggar is the last thing you want to do, you ask him for ways to stay in the house. || You: What can I do to stay here? || UncleMan: You have to earn your keep! I'll give you one simple task: Find the Bean Duplicator. If you can get that relic, then I'll give you lifelong permission to stay here. || A rare relic found only in the dangerous mountains, visible shaking started. You knew that protesting would do nothing, so, starting with only 20 coda coins and 2 spearmen, you began your journey to prevent yourself from getting evicted.",
+        loretext: "A few days ago, UncleMan threatened to evict you, saying that you're a lazy couch potato that does nothing. Since becoming a homeless beggar is the last thing you want to do, you ask him for ways to stay in the house. || You: What can I do to stay here? || UncleMan: You have to earn your keep! I'll give you one simple task: .text-yell{.text-bold{Find the Bean Duplicator.}} If you can get that relic, then I'll give you lifelong permission to stay here. || A rare relic found only in the .text-red{dangerous} mountains, visible shaking started. You knew that protesting would do nothing, so, starting with only .text-bold{20 coda coins and 2 spearmen}, you began your journey to prevent yourself from getting evicted.",
         proceedtext: "Start your journey by taking the road to Coda.",
         nextloc: "roadtocoda",
         locimg: "owarpcenter.png",
@@ -331,7 +331,7 @@ var locations = {
         name: "andreasappear",
         formal: "Road To Coda",
         desc: "The long path to Coda, one of the biggest cities in the world. There, you'll be able to stock up on cards to continue your journey.",
-        loretext: "On the road, a man comes up to you, noticing your cards. He says name is Andreas, and he offers to give you powerful cards if you can beat him, along with 30 coda coins. However, if you lose, you have to give him all of your cards. It seems sketchy, but some better cards would be very useful.",
+        loretext: "On the road, a man comes up to you, noticing your cards. He says name is Andreas, and he offers to give you powerful cards if you can beat him, along with .text-bold{30} coda coins. However, if you lose, you have to give him all of your cards. It seems sketchy, but some better cards would be very useful.",
         proceedtext: "Battle it out with Andreas for a chance of getting some special cards.",
         proceedspecial: "fight|andreas",
         nextloc: "andreasvictory",
@@ -343,10 +343,9 @@ var locations = {
         formal: "Road To Coda",
         desc: "Andreas defeated!",
         altdesc: "Too good to be true!",
-        loretext: "You win against Andreas, who enters a foul mood after losing. His want to scam you is clearly visible, but he reluctantly pulls out his card pack. You get to choose one of three cards: ",
+        loretext: "You win against Andreas, who enters a foul mood after losing. His want to scam you is clearly visible, but he reluctantly pulls out his card pack. You get to choose a card: ",
         alttext: "'Powerful' cards? That doesn't seem right. What if he's hogging them all for himself, and if he somehow loses, he'll just give out one of his weaker cards? You decline the suspicious offer.",
-        special: "gaincard",
-        cardloottable: "standard",
+        special: {"gaincard":{cardloottable:"standard",}},
         proceedtext: "Get back up and make your way to the center of Owarp, where the trading hubs reside.",
         nextloc: "owarpcenter",
         locimg: "roadtocoda.png",
@@ -366,7 +365,8 @@ var locations = {
         formal: "Road To Coda",
         desc: "Golden slime defeated!",
         loretext: "You saw the mushy blob melt into smaller globs, now fading away. Once it died away, it left behind traces of gold (approximately 50 coda coins), a large, golden shovel, and one card. Check your inventory for a new relic!",
-        special: "noshop|gaincard|gainrelic",
+        //special: "noshop|gaincard|gainrelic",
+        special: {"gaincard":{cardloottable:"standard",},"gainrelic":{relicgain:"goldenshovel"}},
         cardloottable: "standard",
         relicgain: "goldenshovel",
         proceedtext: "Continue and make your way to the center of Owarp, where the trading hubs reside.",
@@ -377,7 +377,7 @@ var locations = {
         name: "phaserwizardappear",
         formal: "Road To Coda",
         desc: "The long path to Coda, one of the biggest cities in the world. There, you'll be able to stock up on cards to continue your journey.",
-        loretext: "On the road, you saw a strange man in a hat. You couldn't make out his details, as he was moving very quickly. It seemed as if he was teleporting..||Wait.. Is he getting closer?||Oh no..",
+        loretext: "On the road, you saw a strange man in a hat. You couldn't make out his details, as he was moving very quickly. It seemed as if he was .text-bold{.text-purp{teleporting..}}||Wait.. Is he getting closer?||Oh no..",
         proceedtext: "Fight the phaser wizard.",
         proceedspecial: "fight|phaserwizard",
         nextloc: "phaserwizardvictory",
@@ -388,9 +388,8 @@ var locations = {
         formal: "Road To Coda",
         desc: "Phaser Wizard defeated!",
         loretext: "Phasing in and out, the mysterious wizard eventually disappeared. You picked up the card it left behind. You also found a strange, blurry bullet on the ground. What could it be?",
-        special: "noshop|gaincard|gainrelic",
-        cardloottable: "standard",
-        relicgain: "phasershot",
+        //special: "noshop|gaincard|gainrelic",
+        special: {"gaincard":{cardloottable:"standard"},"gainrelic":{relicgain:"phasershot"}},
         proceedtext: "Continue and make your way to the center of Owarp, where the trading hubs reside.",
         nextloc: "owarpcenter",
         locimg: "roadtocoda.png",
@@ -408,8 +407,11 @@ var locations = {
         name: "cosmeticshop",
         formal: "Cosmetic Shop",
         desc: "A relaxing store smothered with pink, aesthetic vibes that provide a variety of cosmetics, just happening to offer free card upgrades on Monday afternoons.",
-        loretext: "Walking down the road, you saw a pink, cottage store named 'Lavender's Cosmetic Shop'. Next to the entrance, you saw a sign that said that free card upgrades were offered on Monday afternoons. It just happened to be a Monday afternoon, so you decided it would be best to get a free card upgrade before fighting against others with possibly better decks in the tavern. || You entered the store, and all of a sudden your stress was gone. It was just too relaxing. You came in to the person at the cash register, and you began talking with her. || You: So, is it true that there are free card upgrades on Mondays? || Lavender: Yeah. Only the first 10 people get it though. Fortunately, you are one of the first 10 people here. || You: Cool! So, how do I get it? || Lavender: Just give me 2 cards, and I can slightly buff them. You can also get 1 card and 1 card upgrade instead. || Click a card to upgrade its stats by 10%, or choose a card to get for free. ",
-        special: "shop|choosecard|upgcard",
+        loretext: "Walking down the road, you saw a pink, cottage store named 'Lavender's Cosmetic Shop'. Next to the entrance, you saw a sign that said that free card upgrades were offered on Monday afternoons. It just happened to be a Monday afternoon, so you decided it would be best to get a free card upgrade before fighting against others with possibly better decks in the tavern. || You entered the store, and all of a sudden your stress was gone. It was just too relaxing. You came in to the person at the cash register, and you began talking with her. || You: So, is it true that there are free card upgrades on Mondays? || Lavender: Yeah. Only the first 10 people get it though. Fortunately, you are one of the first 10 people here. || You: Cool! So, how do I get it? || Lavender: Just give me .text-bold{2 cards}, and I can .text-positive{slightly buff} them. You can also get .text-bold{1 new card and 1 card upgrade} instead. || Click a card to upgrade its stats by .text-bold{10%}, or choose a card to get for .text-bold{free.}",
+        special:{
+            "choosecard": {cardloottable:"standard",cardgain:"",},
+            "upgcard": {},
+        },
         cardloottable: "standard",
         cardgain: "",
         excludegui: true,
@@ -465,9 +467,11 @@ var locations = {
         altdesc: "You decided to not take Janjo's proposal.",
         loretext: "In a miraculous turn of events, you defeated the tavern owner himself! Chatter bursted throughout the building, but you dashed out before any other challengers could appear. Now, with the amount of coins you have, there's no doubt you'll be able to purchase a few aids for your adventure.",
         alttext: "Too scared to take the deal, you decided that it'll be better to play it safe. You're worried about whether or not you'll have enough to purchase a sufficient amount of items for your journey, but you decide to go to Tallmart anyways.",
-        special: "gaincard",
-        cardloottable: "standard",
-        cardgain: "cool=0",
+        special: {"gaincard":{
+            cardgain: "flamethrower?cool=0;level=1",
+            rerolls: 0,
+        }},
+        
         proceedtext: "Leave the tavern.",
         nextloc: "tallmart",
     },
@@ -476,7 +480,7 @@ var locations = {
         formal: "Cloaked Human",
         desc: "A strange, cloaked human breathing heavily, leaving a chilly feeling in the air with each breath.",
         loretext: "You went about on your way. Eventually, an ominous person covered in ragged cloaks came up to you. The night mist grew, and it felt like everything around you disappeared || ???: Do you want power? Do you want to become the ruler of the world? || Why, yes! Wait.. no! No.. || ???: I can lead you to the highest of statuses. The small world can be in your controlling hands. || You: What? What's happening? || It calls to you. To YOU. || ???: All you have to do is tell me. Yes or no. If you don't want to, it'll be fine. || The world will finally be mine.. I'll be able to do whatever I want.. No! NO!! || What are your desires?",
-        special: "gainpower",
+        special: {"gainpower":{}},
         proceedtext: "Leave.",
         nextloc: "tallmart",
     },
@@ -485,7 +489,7 @@ var locations = {
         formal: "Speeding Car",
         desc: "They lurk along the roads.",
         loretext: "Hey, what's that strange, blue blip? || Why's it getting bigger? Is it going towards me? Is this my calling? || Wait.. what's that noise? || Hold up. .text-maxi{.text-bold{IT'S COMING FOR-}}",
-        special: "speedingcar",
+        special: {"speedingcar":{}},
         proceedtext: "Continue. That car was nothing.",
         nextloc: "tallmart",
         locimg: "speedingcar.png",
@@ -496,10 +500,8 @@ var locations = {
         desc: "A tall store that contains a wide range of items to buy, from food to nukes to cards.",
         loretext: "You step into the store, the faint, generic shopping music playing. Struggling to breathe the thick night air, tired from all of your traveling, you look at the aisles.",
         proceedtext: "Leave the store and continue your trek along the road.",
-        special: "store|buycard|buyrelic",
+        special: {buycard:{cardloottable: "standard",},buyrelic:{relicloottable: "standard",}},
         nextloc: "behindtallmart",
-        relicloottable: "standard",
-        cardloottable: "standard",
         locimg: "tallmart.png",
     },
     "suddenurge": {
@@ -507,9 +509,8 @@ var locations = {
         formal: "Tallmart",
         desc: "A tall store that contains a wide range of items to buy, from food to nukes to cards.",
         loretext: "After looking at the aisles and seeing what there was to buy, you felt something strange. It called to you. || ???: Come on, Quincy's asleep. Steal something. It's the perfect opportunity.. || You: No.. || Do you submit to the strange power?",
-        actiontext: "Quincy was still as a stone, sleeping on the chair. Wanting another upgrade, you decided to secretly take another, making as little sound as possible. You slowly tiptoed out.. until.. .text-woah{VRRRRRR!!!} Quincy was standing behind you, with a chainsaw at full power. You ran away as fast as possible dropping the stolen item and a few coda coins, with a few injuries. Maybe don't steal next time.",
         proceedtext: "Leave the store and continue your trek along the road.",
-        special: "suddenurge",
+        special: {"suddenurge":{actiontext: "Quincy was still as a stone, sleeping on the chair. Wanting another upgrade, you decided to secretly take another, making as little sound as possible. You slowly tiptoed out.. until.. .text-woah{VRRRRRR!!!} Quincy was standing behind you, with a chainsaw at full power. You ran away as fast as possible dropping the stolen item and a few coda coins, with a few injuries. Maybe don't steal next time.",}},
         nextloc: "behindtallmart",
         locimg: "tallmart.png",
     },
@@ -526,10 +527,9 @@ var locations = {
         name: "behindtallmart",
         formal: "Grimy Corner",
         desc: "A dirty, forgotten corner inhabited by the one and only Greg.",
-        loretext: "Having a few scraps left over from the tavern that you forgot to throw away, you decided to go to the back of Tallmart after finishing your order. Expecting to see a normal dumpster, you jumped back in surprise after a man came out of a cardboard box. He said his name was Greg, and, after seeing your cards, he offered you a deal of 15 coda coins for every card you give him. Do you accept?<br>Click a card in your inventory to delete it.",
+        loretext: "Having a few scraps left over from the tavern that you forgot to throw away, you decided to go to the back of Tallmart after finishing your order. Expecting to see a normal dumpster, you jumped back in surprise after a man came out of a cardboard box. He said his name was Greg, and, after seeing your cards, he offered you a deal of 15 coda coins for every card you give him. You can also donate if you want. .text-italic{.text-bold{Perhaps if you donate enough, Greg will award you.}} Do you accept?<br>Click a card in your inventory to delete it.",
         proceedtext: "Leave Greg's place and continue along the road.",
-        special: "destroycard",
-        specialmax: 2,
+        special: {"destroycard":{specialmax: 2,},donate:{count:0,}},
         nextloc: "roadtocoda3",
         locimg: "grimycorner.png",
     },
@@ -573,7 +573,7 @@ var locations = {
         desc: "A wild and frivolous club where people can vibe, shout, and dance in a vivid array of lights.",
         loretext: "You walked around the dance club, dazzled by the flashing floor tiles, which were changing colors every second. You gazed at the walls, accidentally bumping into people every so often. || It was really not fun being exposed to such loud noises and bright displays when what you really needed was sleep. After some time, you came to a sign on the wall that read, 'ARE YOU POOR? JUST GET RICH. - DJ NEON'. It was a rather wise quote, but quite useless. It is quite unfortunate that money is one of the largest impediments to fulfilling peoples' dreams these days. It is not easy to get rich. || Just as you were pondering about money and riches, you came across a miracle! It was a bunch of coda coins stacked on a table, worth ~100 coda coins if you estimated right. Do you take it?",
         proceedtext: "Leave.",
-        special: "fakecoins",
+        special: {"fight":{enemy:"fakecoins",h2:"Grab Coins",p:"Take the coins for monetary gain."}},
         nextloc: "fakecoinsvictory",
     },
     "fakecoinsvictory": {
@@ -590,7 +590,7 @@ var locations = {
         desc: "A wild and frivolous club where people can vibe, shout, and dance in a vivid array of lights.",
         loretext: "Eventually, you found a bean can dispenser, which can increase your health by 50 (also increases max health), but at the cost of 30 coda coins. Do you think it's worth it?",
         proceedtext: "Continue touring the dance club.",
-        special: "beancandispenser",
+        special: {"beancandispenser":{}},
         nextloc: "danceclub2",
     },
     "neonrobot": {
@@ -599,7 +599,7 @@ var locations = {
         desc: "A clanky, ol' robot full of neon lights and 1980s-esque design.",
         loretext: "Walking throughout the club, you stumbled upon a neon robot strolling around. || Robot: I. AM. RO. BOT! || You: A robot? || Robot: YES. I. AM. HEL. PER. || You: What do you do? || Robot: DO. YOU. WANT. A. DRINK? || You: Is it free? || Robot: NO. || You: Hmm.. Maybe I do need one. || Choose a drink. Or not.",
         proceedtext: "Continue touring the dance club.",
-        special: "drinkrobot",
+        special: {"drinkrobot":{}},
         nextloc: "danceclub2",
     },
     "slotmachine": {
@@ -608,7 +608,7 @@ var locations = {
         desc: "A blue slot machine with coins all over, attempting to attract dazzled people.",
         loretext: "After a few minutes of trying to navigate through the rainbow tiles, which time and time again left you lost in all of the changing lights, you found yourself in front of a slot machine. || It was like a slot machine that one would find in a casino, except it was all alone in a faint corner. Its slight blue and white paint looked rather dim in the midst of all of the lights, but it still attracted you. || It read: 'BEAN SLOT MACHINE - CHOOSE A CARD AND DEPOSIT 50 CODA COINS, 50/50 CHANCE OF GETTING YOUR CARD EATEN OR UPGRADED'. A massive lever was on the machine, giving off an aura that made you want to gamble. It's only 50 coda coins.. Is it worth the risk? || Do you want to gamble? Click a card in your inventory. May or may not get destroyed.",
         proceedtext: "Continue touring the dance club.",
-        special: "gamble",
+        special: {"gamble":{}},
         excludegui: true,
         nextloc: "danceclub2",
     },
@@ -635,7 +635,7 @@ var locations = {
         formal: "Deric's Dance Club Basement",
         desc: "A hidden basement below all the dancing.",
         loretext: "Seeing a suspicious dent in the floor, you decided to investigate. Upon opening the trapdoor, you found yourself in a desolate basement, away from all the life and partying. You could still hear the muffled yells and stomping, but your mind was more focused on the eeriness. || In front of you was a figure that almost blended with the wall, having a dark and dirty cloak, with their head bent down. They were not moving. || .text-bold{.text-large{???:}} Do you want to make a deal? || .text-bold{.text-large{You:}} What kind of deal? || .text-bold{.text-large{???:}} Give me a card of yours, and you will get an upgrade for 80% off.<hr> || Click the card you will sacrifice and then the card you will upgrade.",
-        special: "upgcard",
+        special: {"sacrificecard":{}},
         sacrificedcard: undefined,
         proceedtext: "Explore more.",
         nextloc: "danceclubexit",
@@ -654,7 +654,7 @@ var locations = {
         desc: "A wild and frivolous club where people can vibe, shout, and dance in a vivid array of lights.",
         loretext: "You walked away from DJ Neon, looking around the club to see if there was anything else. You were feeling quite happy about your victory, until.. .text-woah{SLIP!} You slipped on a puddle of spilled Coda Cola and fell, just narrowly missing a faceplant. You couldn't see well, and all of your cards had fallen out of your backpack. A crowd is slowly forming, so you need to think fast.",
         proceedtext: "Explore more.",
-        special: "danceclubspill",
+        special: {"danceclubspill":{}},
         nextloc: "danceclubexit",
         forceaction: true,
     },
@@ -664,8 +664,7 @@ var locations = {
         desc: "The dark, night streets give off an eerie vibe, with the echoes of the faint, flickering street lights bouncing off the ground.",
         loretext: "After exploring the dance club for quite some time, you decided it was best to leave. You slowly made your way out, jumping down the floaty blue elevator pads, swinging the glass doors open. You haven't slept in a while..",
         proceedtext: "Go to the hotel across the street to rest.",
-        special: "gaincard",
-        cardloottable: "standard",
+        special: {"gaincard":{cardloottable: "standard",}},
         cardgain: "",
         nextloc: "hotel",
     },
@@ -674,7 +673,7 @@ var locations = {
         formal: "Hotel",
         desc: "A hotel. Literally. It's name is just 'Hotel'. It's fine. All that matters is that the hotel is good.",
         loretext: "After making sure that there were no speeding cars, you crossed the road and entered the hotel. You can either buy a room for 50 coda coins for one night and heal 70 health, or sleep in the ULTRA-CHEAP beds for free, healing only 20 health. Do you want to save money, or choose the option that'll be the best for you?",
-        special: "rest",
+        special: {"rest":{}},
         proceedtext: "Wake up and continue your journey.", 
         nextloc: "beanfactory",
     },
@@ -692,6 +691,8 @@ var locations = {
         formal: "Bean Factory",
         desc: "One of the great Beanmelon Corp. factories that produces the food that is eaten by everyone around the world.",
         loretext: "After beating Cheese Dino, he gave you a relic. Check your inventory to see it. After that, you were let into the factory. He gave you access into the factory, where you remembered that you had to go through a long maze to get into it. It was pretty disorienting, but using small fragments of your memory, you managed to make your way through.",
+        special: {"gainrelic":{}},
+        relicgain: "redstarmedallion",
         proceedtext: "Look around.", 
         nextloc: "unclerictorappear",
     },
@@ -701,7 +702,7 @@ var locations = {
         desc: "One of the great Beanmelon Corp. factories that produces the food that is eaten by everyone around the world.",
         loretext: "Following a lot of walking, you met your uncle, Rictor, who was chilling on a plastic chair that looked like it was going to collapse unexpectedly. || Uncle Rictor: Yo, wassup nephew! How have you been doing? What did UncleMan say? || Nephew: Uhh.. He made me go on adventure to find the lost bean duplicator, saying that he'll kick me out if I don't find it. || Uncle Rictor: Oh, that seems bad. Hopefully you'll find it. Do you want some aid? I can upgrade your cards, it'll just cost 30 coda coins per card.|| Nephew: Sure! || Click one of your cards to increase their health by 20%, and their attack/heal by 20%.",
         proceedtext: "Continue exploring the factory.",
-        special: "upgcard", 
+        special: {"upgcard":{}}, 
         nextloc: "securityguard",
     },
     "securityguard": {
@@ -733,7 +734,7 @@ var locations = {
         formal: "Strange Altar",
         desc: "A road filled with old tire tracks from trucks and cars that traversed through here. Unfortunately, cars are quite expensive these days. ",
         loretext: "You left the factory, searching for Lord K. The road was silent as usual, the trees rustling as the loud wind blew. It was getting quite cold. || After some walking, you met a strange altar. Its strange, red aura. You could hear whispers. Must.. go.. closer.. || It was talking to you. Something was in your head. What did that mean? Something was off.. || ???: Are you willing to take a risk, young mortal? || You: Wh- what? What's happening || ???: I won't say this again. Are you prepared to lose everything? || You: No.. get me out of here!",
-        special: "risk",
+        special: {"risk":{}},
         proceedtext: "Leave the altar and continue your search.", 
         nextloc: "roadtocoda4",
     },
@@ -742,7 +743,7 @@ var locations = {
         formal: "UNCLE MAN STATUE",
         desc: "A large, stone statue depicting your own uncle. Hopefully you will achieve success as great as his one day.",
         loretext: "It had not been long sing you got back on the road. It'd been maybe 30 minutes or so, but now you'd need to stop again. You must admire your uncle and his achievements, as you were just at one of his factories an hour or so ago. You gaze at the statue, pondering about whether or not you will ever achieve a level of greatness equal to your uncle. || Will you? A question that even the greatest mathematicians can't solve. || Woosh. Woooosh. || What was that? It must be a sign. But what sign? Eventually, you saw it. There was something, a card on UncleMan's head. You'll have to climb quite a bit to get it. But is it really worth it? || Choose wisely.",
-        special: "unclemanstatue",
+        special: {"unclemanstatue":{}},
         proceedtext: "Leave the statue.", 
         nextloc: "roadtocoda4",
     },
@@ -751,7 +752,7 @@ var locations = {
         formal: "Strange Bean Can",
         desc: "A bean can, but strange. Different than normal..",
         loretext: "You were walking along the road when you started smelling smoke. It was coming from somewhere, you just couldn't tell what direction. You looked around, and saw tiny sparks of fire in the distance. Following more walking, you came to a bean can.. on fire. Should you take it?",
-        special: "flamebean",
+        special: {"flamebean":{}},
         proceedtext: "Leave.", 
         nextloc: "roadtocoda4",
     },
@@ -760,7 +761,7 @@ var locations = {
         formal: "Road To Coda",
         desc: "A road filled with old tire tracks from trucks and cars that traversed through here. Unfortunately, cars are quite expensive these days. ",
         loretext: "Surely Lord K can't be that hard to beat, right? He's just a giant green dude with a fake cape and a fake crown. It's probably made of bronze or something, with some special gold paint to make it look cool. With these cards, he'll be easily destroyed! Yeah, hopefully he's somewhere in these woods.. Wait, why does that tree feel familiar? || After some time you found an altar, with a sign saying: 'DISPOSE OF CARDS HERE'. What could it be? Click a card to destroy it.",
-        special: "destroycard",
+        special: {"destroycard":{}},
         specialmax: 2,
         proceedtext: "Continue searching for Lord K.", 
         nextloc: "forest1",
@@ -837,9 +838,7 @@ var locations = {
         formal: "Collector's Hut",
         desc: "A random hut in the middle of nowhere, featuring a light and a strange person inside.",
         loretext: "You stumbled upon a strange, worn down hut. Without entering, you could see a yellow light and a faint sillhouette inside. Getting closer, you could make out slight outlines of presumably trinkets and treasure. || .text-bold{Collector:} Do you want to see my treasure? Come inside.",
-        special: "store|buycard|buyrelic",
-        relicloottable:"collector",
-        cardloottable: "collector",
+        special: {"buycard":{cardloottable:"collector"},buyrelic:{relicloottable:"collector"}},
         proceedtext: "Continue",
     },
     "lostcave": {
@@ -873,7 +872,7 @@ var locations = {
         formal: "Road to Coda",
         desc: "A road. Too tired to finish description.",
         loretext: "Continuing along the road, you eventually made a hammock from leaves, and fell asleep. Waking up, you continued, not seeing a single person on the desolate, barren road. Why was no one here? Anyways, it's fine. There's not that much of the road to go. You came to a billboard that said, 'CODA - 53 MILES | FILO - 182 MILES | FEEBOLE - 270 MILES'. At least Coda's the closest of the three. || An hour or two later, you came upon a machine that said, '.text-bold{RANDOM STUFF BUY HERE}'. It seemed strange for such thing to be in the middle of the desolate woods, but you were fine with it anyways. What should you get?",
-        special: "shop|buycard|buyrelic", 
+        special: {"buycard":{},"buyrelic":{}}, 
         proceedtext: "Continue your journey.",
         nextloc: "roadtocoda6",
         locimg: "roadtocoda.png",
@@ -884,7 +883,7 @@ var locations = {
         desc: "A road.",
         loretext: "Hours passed as you slowly walked, your legs begging for mercy. Eventually, you came to a rest stop, which was a small wooden stand that offered a few items. || Shopowner: Going about on your way to Coda, huh? It's strange, not many people here this season. I usually get a lot of customers. Wasn't even able to stock up through some trading. Hopefully you'll buy one of the few items I have. || You: What are they? || Shopowner: Well, I'm offering a mystery card with DOUBLE stats for 120 coda coins and an energizer foil (makes card's starting cooldown 1 less) on a card for 150. On sale so people can buy them! Barely any business these past days.. I wonder why..", 
         proceedtext: "Continue your journey.",
-        special: "store|mystery|energizer",
+        special: {"mystery":{},"energizer":{}},
         nextloc: "trafficlordappear",
         locimg: "roadtocoda.png",
     },
@@ -894,7 +893,7 @@ var locations = {
         desc: "A road.",
         loretext: "You were walking down the road to Coda, bored and tired, when suddenly loud squawking appeared. A flurry of squawks and flaps left you stunned as a murder of crows started flying towards you. You didn't have enough time to think.. || Do something! .text-bold{Quick!} ", 
         proceedtext: "Continue your journey.",
-        special: "crowattack",
+        special: {"crowattack":{}},
         nextloc: "trafficlordappear",
         forceaction: true,
         locimg: "roadtocoda.png",
@@ -905,7 +904,7 @@ var locations = {
         desc: "A road.",
         loretext: ".text-italic{.text-bold{Buzz. Buzz.}} What's that strange noise? You tried going closer to it, seeing a slowly growing crowd of moving dots, like a wild hive of bees. Still curious, you continued to run closer to it. BZZ. BZZ. It was getting louder, now sounding like static noise. || Oh no! It turns out that the .text-purp{strange} crowd of dots was actually a card tornado, speeding towards you faster than ever. What will you do?", 
         proceedtext: "Continue your journey.",
-        special: "cardtornado",
+        special: {"cardtornado":{}},
         nextloc: "trafficlordappear",
         forceaction: true,
         locimg: "roadtocoda.png",
@@ -941,7 +940,7 @@ var locations = {
         formal: "Hotel",
         desc: "What many know as the largest city in the world, home to millions of people.",
         loretext: "Surprisingly, there weren't that many people at the hotel. It was a relatively calm day, so most people were probably working or doing their usual business. At the register, you were offered 2 choices, similar to those you got previously. You can book a room for 50 coda coins and gain 70 health, or get a free but low quality room, only healing 20 hp. What do you do?",
-        special: "rest",
+        special: {"rest":{}},
         proceedtext: "Sleep until the next day.",
         nextloc: "jamodarcards",
         locimg: "coda.png",
@@ -951,7 +950,7 @@ var locations = {
         formal: "Jamodar's Cards",
         desc: "The greatest hub for trading cards and upgrading them!",
         loretext: "A new day, a new thing to do! You woke up at 9am, tired and sleepy, but you decided to get out of bed anyways. You brushed your teeth, looked at your cards, and did all of the stuff that normal people do. After some time, you went downstairs and bought some food, making sure that you'll have a full stomach for the entire day. After eating, you walked to the building where cards were carded. || You opened the door and heard loud chattering, like Janjo's Tavern, except much more busy. Walking around the first floor, you saw lots of people talking and showing off their cool cards and whatnot. You made your way to a lonely machine with no one nearby, and looked at it closely. It had a big, yellow, neon sign that read, 'DUPLIC-O MACHINE: DUPLICATE A CARD HERE!' If you do, you'll get 150 coda coins. That's an amazing deal, right?",
-        special: "duplicatecard",
+        special: {"duplicatecard":{}},
         proceedtext: "Go up to the next floor.",
         nextloc: "jamodarcards2",
     },
@@ -960,7 +959,7 @@ var locations = {
         formal: "Jamodar's Cards",
         desc: "The greatest hub for trading cards and upgrading them!",
         loretext: "After exploring the first floor, you decided to go check out the second. Walking up the stairs, you were presented with a cool forge with many people. There was a massive, feebolum and steel anvil covered in flames at the center, with a ginormous hammer hammer on the side. Here, you can choose to either apply an upgrade to your card or an infernal foil, which: <br>1) Heals your card instead of damages it when given burn effect.<br>2)Has a 1/5 chance of burning opponent card, which deals 25 damage and applies level 5 burn.<br>Click the upgrade button and a card to upgrade it, or click the infernal button and a card to apply the foil. One infernal foil costs 300 coda coins.",
-        special: "showopt|upgcard|infernalfoil",
+        special: {"showopt":{},"upgcard":{},"infernalfoil":{}},
         proceedtext: "Go up to the next floor.",
         nextloc: "jamodarcards3",
     },
@@ -969,7 +968,7 @@ var locations = {
         formal: "Vending Machine",
         desc: "A bright, neon vending machine giving out random drinks.",
         loretext: "You were just about to go up to the next floor, when, out of the corner of your eye, you spotted a vending machine. 50 coda coins for a random drink. Is it worth it?",
-        special: "jamodarcardsvendingmachine",
+        special: {"jamodarcardsvendingmachine":{}},
         proceedtext: "Go up to the next floor.",
         nextloc: "jamodarcards3",
     },
@@ -978,7 +977,7 @@ var locations = {
         formal: "Jamodar's Cards",
         desc: "The greatest hub for trading cards and upgrading them!",
         loretext: "You walked around the building, where you spotted a table with a crowd around it. After some time, a few people left and you managed to talk with the guy at the table. || Dealer: Do you want to play a game? || You: What game? || Dealer: You can choose a number from 1-3. If you get it right, you get 100 coda coins. If you get it wrong, you lose 100 coda coins. || The odds are not in your favor.. But will luck be?",
-        special: "jamodarcardsdealer",
+        special: {"jamodarcardsdealer":{}},
         proceedtext: "Go up to the next floor.",
         nextloc: "jamodarcards3",
     },
@@ -987,7 +986,7 @@ var locations = {
         formal: "Jamodar's Cards",
         desc: "The greatest hub for trading cards and upgrading them!",
         loretext: "You finally got up to the third floor, where a large crowd was gathered around one specific guy: Jamodar. You couldn't really tell what was happening, but after some asking around, it turned out that he was selling a special card foil: a .text-blue{Diamond} Foil. From what you've learned from your observations, it multiplies a card's health by 5 and attack by 2, but, if the card dies, there's a 1/5 chance it'll be .text-bold{PERMANENTLY} removed from your deck. It seems pretty cool.. Do you think it'll be pretty useful for a while? || Click a card to apply a diamond foil, which costs 200 coda coins.",
-        special: "diamondfoil",
+        special: {"diamondfoil":{}},
         proceedtext: "Go up to the next floor.",
         nextloc: "jamodarcardsroof",
     },
@@ -1005,8 +1004,7 @@ var locations = {
         desc: "An old library full of ancient manuscripts and texts dating back to hundreds of years ago.",
         loretext: "After about half an hour of walking around the city, you came up to a library, which contained thousands of important texts that might be helpful for your journey. You made your way up the marble stairs, amazed by the slick and smooth, glossy design. You went up to the entrance, seeing a wide array of books, it was almost endless. Should you enter the library?",
         proceedtext: "Keep walking.",
-        special: "setpart",
-        setpart: ["1a"],
+        special: {"setpart":{setpart: ["1a"],}},
         specialopt: true,
         //excludegui: true,
         specialheader: "Enter the Library",
@@ -1061,7 +1059,7 @@ var locations = {
         desc: "An all-powerful thing.",
         loretext: "After a few more minutes of walking, you noticed two different books. One was blue and one was green. Which one should you read?",
         proceedtext: "Continue.",
-        special: "knowledge",
+        special: {"knowledge":{}},
         nextloc: "codastreets2",
     },
     "codastreets2": {
@@ -1087,7 +1085,7 @@ var locations = {
         desc: "A strange group of people in eerie masks and cloaks.",
         loretext: "You were walking down the city streets when a group of people in strange masks and dark, black cloaks started going towards you. Once they were up close, one of the masked people started talking in a rough, hoarse voice. || ???: The stars will align in a few weeks. Join us. || You: What do you mean? ||| ???: Join the cause. || When you took a closer look at them, you saw an awfully familiar object: A glistening red star medallion. Afer a long silence, they spoke again. || ???: We can make an offer. One special card for your membership. Choose wisely. || What do you do?",
         proceedtext: "Keep exploring.",
-        special: "celestial",
+        special: {"celestial":{}},
         nextloc: "codastreets2",
     },
     "greenhouse": {
@@ -1096,7 +1094,8 @@ var locations = {
         desc: "A glass building housing hundreds and hundreds of wild plants.",
         loretext: "Following a long walk along the streets, you came by an interesting greenhouse. You could see a mesmerizing, glass structure and hundreds of plants in pots and whatnot. You decided to come in and see what was going on. || ???: Howdy, whatcha doin' here? Want to buy some plants? || You: What plants are there? || Clover: Well, my name's Clover. There's a bunch of different plants here, from blazing hot Horned Ember Melons to chaotic Death Beets. You know what, I'll give you an offer. One .text-italic{Horned Ember Melon} for 60 coda coins. It'll increase your maximum health and health by 50, and you will inflict double damage for the next 2 fights, but you will take 3x more damage during that duration.",
         proceedtext: "Keep exploring.",
-        special: "hornedembermelon",
+        // REPLACE WITH GAIN ITEM EVENT
+        special: {"hornedembermelon":{}},
         nextloc: "codastreets2",
     },
     "bridge": {
@@ -1123,6 +1122,7 @@ var locations = {
         formal: "The Stone Guardian's Remains",
         desc: "Small pebbles of rocks, laid down everywhere.",
         loretext: "Defeating the Stone Guardian, it crumbled down to the floor and left small wafts of ash floating around. You walked past its remains, unfazed. As a reward, you gained the Divine Shield, a powerful relic for defense. There is still a long path ahead of you.",
+        special: {"gainrelic":{relicgain:"divineshield",}},
         proceedtext: "Continue to the Path North.",
         nextloc: "pathnorth",
     },
@@ -1183,7 +1183,7 @@ var locations = {
         formal: "Strong Winds",
         desc: "A powerful breeze that can knock someone off their feet.",
         loretext: "After being attacked in the fields, you were quite tired. However, the conditions only worsened. As the day dragged on, the afternoon winds started to appear, blowing dust and grass at you. It was only a matter of time before you lost your balance.",
-        special: "strongwinds",
+        special: {"strongwinds":{}},
         forceaction: true,
         proceedtext: "Traverse through the fields",
         nextloc: "filoriver",
@@ -1193,7 +1193,7 @@ var locations = {
         formal: "Filo River",
         desc: "A winding river flowing down the fields of Filo.",
         loretext: "Going only further and further through the fields, you reached a wide river with quickly flowing water. There, you saw a wooden bridge with a man at the center. || ???: Have you paid the subscription? || The man was in rusty, metal armor, holding a corroded spear. He was looking down, with seemingly no expression. || You: Um.. No? || ???: Then you can't cross. || You: But.. I need to get past. How do I pay the subscription. || ???: You have to pay it.",
-        special: "filoriver",
+        special: {"filoriver":{}},
         forceaction: true,
         proceedtext: "Cross the Bridge",
         nextloc: "filocenter",
@@ -1203,8 +1203,8 @@ var locations = {
         formal: "Filo Center",
         desc: "The town square of Filo, surrounded by fields and fields.",
         loretext: "After a few more hours of walking, you reached the city part of Filo. By now, it was nighttime, and you desperately needed rest. Around you, you could see various buildings and shops, including various meat stores. What should you buy here?",
-        special: "shop|buycard",
-        cardloottable: "filo",
+        special: {"buycard":{cardloottable: "filo",}},
+        
         proceedtext: "Explore Filo",
         nextloc: "filomeats",
     },
@@ -1213,7 +1213,7 @@ var locations = {
         formal: "Filo Meats",
         desc: "A store in the town square, featuring a wide array of crispy meat.",
         loretext: "Looking around the plaza, you see an interesting store with many people around it. It was Filo Meats Inc., a store known for its high-quality food. What should you buy?",
-        special: "filomeats",
+        special: {"filomeats":{}},
         cardloottable: "filo",
         proceedtext: "Explore Filo",
         nextloc: "filomeats",
@@ -1241,9 +1241,9 @@ var locations = {
         name: "redstarburstvictory",
         formal: "The Crimson Desert",
         desc: "A red desert filled with crimson hues.",
-        loretext: "Water.. water.. || Finally! The star seemed to be fading, the sky now returning to its normal hue. You wondered what that could've possibly been, as you had never experienced such events before. You took a quick rest, tired from the incredible heat.",
-        special: "gaincard",
-        cardloottable: "filo",
+        loretext: "Water.. water.. || Finally! The star seemed to be fading, the sky now returning to its normal hue. You wondered what that could've possibly been, as you had never experienced such events before. As you sat down to take a rest, you saw a card materialize out of thin air.",
+        special: {"gaincard":{cardloottable: "filo",rerolls:1}},
+        
         proceedtext: "Continue",
         nextloc: "filomeat",
         locimg:"crimsondesert.png",
@@ -1253,10 +1253,45 @@ var locations = {
         formal: "Crimson Pedestal",
         desc: "A strange, red, stone pedestal in the middle of the desert. It's worn down, having not been touched in many years.",
         loretext: "Wandering across the desert, you see a tiny, gray shape in the distance. After more walking, it became apparent that it was a strange rectangular shape, with hints of red with it. || Upon reaching the object, you realized that it was a mysterious pedestal, its use unknown. You felt a strange calling, noticing its red highlights suddenly glowing. With further observation, you realized that it was meant for two cards. || .text-bold{Sacrifice a card, upgrade the other}",
-        special:"sacrificecard",
+        special:{"sacrificecard":{}},
         proceedtext: "Continue Across the Desert",
         nextloc: "redstarburstappear",
         locimg:"crimsondesert.png",
+    },
+    "lostexplorer": {
+        name: "lostexplorer",
+        formal: "Lost Explorer",
+        desc: "A dying husk of an unlucky explorer who got lost in the sands.",
+        loretext: "While you were walking, you noticed a strange discoloration in the sand. Walking over it, you could feel it being much harder than the sandy desert, and decided to investigate further. || ???: .text-italic{Water... Please..}",
+        special:{"heal":{1:{
+            h2:"Give Water",
+            p: "Lend the little water you have left to the explorer",
+            heal: -80,
+            maxheal: -20,
+            actiontext: "Feeling pity for them, you gave the rest of your water to them, watching as they quickly drank all of it in desperation. However, it failed to do anything. They seemed to be satisfied, yet it was not enough to save them.",
+        },2:{
+            h2:"Walk Away",
+            p: "Save the water for yourself",
+            heal: 0,
+            maxheal: 0,
+            actiontext: "You walked away, "
+        }}},
+        proceedtext: "Continue Across the Desert",
+        nextloc: "redstarburstappear",
+        locimg:"crimsondesert.png",
+    },
+    "darkwaystone": {
+        name: "darkwaystone",
+        formal: "Dark Waystone",
+        desc: "A dark, rocky waystone standing in the midst of the desert.",
+        loretext: "Continuing your walk, you made your way to a dark waystone in the desert, surrounded by dark stone and obsidian. There was a faint purple glow to it, and dark dust particles floating around the area. The waystone seemed to have runes on it, and they glowed whenever you got close to them. Should you use it?",
+        proceedtext: "Keep walking.",
+        special: {"setpart":{setpart: ["2a"],}},
+        specialopt: true,
+        //excludegui: true,
+        specialheader: "Use the Waystone",
+        specialdesc: "Where does it lead?",
+        nextloc: "codastreets2",
     },
     "zeend": {
         name: "zeend",
@@ -1264,7 +1299,7 @@ var locations = {
         desc: "You have beaten the demo. Good job!",
         loretext: "You see a laid down 8 in front of you, with a strange aura surrounding it. The end is never the end is never the end is never the end is never the end is never the end is never the end is never ....",
         proceedtext: "This is your destiny..",
-        special: "shop|buycard|buyrelic",
+        special: {"buycard":{},"buyrelic":{}},
         nextloc: "home",
     },
 };
@@ -1693,7 +1728,7 @@ var cards = {
             1: {
                 name: "Dazzle Ray",
                 stats: [["atk",10],["hp",15]],
-                cost: 240,
+                cost: 100,
                 desc: "Dazes 3 cards, harnessing their mana when the cards are used.",
             },
             2: {
@@ -1730,7 +1765,7 @@ var cards = {
             1: {
                 name: "Triple Shot",
                 stats: [["atk",5],["hp",5],["stat",2]],
-                cost: 220,
+                cost: 150,
                 desc: "Adds 25% chance of triple shooting."
             },
             2: {
@@ -1796,7 +1831,7 @@ var cards = {
             1: {
                 name: "Soul Harvest",
                 stats: [["atk",7],["hp",10],["stat",3]],
-                cost: 300,
+                cost: 200,
                 desc: "Every 5 kills, go invisible for 2 turns, harnessing the life of your opponents. Take 10% of damage you deal as hp and atk.",
             },
             2: {
@@ -1836,7 +1871,7 @@ var cards = {
         uses: 1,
         cool: 0,
         coolleft: 0,
-        manause: 1,
+        manause: 0,
         desc:"A simple orb, giving decent health when used.",
         funnyname: "HEALORBACIOUS",
         type: "Healing",
@@ -1886,7 +1921,7 @@ var cards = {
             1: {
                 name: "Super Bash",
                 stats: [["atk",20],["hp",25],["cool",-1]],
-                cost: 320,
+                cost: 120,
                 desc: "Unlocks super bash, with a 1/5 chance each attack to spend 3 more mana and deal damage to 3 opponents, stunning them.",
             }
         },
@@ -1911,7 +1946,7 @@ var cards = {
             1: {
                 name: "Firebomb",
                 stats: [["atk",4],["hp",15]],
-                cost: 250,
+                cost: 200,
                 desc: "Throw a bomb every 5 turns that flamifies 4 different opponent cards.",
             },
             2: {
@@ -1944,7 +1979,7 @@ var cards = {
             1: {
                 name: "Shock Blast",
                 stats: [["atk",5],["hp",10],["stat",5]],
-                cost: 250,
+                cost: 210,
                 desc: "20% chance of mana charge, zapping all enemies draining 5 mana from opponent.",
             }
         },
@@ -2067,7 +2102,7 @@ var cards = {
         upgrades: {
             1: {
                 stats: [["manause",-0.5],["hp",20],["stat",25]],
-                cost: 320,
+                cost: 250,
                 desc: "Cheaper cost + robots that deal 25% more damage.",
             }
         },
@@ -2136,11 +2171,12 @@ var cards = {
         funnyname: "ENERGY CAPSULIBANULI",
         type: "Support",
         img: "energycapsule.png",
+        sound: "zap.mp3",
         upgrades: {
             1: {
                 stats: [["hp",50],["stat",0.25]],
-                cost: 200,
-                desc: "Makes chargers gain exra x0.25 damage.",
+                cost: 120,
+                desc: "Makes chargers gain extra x0.25 damage.",
             }
         },
         subtypes: ["electricity"]
@@ -2164,7 +2200,7 @@ var cards = {
         upgrades: {
             1: {
                 stats: [["manause",-0.5],["hp",20],["stat",25]],
-                cost: 320,
+                cost: 210,
                 desc: "Cheaper cost + prisms deal 25% more damage.",
             }
         },
@@ -2187,7 +2223,7 @@ var cards = {
         upgrades: {
             1: {
                 stats: [["hp",15],["atk",10]],
-                cost: 300,
+                cost: 210,
                 desc: "[ability not found]",
             }
         },
@@ -2235,9 +2271,10 @@ var cards = {
         img: "cultist.png",
         upgrades: {
             1: {
-                stats: [["atk",10],["hp",15],["stat",5]],
+                name: "United Cause",
+                stats: [["atk",10],["hp",15],["stat",5],["manause",-0.5]],
                 cost: 300,
-                desc: "[ability not found]",
+                desc: "Deal more damage and take less effort.",
             }
         },
         subtypes: ["cultist"],
@@ -2307,7 +2344,7 @@ var cards = {
         upgrades: {
             1: {
                 stats: [["atk",15],["hp",10]],
-                cost: 300,
+                cost: 200,
                 desc: "Ninja deals extra 20% damage when camouflaged.",
             }
         },
@@ -2394,7 +2431,7 @@ var cards = {
         upgrades: {
             1: {
                 stats: [["hp",15],["stat",0.5],["maxmana",10]],
-                cost: 250,
+                cost: 200,
                 desc: "Gains more mana per turn. Max mana increased to 25.",
             }
         },
@@ -2418,8 +2455,8 @@ var cards = {
         upgrades: {
             1: {
                 stats: [["atk",15],["hp",10],["stat",1]],
-                cost: 300,
-                desc: "Steal extra mana [not added yet]",
+                cost: 200,
+                desc: "Steal extra mana",
             }
         },
         subtypes: ["trick"],
@@ -2454,7 +2491,7 @@ var cards = {
         upgrades: {
             1: {
                 stats: [["hp",15]],
-                cost: 200,
+                cost: 120,
                 desc: "Sacrifice 20 more health, spawn an extra cultist.",
             }
         },
@@ -2477,7 +2514,7 @@ var cards = {
         upgrades: {
             1: {
                 stats: [["atk",10],["hp",15]],
-                cost: 220,
+                cost: 160,
                 desc: "[ability not found]",
             }
         },
@@ -2501,7 +2538,7 @@ var cards = {
         upgrades: {
             1: {
                 stats: [["atk",10],["hp",10]],
-                cost: 280,
+                cost: 210,
                 desc: "Stuns 3 enemies every 2 hits.",
             }
         },
@@ -2594,11 +2631,13 @@ var cards = {
         sound: "potato.mp3",
         upgrades: {
             1: {
-                stats: [["hp",15]],
-                cost: 200,
-                desc: "[ability not found]",
+                name: "Up The Ante",
+                stats: [["hp",200],["timer",-2]],
+                cost: 50,
+                desc: "Explodes faster, and ensures that it will not be destroyed.",
             }
         },
+        discardable: false,
         subtypes: ["trick"],
     },
     phaser: {
@@ -2621,6 +2660,7 @@ var cards = {
         sound: "phase.mp3",
         upgrades: {
             1: {
+                name: "Phase Tech I",
                 stats: [["atk",10],["hp",15],["stat",20]],
                 cost: 350,
                 desc: "[ability not found]",
@@ -2668,8 +2708,10 @@ var cards = {
         img: "gold.png",
         upgrades: {
             1: {
+                name: "Golder Gold",
+                stats: [["stat",0.5]],
                 cost: 0,
-                desc: "[ability not found]",
+                desc: "Earn more from discarding gold",
             }
         },
         subtypes: ["creation"],
@@ -2762,7 +2804,7 @@ var cards = {
             1: {
                 name: "Undying",
                 stats: [["maxammo",1],["ammo",1]],
-                cost: 300,
+                cost: 200,
                 desc: "1/2 chance of keeping the spearman on death",
             }
         },
@@ -2780,7 +2822,7 @@ var cards = {
         cool: 2,
         coolleft: 1,
         manause: 1,
-        desc:"The spearmen have not died in vain.",
+        desc:"A pair of glowing, crystalline fists that pack a punch.",
         funnyname: "FISTULA RADIANTA",
         type: "Attack",
         img: "radiantfists.png",
@@ -2794,7 +2836,36 @@ var cards = {
                 desc: "After a successful parry, take 50% less damage next turn.",
             }
         },
-        subtypes: ["fighting"],
+        subtypes: ["fighting","light"],
+    },
+    rottenglob: {
+        name: "rottenglob",
+        formal: "Rotten Glob",
+        hp: 80,
+        atk: 0,
+        ammo: 1,
+        maxammo: 1,
+        poison: 5,
+        //stat: 1,
+        statdesc: "Multiplier of damage dealt back",
+        cool: 2,
+        coolleft: 1,
+        manause: 1,
+        desc:"A pungent glob of poisonous gunk.",
+        funnyname: "ROTTERNO GLOBULA",
+        type: "Attack",
+        img: "rottenglob.png",
+        sound: "splat.mp3",
+        advdesc: "When the attacking card is poisoned, this card heals. Attacks shoot splats of poisonous goo, dealing no damage.",
+        upgrades: {
+            1: {
+                name: "Decrepit Rot",
+                stats: [["hp",10],["poison",3]],
+                cost: 500,
+                desc: "Immune to all status effects. When applied one, heal 5.",
+            }
+        },
+        subtypes: ["poison"],
     },
 };
 var items = {
@@ -2814,6 +2885,13 @@ var items = {
         attr: 0,
         attrname: "Battles Left",
     },
+    blessing: {
+        formal: "Divine Blessing",
+        name: "blessing",
+        desc: "You have been blessed with fortune and success.",
+        attr: 0,
+        attrname: "Amount",
+    }
 }
 var effects = {
     "burning": {
@@ -3000,6 +3078,8 @@ var relicLootTables = {
     "collector": {
         watch: 1,
         knowledgejar: 1,
+        redstarstaff:1,
+        phasershot:2,
     },
 }
 var cardLootTables = {
@@ -3029,8 +3109,8 @@ var cardLootTables = {
         cultist: 4,
         ninja: 7,
         bank: 8,
-        armageddon: 5,
-        ritual: 8,
+        armageddon: 4,
+        ritual: 4,
         teslacoil: 6,
         cannoneer: 8,
         bus: 4,
@@ -3039,6 +3119,8 @@ var cardLootTables = {
         bus: 10,
         gold: 10,
         clonebox: 10,
+        froster:8,
+        reaper:8,
     },
     "filo": {
         // excluded: reaper, froster, oblivion, bus, clonebox, drawback, jester, healbubble, wizard
@@ -3067,6 +3149,7 @@ var cardLootTables = {
         cannoneer: 10,
         corruptedclaw: 10,
         sandstorm: 10,
+        rottenglob: 10,
         bus: 6,
     },
 }
@@ -3099,6 +3182,11 @@ var unlocks = {
         name: "a1",
         formal: "Massacre",
         desc: "A bloody card has appeared in Owarp..",
+    },
+    d1: {
+        name: "d1",
+        formal: "Charity",
+        desc: "Greg is pleased.",
     }
 }
 var unlockCounters = {
