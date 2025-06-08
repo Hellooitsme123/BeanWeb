@@ -63,6 +63,7 @@
             <hr>
             <div id="lore">
                 <p id="loretext"></p>
+                
             </div>
             <div class="open-modal-btn-wrapper" id="event-modal-btn-wrapper">
                 <button class="open-modal-btn" id="event-modal-btn" data-target="event-overlay">
@@ -110,6 +111,7 @@
                 
             </div>
             <button id="reroll" class="reroll" type="button">Reroll (15 coda coins)</button>
+            <p id="aftertext"></p>
             <hr>
             <div id="proceedoverview">
                 <h2 id="proceed">Travel To Next Area: Road To Coda</h2>
@@ -391,11 +393,11 @@
                 </button>
             </div>
             <div id="changelogtab" class="tabcontent">
-                <h1>Update v0.4pre - the pivot (ALPHA)</h1>
+                <h1>Update v0.4pre2 - the pivot (BETA)</h1>
                 <hr>
                 <div class="modal-content" id="modal-content">
                     <h3>Important Note</h3>
-                    <p>.text-quote{"The pivot is being made."}</p>
+                    <p>.text-quote{"The pivot is halfway done."}</p>
                     <h3>Unlocks</h3>
                     <p>You can now unlock new items! At the end of a run, you will have to click the save unlocks button, which copies a bunch of text. Paste this somewhere safe. In the game's menu, there is a button at the bottom called load unlocks. This loads all the unlocks you have.</p>
                     <h3>Characters</h3>
@@ -404,7 +406,6 @@
                     <ul>
                         <li>.text-purp{??? See for yourself.}</li>
                         <li>Added Rotten Glob (special mechanic not added yet)</li>
-                        <li>Added Clone Box, Reaper, and Froster back into the loot tables (limited to only collector events, however)</li>
                         <li>More art for cards</li>
                     </ul>
                     <h3>Removed Cards</h3>
@@ -425,25 +426,29 @@
                     </ul>
                     <h3>Other Additions:</h3>
                     <ul>
+                        <li>.text-bold{COMPLETELY Overhauled} card effects, adding more customizability. They may not work as expected.</li>
                         <li>.text-bold{COMPLETELY Overhauled} special events, making them more customizable than previously. Change won't be noticed much on client side.</li>
+                        <li>Added more .text-bold{emphasis} to important information in lore text to prevent skipping over info.</li>
                         <li>.text-large{.text-bold{MAGNIFY}}, you can now see a more detailed description of cards.</li>
-                        <li>Added .text-yell{Collector's Pool}, a less bloated loot table for rarer cards.</li>
                         <li>Added formal damageCard function, making a cleaner way to handle card damage.</li>
                         <li>Added items, which there are not many of currently. May be used later on.</li>
-                        <li>Implemented a slightly more efficient way to give special effects to cards</li>
                         <li>Cards now have genuine images instead of backgrounds (VERY BUGGY)</li>
                     </ul>
                     <h3>Balance Changes:</h3>
                     <ul>
+                        <li>Changed loot tables slightly</li>
                         <li>Heal Orb & Heal Bubble .text-positive{buffed}. Heal Orb MU .text-positive{1 -> 0}. Heal Bubble MU .text-positive{1 -> 0.5}</li>
                         <li>Nerfed many of the lose card events (e.g. Dance Club Spill)</li>
                         <li>Most card upgrade .text-positive{costs decreased by ~100 CC}</li>
                         <li>Nerfed some of the power events (e.g. Risk, Gain Power)</li>
+                        <li>Buffed many risk events to .text-positive{give items/coins}</li>
                         <li>.text-positive{Buffed} Grass Lurker</li>
                         <li>Removed unobtainable cards from appearing in fights</li>
                     </ul>
                     <h3>Bug Fixes:</h3>
                     <ul>
+                        <li>Fixed multi-special events not working in previous pre-update</li>
+                        <li>Fixed reroll appearing unnecessarily in certain events.</li>
                         <li>Fixed unobtainable cards being accessed during card swap/gain events</li>
                         <li>Fixed sacrifice card events</li>
                         <li>Fixed Janjo getting rarest relics instead of commonest relics</li>

@@ -665,7 +665,6 @@ var locations = {
         loretext: "After exploring the dance club for quite some time, you decided it was best to leave. You slowly made your way out, jumping down the floaty blue elevator pads, swinging the glass doors open. You haven't slept in a while..",
         proceedtext: "Go to the hotel across the street to rest.",
         special: {"gaincard":{cardloottable: "standard",}},
-        cardgain: "",
         nextloc: "hotel",
     },
     "hotel": {
@@ -691,8 +690,7 @@ var locations = {
         formal: "Bean Factory",
         desc: "One of the great Beanmelon Corp. factories that produces the food that is eaten by everyone around the world.",
         loretext: "After beating Cheese Dino, he gave you a relic. Check your inventory to see it. After that, you were let into the factory. He gave you access into the factory, where you remembered that you had to go through a long maze to get into it. It was pretty disorienting, but using small fragments of your memory, you managed to make your way through.",
-        special: {"gainrelic":{}},
-        relicgain: "redstarmedallion",
+        special: {"gainrelic":{relicgain: "redstarmedallion",rerolls:0}},
         proceedtext: "Look around.", 
         nextloc: "unclerictorappear",
     },
@@ -710,6 +708,7 @@ var locations = {
         formal: "Bean Factory",
         desc: "One of the great Beanmelon Corp. factories that produces the food that is eaten by everyone around the world.",
         loretext: "You went deeper into the factory, seeing the hundreds of conveyor belts and bean cans, with loud noises bouncing off the metal walls. Looking at your left, you saw a room marked with big, bold letters, saying - 'SECURITY'. You decided to enter the room despite its label, and saw a sleeping security guard in front of a computer that showed everything throughout the facility. You could see Uncle Rictor standing in the cool, lush section of the factory with grass and trees. You could see Cheese Dino standing by the entrance, his heavy gaze unending. You wondered what wandered about within his strange mind, and why he seemed so mysterious compared to the others. The red star on his arm glistened as he sharpened his cleaver, still looking serious and blank as ever. || You switched focus to another camera, where you could see trucks and boxes full of beans. There was no one there at the moment, so you switched cameras again. || This time, the camera was looking at the bean conveyors. There were several bulky, metal structures that had big labels on them, likely marking there purpose in the bean refining process. One read, .text-bold{'BEAN ENCHANTING MACHINE'}, dispensing purply, glowy bean cans that likely came from another conveyor. It was getting quite boring, so you decided to leave before the security guard woke up.",
+        // add card special here
         proceedtext: "Leave the factory.",
         nextloc: "roadtocoda4",
     },
@@ -717,7 +716,7 @@ var locations = {
         name: "shippingsector",
         formal: "Bean Factory",
         desc: "One of the great Beanmelon Corp. factories that produces the food that is eaten by everyone around the world.",
-        loretext: "A clacking sound echoed throughout the facility as you walked by the conveyors, entering the shipping sector. Here, you saw a bunch of boxes on metal racks, with a truck containing a few of them. It had not left yet, as it was the middle of the night and no one was awake. You went through one of the doors, seeing an employee crouching in a corner. || Adoba: Get me out of here! This place is terrible! || You: Why? || Adoba: It's all lies! I know the secret of Beanmelon. UncleMan has been lying all along. || You: What do you mean? Beanmelon Corp. is the best company in the world and nothing will ever change that! || Adoba: That's what you oblivious folk all think. I've seen the process, and it's not like what UncleMan has told the public. There's a reason why factory employees can never leave. UncleMan can't let the world know. || You: Know what? You have to explain to me the truth man! I've tried beans all my life and I don't see anything wrong. || Adoba: The beans.. are artificial. Fake. || You: Wh- what?? What- what do you mean? || .text-custom~~font-size:20px;font-weight:bolder{Leave. Now.}",
+        loretext: "A clacking sound echoed throughout the facility as you walked by the conveyors, entering the shipping sector. Here, you saw a bunch of boxes on metal racks, with a truck containing a few of them. It had not left yet, as it was the middle of the night and no one was awake. You went through one of the doors, seeing an employee crouching in a corner. || Adoba: Get me out of here! This place is terrible! || You: Why? || Adoba: It's all lies! I know the secret of Beanmelon. UncleMan has been lying all along. || You: What do you mean? Beanmelon Corp. is the best company in the world and nothing will ever change that! || Adoba: That's what you oblivious folk all think. I've seen the process, and it's not like what UncleMan has told the public. There's a .text-bold{reason} why factory employees can .text-bold{never leave.} UncleMan can't let the world know. || You: Know what? You have to explain to me the truth man! I've tried beans all my life and I don't see anything wrong. || Adoba: The beans.. .text-bold{are artificial. Fake.} || You: Wh- what?? What- what do you mean? || .text-custom~~font-size:20px;font-weight:bolder{Leave. Now.}",
         proceedtext: "Leave the factory.",
         nextloc: "roadtocoda4",
     },
@@ -725,7 +724,7 @@ var locations = {
         name: "tastetestingsector",
         formal: "Bean Factory",
         desc: "One of the great Beanmelon Corp. factories that produces the food that is eaten by everyone around the world.",
-        loretext: "You could hear the loud sounds of the machines pumping out cans of beans, with hundreds of different varieties of flavors. While walking past the conveyors, you noticed that there was a small walkway that led to a strange corner that you hadn't seen before, so you decided to see what was there. || Walking past the conveyors, you saw a big sign that read, 'TASTE TESTERS'. There was a group of people that looked extremely tired, endlessly testing out different bean cans. They seemed to be pleading for help deep inside, but you couldn't tell. You spotted one, who was named XSnipe11. || XSnipe11: Get us out of here! || You: Why? || XSnipe11: We have been forced to try out these beans for the last 3 years! I need to leave! || You: Can't you leave anytime you want? || XSnipe11: We can't! The doors are locked with keycards that none of us have! All we can do is review the beans and tell UncleMan what he should do to improve them! We need help! || You walked away before you could hear anymore screaming, confused. Why did they want to leave? Being a Beanmelon Corp. employee must be an insanely privileged status! Fools.. they're probably too lazy to work. ",
+        loretext: "You could hear the loud sounds of the machines pumping out cans of beans, with hundreds of different varieties of flavors. While walking past the conveyors, you noticed that there was a small walkway that led to a strange corner that you hadn't seen before, so you decided to see what was there. || Walking past the conveyors, you saw a big sign that read, .text-bold{'TASTE TESTERS'}. There was a group of people that looked extremely tired, endlessly testing out different bean cans. They seemed to be pleading for help deep inside, but you couldn't tell. You spotted one, who was named XSnipe11. || .text-bold{XSnipe11:} Get us out of here! || You: Why? || XSnipe11: We have been .text-bold{forced} to try out these beans for the .text-bold{last 3 years!} I need to leave! || You: Can't you leave anytime you want? || XSnipe11: We can't! The doors are locked with keycards that none of us have! All we can do is review the beans and tell UncleMan what he should do to improve them! We need help! || You walked away before you could hear anymore screaming, confused. Why did they want to leave? Being a Beanmelon Corp. employee must be an insanely privileged status! Fools.. they're probably too lazy to work. ",
         proceedtext: "Leave the factory.",
         nextloc: "roadtocoda4",
     },
@@ -742,7 +741,7 @@ var locations = {
         name: "unclemanstatue",
         formal: "UNCLE MAN STATUE",
         desc: "A large, stone statue depicting your own uncle. Hopefully you will achieve success as great as his one day.",
-        loretext: "It had not been long sing you got back on the road. It'd been maybe 30 minutes or so, but now you'd need to stop again. You must admire your uncle and his achievements, as you were just at one of his factories an hour or so ago. You gaze at the statue, pondering about whether or not you will ever achieve a level of greatness equal to your uncle. || Will you? A question that even the greatest mathematicians can't solve. || Woosh. Woooosh. || What was that? It must be a sign. But what sign? Eventually, you saw it. There was something, a card on UncleMan's head. You'll have to climb quite a bit to get it. But is it really worth it? || Choose wisely.",
+        loretext: "It had not been long sing you got back on the road. It'd been maybe 30 minutes or so, but now you'd need to stop again. You must admire your uncle and his achievements, as you were just at one of his factories an hour or so ago. You gaze at the statue, pondering about whether or not you will ever achieve a level of greatness equal to your uncle. || Will you? A question that even the greatest mathematicians can't solve. || Woosh. Woooosh. || What was that? It must be a sign. But what sign? Eventually, you saw it. There was something, a .text-bold{card} on UncleMan's head. Along with that, you spotted a few glistering .text-yell{coins}. You'll have to climb quite a bit to get it. But is it really worth it? || Choose wisely.",
         special: {"unclemanstatue":{}},
         proceedtext: "Leave the statue.", 
         nextloc: "roadtocoda4",
@@ -959,7 +958,7 @@ var locations = {
         formal: "Jamodar's Cards",
         desc: "The greatest hub for trading cards and upgrading them!",
         loretext: "After exploring the first floor, you decided to go check out the second. Walking up the stairs, you were presented with a cool forge with many people. There was a massive, feebolum and steel anvil covered in flames at the center, with a ginormous hammer hammer on the side. Here, you can choose to either apply an upgrade to your card or an infernal foil, which: <br>1) Heals your card instead of damages it when given burn effect.<br>2)Has a 1/5 chance of burning opponent card, which deals 25 damage and applies level 5 burn.<br>Click the upgrade button and a card to upgrade it, or click the infernal button and a card to apply the foil. One infernal foil costs 300 coda coins.",
-        special: {"showopt":{},"upgcard":{},"infernalfoil":{}},
+        special: {"upgcard":{showopt:true},"infernalfoil":{showopt:true}},
         proceedtext: "Go up to the next floor.",
         nextloc: "jamodarcards3",
     },
@@ -1263,7 +1262,7 @@ var locations = {
         formal: "Lost Explorer",
         desc: "A dying husk of an unlucky explorer who got lost in the sands.",
         loretext: "While you were walking, you noticed a strange discoloration in the sand. Walking over it, you could feel it being much harder than the sandy desert, and decided to investigate further. || ???: .text-italic{Water... Please..}",
-        special:{"heal":{1:{
+        special:{"custom":{choices:{1:{
             h2:"Give Water",
             p: "Lend the little water you have left to the explorer",
             heal: -80,
@@ -1275,7 +1274,8 @@ var locations = {
             heal: 0,
             maxheal: 0,
             actiontext: "You walked away, "
-        }}},
+        }}}},
+        forceaction: true,
         proceedtext: "Continue Across the Desert",
         nextloc: "redstarburstappear",
         locimg:"crimsondesert.png",
@@ -1561,9 +1561,9 @@ var relics = {
     knowledgejar: {
         name: "knowledgejar",
         formal: "Jar of Knowledge",
-        desc: "An dusty jar containing great knowledge and wisdom.",
+        desc: "An dusty jar containing GREAT knowledge and wisdom.",
         advdesc: "You may only gain knowledge once you have bought this jar. <br>.EXEC{if (Object.keys(p1.relics).includes('knowledgejar')) randItem(importantoknowledgo)}",
-        rarity: 2,
+        rarity: 5,
         attr: 0,
         attrincrease: 1,
         attrtype: "int",
@@ -2894,6 +2894,17 @@ var items = {
     }
 }
 var effects = {
+    bleeding: {
+        formal: "Bleeding",
+        name: "bleeding",
+        desc: "Lose scale% of hp every turn.",
+
+    },
+    bubbly: {
+        formal: "Bubbly",
+        name: "bubbly",
+        desc: "Take scale% less damage. Clears all negative status effects.",
+    },
     "burning": {
         formal: "Burning",
         name: "burning",
@@ -2912,6 +2923,76 @@ var effects = {
         desc: "Card heals opponents instead of damaging them.",
         img: "confusedfoil.png",
     },
+    death: {
+        formal: "Death",
+        name: "death",
+        desc: "Card is guaranteed to die (unless effect is cleared) after timer reaches 0.",
+        img: "deathfoil.png",
+    },
+    fear: {
+        formal: "Fear",
+        name: "fear",
+        desc: "Card is too scared to do anything, gains scale cooldown.",
+        img: "fearfoil.png",
+    },
+    frozen: {
+        formal: "Frozen",
+        name: "frozen",
+        desc: "In most cases, card is frozen over and cannot be used.",
+        img: "frostfoil.png",
+    },
+    guarded: {
+        formal: "Guarded",
+        name: "guarded",
+        desc: "Upon card's death, resurrect with 30 health.",
+        img: "guardedfoil.png",
+    },
+    harness: {
+        formal: "Harness",
+        name: "harness",
+        desc: "When card is used, grant opponent scale mana.",
+    },
+    phased: {
+        formal: "Phased",
+        name: "phased",
+        desc: "Immune to most damage.",
+    },
+    poison: {
+        formal: "Poison",
+        name: "poison",
+        desc: "Take scale damage every turn. Cannot heal while poisoned.",
+        img: "",
+    },
+    predicted: {
+        formal: "Predicted",
+        name: "predicted",
+        desc: "When card that is predicted is used, deal scale damage to self."
+    },
+    regeneration: {
+        formal: "Regen",
+        name: "regeneration",
+        desc: "Gain scale hp every turn.",
+        img: "",
+    },
+    strength: {
+        formal: "Strength",
+        name: "strength",
+        desc: "Gain scale atk after turn ends.",
+        img: "",
+    },
+    stunned: {
+        formal: "Stunned",
+        name: "stunned",
+        desc: "Card is stunned and cannot be used.",
+        img: "stunnedfoil.png",
+    },
+    shock: {
+        formal: "Shock",
+        name: "shock",
+        desc: "Card takes scale damage every turn, but also gains scale atk.",
+        img: "shockfoil.png",
+    },
+
 };
 var modifiers = {
     "flametouch": {
@@ -2981,7 +3062,7 @@ var relicLootTable = {
     mammothtusk: 2,
     gamblersdice: 2,
     soullantern: 2,
-    hammerhammer: 1,
+    hammerhammer: 3,
     frostyhorn: 2,
     quincyspillar: 1,
     morningglory: 1,
@@ -3015,7 +3096,7 @@ var relicCosts = {
     blueprint: 100,
     engineerswrench: 100,
     watch: 100,
-    knowledgejar: 100,
+    knowledgejar: 50,
     quincychainsaw: 100,
     redstarstaff: 120,
     beamturret: 90,
@@ -3036,13 +3117,13 @@ var relicLootTables = {
         mammothtusk: 2,
         gamblersdice: 2,
         soullantern: 2,
-        hammerhammer: 1,
+        hammerhammer: 2,
         orbmix: 1,
         morningglory: 1,
         blueprint: 3,
         engineerswrench: 3,
         watch: 2,
-        knowledgejar: 2,
+        knowledgejar: 1,
         redstarstaff: 4,
         beamturret: 3,
         flamebean: 7,

@@ -622,6 +622,18 @@ button:hover {
     color: rgb(247, 38, 55);
     font-weight: bold;
 }
+.text-white-hi {
+    background: white;
+}
+.text-yell-hi {
+    background: yellow;
+}
+.text-purp-hi {
+    background: rgb(255, 0, 255);
+}
+.text-black-hi {
+    background: black;
+}
 .text-quote {
     padding: 2px;
     background: lightgrey;

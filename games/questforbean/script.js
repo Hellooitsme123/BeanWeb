@@ -45,6 +45,7 @@ var loretxt = byId("loretext");
 var proceedtxt = byId("proceed");
 var proceeddesc = byId("proceeddesc");
 var travelbtn = byId("travel");
+var focusedSpecial = null;
 var specialdiv = byId("special");
 var specialdiv2 = byId("special2");
 // offers
@@ -128,7 +129,7 @@ randKey(cards)[??WHERE@return.obtainable!=false~~];
 
 
 */
-var importantoknowledgo = ["The select mode allows you to do more strategic moves.","Spearmen's lives are not worthless. They will get angered once destroyed enough..","Energy capsule gives charger multiplied damage.","Get more cards. 1 or 2 will not suffice.","CONSUME","The watch is not useless. Maybe buy it more.."];
+var importantoknowledgo = ["The select mode allows you to do more strategic moves.","Spearmen's lives are not worthless. They will get angered once destroyed enough..","Energy capsule gives charger multiplied damage.","Donating 100 or more coins to Greg might cause him to join your side.","The watch is not useless. Maybe buy it more.."];
 
 // GET SOUNDS
 
@@ -226,6 +227,10 @@ var locationplacing = {
             stage2a: {
                 name: "LodaFortress",
                 set: [],
+            },
+            stage3: {
+                name: "Feebole",
+                set: [""],
             }
         },
     }
@@ -233,8 +238,8 @@ var locationplacing = {
 var keywords = ["anyshops","mysteryloc","mysteryloc2","mysteryloc3","mysteryloc4","mysteryfight","mysteryfight2","testfight"];
 var locationsarr = [];
 var curlocationindex = 0;
-var curlocationstage = 2;
-var curlocationpart = 2;
+var curlocationstage =1;
+var curlocationpart = 1;
 var curlocation;
 
 function createLocations() {
@@ -437,10 +442,10 @@ for (let i = 0; i < Object.keys(cards).length; i++) {
     let card = cards[Object.keys(cards)[i]];
     let card2 = shopcards[Object.keys(shopcards)[i]];
     card.level = 0;
-    card.effects = [];
+    card.effects = {};
     card.cardmods = [];
     card2.level = 0;
-    card2.effects = [];
+    card2.effects = {};
     card2.cardmods = [];
 }
 function changePropertiesByQuery(obj,query) {
@@ -488,8 +493,8 @@ for (let k =0; k < Object.keys(enemies).length; k++) {
 
 var reloading = false;
 var battletext = byId("battletext");
-var keynames = ["name","formal","atk","hp","manause","ammo","maxammo","cool","coolleft","type","heal","uses","obtainable","storedmana","sound","level","stat","statdesc","cost"];
-var keyformal = ["Name","Formal Name","Attack","Health","Mana Use","Ammo","Maximum Default Ammo","Cooldown","Starting Cooldown","Card Type","Heal","Uses","Obtainable By Drawing Cards","Stored Mana","Sound","Level","Stat","Stat Description","Cost"];
+var keynames = ["name","formal","atk","hp","manause","ammo","maxammo","cool","coolleft","type","heal","uses","obtainable","storedmana","sound","level","stat","statdesc","cost","subtypes"];
+var keyformal = ["Name","Formal Name","Attack","Health","Mana Use","Ammo","Maximum Default Ammo","Cooldown","Starting Cooldown","Card Type","Heal","Uses","Obtainable By Drawing Cards","Stored Mana","Sound","Level","Stat","Stat Description","Cost","Card Types"];
 var openBtn = document.querySelectorAll(".open-modal-btn");
 var modal = document.querySelectorAll(".modal-overlay");
 var closeBtn = document.querySelectorAll(".close-modal-btn");
@@ -871,30 +876,33 @@ function fullSD(element,successor,t1,t2) {
  * addEffect() -> adds effect to card
  * @param {*} card -> card to affect
  * @param {*} effectname -> effect's name
- * @param {*} s -> scale of effect
- * @param {*} t -> time left
+ * @param {{s:Number,t:Number}} attr -> Object with all the attributes
  * @param {*} u -> upgrade or not
- * @param {*} us -> scale upgrade amount
- * @param {*} ut -> time upgrade amount
+ * @param {Object} uattr -> Object with all the attributes that you WANT to change
  * 
  * Adds given effect effectname{s,t} to card. If effect is already present, boolean u decides whether or not to scale onto the effect -> effectname{cs+1,ct+t}
- * @example addEffect(card,"Poison",1,2,false)
+ * @example addEffect(card,"Poison",{s:1,t:2},false)
  * // Adds Poison{1,2} to the opponent card. If card already has, then do nothing.
- * @example addEffect(card,"Burn",1,2,true)
- * // Adds Burn{1,2} to card. If card already has, increase the stats by 1.
+ * @example addEffect(card,"Burn",{s:1,t:2},true,{s:1})
+ * // Adds Burn{1,2} to card. If card already has, increase the scale by 1.
  */
-function addEffect(card,effectname,s,t,u=false,us=1,ut=1) {
-    if (card.effects.some(str => str.includes(effectname)) == true && u == true) {
-        let zeval = card.effects.filter(str => str.includes(effectname))[0];
-        let index = card.effects.indexOf(zeval);
-        let args = formateffect("Attributes",zeval);
-        args[0] = Number(args[0]);
-        args[0] += us;
-        args[1] += ut;
-        card.effects[index] = effectname+"{"+args[0]+","+args[1]+"}";
+function addEffect(card,effectname,attr,u=false,uattr={s:1,t:1}) {
+    if (Object.hasOwn(card.effects,effectname) && u == true) {
+        let effect = card.effects[effectname];
+        for (let attr in uattr) {
+            let val = uattr[attr];
+            if (typeof val == "number") {
+                effect[attr] += val;
+            } else {
+                effect[attr] = val;
+            }
+        }
     }
-    if (card.effects.some(str => str.includes(effectname)) == false) {
-        card.effects.push(`${effectname}{${s},${t}}`);
+    if (!tryAccess(card.effects,effectname)) {
+        let effect = structuredClone(effects[effectname]);
+        effect.attr = attr;
+        card.effects[effectname] = effect;
+        // by default, the attr goes like this: effect: {attr: {s: number, t: number}}
     }
     return card;
 }
@@ -1018,16 +1026,11 @@ function displayCard(elem,card) {
         if (Object.hasOwn(card,"manause")) {
             elem.innerHTML += card.manause+" MU";
         }
-        if (card.effects.length > 0) {
+        if (Object.keys(card.effects).length > 0) {
             elem.innerHTML += "<br>";
-            for (let i = 0; i < card.effects.length; i++) {
-                let args = formateffect("Attributes",card.effects[i]);
-                for (let z = 0; z < args.length; z++) {
-                    args[z] = Number(args[z]);
-                }
-                card.effects[i] = formateffect("FlatEffect",card.effects[i])+"{"+args+"}";
-                elem.innerHTML += formateffect("FlatEffect",card.effects[i])+" "+args[0];
-                if (card.effects.length-i > 1) {
+            for (let effect in card.effects) {
+                elem.innerHTML += card.effects[effect].formal+" "+card.effects[effect].attr.s;
+                if (Object.keys(card.effects).length > 1) {
                     elem.innerHTML += " | ";
                 }
             }
@@ -1062,33 +1065,39 @@ function displayCard(elem,card) {
             }
             
         }
-        if (card.effects.some(str => str.includes("Camouflaged")) == true) {
+        for (let effect in card.effects) {
+            let data = card.effects[effect];
+            if (Object.hasOwn(data,"img")) {
+                tempimg += `, url(img/foils/${data.img})`;
+            }
+        }
+        /*if (Object.hasOwn(card.effects,"Camouflaged")) {
             tempimg += ", url(img/foils/camofoil.png)";
         }
-        if (card.effects.some(str => str.includes("Frozen")) == true) {
+        if (Object.hasOwn(card.effects,"Frozen")) {
             tempimg += ", url(img/foils/frostfoil.png)";
         }
-        if (card.effects.some(str => str.includes("Confused")) == true) {
+        if (Object.hasOwn(card.effects,"Confused")) {
             tempimg += ", url(img/foils/confusedfoil.png)";
         }
-        if (card.effects.some(str => str.includes("Burning")) == true) {
+        if (Object.hasOwn(card.effects,"Burning")) {
             tempimg += ", url(img/foils/burningfoil.png)";
         }
-        if (card.effects.some(str => str.includes("Stunned")) == true) {
+        if (Object.hasOwn(card.effects,"Stunned")) {
             tempimg += ", url(img/foils/stunnedfoil.png)";
         }
-        if (card.effects.some(str => str.includes("Guarded")) == true) {
+        if (Object.hasOwn(card.effects,"Guarded")) {
             tempimg += ", url(img/foils/guardedfoil.png)";
         }
-        if (card.effects.some(str => str.includes("Shock")) == true) {
+        if (Object.hasOwn(card.effects,"Shock")) {
             tempimg += ", url(img/foils/shockfoil.png)";
         }
-        if (card.effects.some(str => str.includes("Fear")) == true) {
+        if (Object.hasOwn(card.effects,"Fear")) {
             tempimg += ", url(img/foils/fearfoil.png)";
         }
-        if (card.effects.some(str => str.includes("Death")) == true) {
+        if (Object.hasOwn(card.effects,"Death")) {
             tempimg += ", url(img/foils/deathfoil.png)";
-        }
+        }*/
         elem.style.backgroundSize = "140px 160px";
         elem.style.backgroundImage = tempimg;
         if (Object.hasOwn(card,"maskeffect")) {
@@ -1292,7 +1301,7 @@ function drawCard(player,specific = false,choice = null,otherargs = ["None"]) {
     if (otherargs.includes("specialp")) {
         if (!otherargs.includes("setcard")) {
             assign(key,chosenkey);
-            key.effects = [];
+            key.effects = {};
             key["cardmods"] = [];
         }
     }
@@ -1374,7 +1383,7 @@ function drawCard(player,specific = false,choice = null,otherargs = ["None"]) {
         }
     }
     assign(key,chosenkey); // assign the values
-    key.effects = [];
+    key.effects = {};
     if (otherargs.includes("addToDeck")) { 
         // add special masks with 1/100 chance
         let masks = ["mask-1","mask-2"];
@@ -1488,14 +1497,14 @@ function drawCard(player,specific = false,choice = null,otherargs = ["None"]) {
             let chosen;
             for (let i = 0; i < Object.keys(Game[player].inventory).length; i++) {
                 let tempchosen = Game[player].inventory[Object.keys(Game[player].inventory)[i]];
-                if (tempchosen.effects.some(str => str.includes("Guarded")) == false) {
+                if (tryAccess(tempchosen.effects,"guarded") == false) {
                     chosen = tempchosen;
                     break;
                 }
             }
             if (chosen == null) {
             } else {
-                chosen.effects.push("Guarded{1,5}")
+                addEffect(chosen,"guarded",{s:1,t:5});
             }
         }
         // sandstorms gain stat health
@@ -1761,31 +1770,31 @@ function update(reset = null) {
                 tempimg = "url()";
                 card.style.backgroundSize = "140px 160px";
             }
-            if (curcard.effects.some(str => str.includes("Camouflaged")) == true) {
+            if (curObject.hasOwn(card.effects,"Camouflaged")) {
                 tempimg += ", url(img/foils/camofoil.png)";
             }
-            if (curcard.effects.some(str => str.includes("Frozen")) == true) {
+            if (curObject.hasOwn(card.effects,"Frozen")) {
                 tempimg += ", url(img/foils/frostfoil.png)";
             }
-            if (curcard.effects.some(str => str.includes("Confused")) == true) {
+            if (curObject.hasOwn(card.effects,"Confused")) {
                 tempimg += ", url(img/foils/confusedfoil.png)";
             }
-            if (curcard.effects.some(str => str.includes("Burning")) == true) {
+            if (curObject.hasOwn(card.effects,"Burning")) {
                 tempimg += ", url(img/foils/burningfoil.png)";
             }
-            if (curcard.effects.some(str => str.includes("Stunned")) == true) {
+            if (curObject.hasOwn(card.effects,"Stunned")) {
                 tempimg += ", url(img/foils/stunnedfoil.png)";
             }
-            if (curcard.effects.some(str => str.includes("Guarded")) == true) {
+            if (curObject.hasOwn(card.effects,"Guarded")) {
                 tempimg += ", url(img/foils/guardedfoil.png)";
             }
-            if (curcard.effects.some(str => str.includes("Shock")) == true) {
+            if (curObject.hasOwn(card.effects,"Shock")) {
                 tempimg += ", url(img/foils/shockfoil.png)";
             }
-            if (curcard.effects.some(str => str.includes("Fear")) == true) {
+            if (curObject.hasOwn(card.effects,"Fear")) {
                 tempimg += ", url(img/foils/fearfoil.png)";
             }
-            if (curcard.effects.some(str => str.includes("Death")) == true) {
+            if (curObject.hasOwn(card.effects,"Death")) {
                 tempimg += ", url(img/foils/deathfoil.png)";
             }
             card.style.backgroundSize = "140px 160px";
@@ -1979,7 +1988,7 @@ function firstOpp(player) {
     if (Object.keys(plr.inventory).length > 0) {
         let chosen;
         for (let i = 0; i < Object.keys(plr.inventory).length; i++) {
-            if (plr.inventory[Object.keys(plr.inventory)[i]].effects.some(str => str.includes("Camouflaged")) == false) {
+            if (tryAccess(plr.inventory[plr.inventoryorder[i]]) == false) {
                 chosen = Object.keys(plr.inventory)[i];
                 break;
             }
@@ -2103,9 +2112,7 @@ function turnover(player) {
                         plr.health -= 11+(i*2);
                     } else {
                         card.hp -= 11+(i*2);
-                        if (arrHas(card.effects,"Shock") == false) {
-                            card.effects.push("Shock{2,2}");
-                        }
+                        addEffect(card,"shock",{s:2,t:2});
                     }
                     
                 }
@@ -2117,9 +2124,7 @@ function turnover(player) {
         for (let i = 0; i < 3; i++) {
             let card = randKey(p1.inventory);
             if (card != null) {
-                if (arrHas(card.effects,"Burning") == false) {
-                    card.effects.push("Burning{1,1}");
-                }
+                addEffect(card,"burning",{s:1,t:1});
             }
         }
         playAudio("sounds/burn.mp3");
@@ -2128,9 +2133,7 @@ function turnover(player) {
         for (let i = 0; i < 3; i++) {
             let card = randKey(p1.inventory);
             if (card != null) {
-                if (arrHas(card.effects,"Stunned") == false) {
-                    card.effects.push("Stunned{1,2}");
-                }
+                addEffect(card,"stunned",{s:1,t:2});
             }
         }
         showEventText("Cards Stunned!","stun");
@@ -2168,9 +2171,7 @@ function turnover(player) {
             for (let i = 0; i < 4; i++) {
                 let card = randKey(p1.inventory);
                 if (card != null) {
-                    if (arrHas(card.effects,"Death") == false) {
-                        card.effects.push("Death{1,2}");
-                    }
+                    addEffect(card,"death",{s:1,t:2});
                     card.hp -= 10;
                 }
             }
@@ -2180,11 +2181,8 @@ function turnover(player) {
     if (plr.name == "lordk" && turns % 4 == 0) {
         for (let i = 0; i < 4; i++) {
             let card = randKey(p1.inventory);
-            console.log("yuh",card);
             if (card != null) {
-                if (arrHas(card.effects,"Stunned") == false) {
-                    card.effects.push("Stunned{1,2}");
-                }
+                addEffect(card,"stunned",{s:1,t:2});
                 card.hp -= 20;
             }
         }
@@ -2223,82 +2221,77 @@ function turnover(player) {
         if ((currentmode == "Cataclysm" || (currentmode == "Custom" && customtype == "decay")) && player == "p1") {
             zecard.hp -= 20;
         }
-        for (let j = 0; j < zecard.effects.length;j++) {
-            let effect = zecard.effects[j];
-            let args = formateffect("Attributes",effect);
-            args[0] = Number(args[0]);
-            args[1] = Number(args[1]);
-            let flatfx = formateffect("FlatEffect",effect);
-            console.log(effect);
-            // [0] == scale; [1] == timeleft
-            if (flatfx == "Burning") {
+        for (let effect in zecard.effects) {
+            let data = zecard.effects[effect];
+            let attr = data.attr;
+            // s == scale; t == timeleft
+            if (effect == "Burning") {
                 if (player == "p1" && Object.keys(p1.relics).includes("flamebean")) {
                     let chosenReflect = opp.inventory[randItem(opp.inventoryorder)];
-                    addEffect(chosenReflect,"Burning",args[0],args[1]*2,true,args[0],args[1]*2);
-                    zecard.hp += Number(args[0])*8; // cancels out damage done
-                    args[1] = 0;
+                    addEffect(chosenReflect,"burning",{s:attr.s,t:attr.t*2},true,{s:attr.s,t:attr.t*2});
+                    zecard.hp += Number(attr.s)*8; // cancels out damage done
+                    attr.t = 0;
                 }
-                zecard.hp -= Number(args[0])*8;
+                zecard.hp -= Number(attr.s)*8;
                 if (zecard.cardmods.includes("infernalfoil")) {
-                    zecard.hp += Number(args[0])*14;
+                    zecard.hp += Number(attr.s)*14;
                 }
             }
-            if (flatfx == "Shock") {
-                zecard.hp -= 15;
+            if (effect == "Shock") {
+                zecard.hp -= 15*attr.s;
                 if (Object.hasOwn(zecard,"atk")) {
                     zecard.atk *= 1.2;
                     zecard.atk = Math.round(zecard.atk);
                 }
             }
-            if (flatfx == "Frozen") {
-                zecard.hp -= Number(args[0])*15;
+            if (effect == "Frozen") {
+                zecard.hp -= Number(attr.s)*15;
                 if (Object.hasOwn(zecard,"atk")) {
-                    zecard.atk -= 10;
+                    zecard.atk -= attr.s*5;
                     if (zecard.atk < 5) {
                         zecard.atk = 5;
                     }
                 }
             }
-            if (flatfx == "Bleeding") {
+            if (effect == "Bleeding") {
                 // scale value = % of hp lost
-                zecard.hp -= Math.round(zecard.hp*(args[0]/100));
+                zecard.hp -= Math.round(zecard.hp*(attr.s/100));
                 // added with the default 1, loses 5 scale per turn.
-                args[0] -= 4; 
+                attr.s -= 4; 
             }
-            if (flatfx == "Fear") {
+            if (effect == "Fear") {
                 zecard.coolleft += 1;
                 if (Object.hasOwn(zecard,"atk")) {
                     zecard.atk -= 10;
                 }
             }
-            if (flatfx == "Strength") {
-                zecard.atk += args[0];
+            if (effect == "Strength") {
+                zecard.atk += attr.s;
             }
-            if (flatfx == "Regeneration") {
-                zecard.hp += args[0];
+            if (effect == "Regeneration") {
+                zecard.hp += attr.s;
             }
-            if (flatfx == "Poison") {
-                zecard.hp -= args[0];
+            if (effect == "Poison") {
+                zecard.hp -= attr.s;
                 // added with the default 1, loses 5 scale per turn.
-                args[0] -= 4; 
+                attr.s -= 4; 
             }
-            if (args[0] > 1) {
-                args[0] -= 1;
+            if (attr.s > 1) {
+                attr.s -= 1;
             }
             
-            if (args[1] <= 1) {
-                if (flatfx == "Death") {
+            if (attr.t <= 1) {
+                if (effect == "Death") {
                     delete plr.inventory[Object.keys(plr.inventory)[i]];
                     continue;
                 }
-                zecard.effects.splice(j,1);
+                delete zecard.effects[effect];
                 continue;
                 
             }
-            if (args[1] > 1) {
-                args[1] -= 1;
+            if (attr.t > 1) {
+                attr.t -= 1;
             }
-            zecard.effects[j] = flatfx+"{"+args.toString()+"}";
         }
         if (zecard.type == "Attack") {
             if (zecard.ammo < zecard.maxammo) {
@@ -2346,7 +2339,7 @@ function turnover(player) {
             let chance = randNum(1,100);
             console.log("Chance is: "+chance,zecard.stat);
             if (chance <= zecard.stat) {
-                zecard.effects.push("Phased{1,1}");
+                addEffect(zecard,"phased",{s:1,t:1});
             }
             
         }
@@ -2682,7 +2675,7 @@ function damageCard(card,attacked,damage,stropp=null,strmain=null) {
     } else {
         playAudio("sounds/sword.mp3");
     }
-    if (arrHas(card.effects,"Predicted")) {
+    if (Object.hasOwn(card.effects,"predicted")) {
         attacked.hp += damage
         card.hp -= Math.round(formateffect("Attributes",arrFirst(card.effects,"Predicted"))[0]*damage);
     }
@@ -2713,7 +2706,7 @@ function damageCard(card,attacked,damage,stropp=null,strmain=null) {
                 card.atk += Math.round(card.stat*1.3); // 4
             }
             if (card.killcount % 5 == 0 && card.level >= 1) {
-                addEffect(card,"Camouflaged",1,2);
+                addEffect(card,"camouflaged",{s:1,t:2});
 
             }
             if (card.level >= 2 && card.killcount > 10 && (card.killcount-10) % 4 == 0) {
@@ -2724,15 +2717,13 @@ function damageCard(card,attacked,damage,stropp=null,strmain=null) {
             // diamond foil cards have 1/4 chance of getting deleted after dying
             delete opponent.deck[attacked];
         }
-        if (arrHas(attacked.effects,"Guarded") == false) {
+        if (tryAccess(attacked.effects,"guarded") == false) {
             delete opponent.inventory[attacked];
             if (currentmode == "Custom" && customtype == "flagship" && strmain == "p2") {
                 opponent.health = -100;
             }
         } else {
-            let zeval = attacked.effects.filter(str => str.includes("Guarded"))[0];
-            let index = attacked.effects.indexOf(zeval);
-            attacked.effects.splice(index,1);
+            delete attacked.effects["guarded"]
             attacked.hp = 30;
         }
     } else {
@@ -2821,7 +2812,7 @@ function useCard(element = null,opp = null,index = null,select = null,selectp) {
         return false;
     } else {
         let card = user.inventory[Object.keys(user.inventory)[index]];
-        if (arrHas(card.effects,"Stunned") || card.effects.some(str => str.includes("Frozen"))) {
+        if (tryAccess(card.effects,"stunned") != false || tryAccess(card.effects,"frozen") != false) {
             return false;
         }
         if (user.mana >= card.manause) {
@@ -2854,9 +2845,9 @@ function useCard(element = null,opp = null,index = null,select = null,selectp) {
                 }
                 
             }
-            if (arrHas(card.effects,"Harness")) {
+            if (Object.hasOwn(card.effects,"harness")) {
                 // the first attribute, scale, determines mana gained
-                opponent.mana += formateffect("Attributes",arrFirst(card.effects,"Harness"))[0];
+                opponent.mana += card.effects.harness.attr.s;
             }
             if (card.type == "Attack") {
                 let attacked = firstOpp(stropp);
@@ -2874,15 +2865,15 @@ function useCard(element = null,opp = null,index = null,select = null,selectp) {
                 }
                 let extracount = 0;
                 for (let i = 0; i < card.effects.length; i++) {
-                    if (card.effects.filter(str => str.includes("ExtraAtk")).length > extracount) {
+                    /*if (card.effects.filter(str => str.includes("ExtraAtk")).length > extracount) {
                         let cm = cleanseModifier("Norm",card.effects.filter(str => str.includes("ExtraAtk"))[extracount]);
                         extraatk += Math.round(card.atk*(cm[0]/100));
                         extracount++;
-                    }
+                    }*/
                 }
-                if (arrHas(card.effects,"Bubbly")) {
+                if (Object.hasOwn(card.effects,"bubbly")) {
                     // do extra atk and gain extra hp if bubbly
-                    let cm = cleanseModifier("Norm",arrFirst(card.effects,"Bubbly"));
+                    let cm = card.effects.bubbly.attr.s;
                     extraatk += Math.round(card.atk*(cm[0]/100));
                     card.hp += Math.round(card.hp*(cm[0]/300));
                 }
@@ -2941,15 +2932,12 @@ function useCard(element = null,opp = null,index = null,select = null,selectp) {
                         attacked = Object.keys(opponent.inventory)[findex];
                     }
                     // heal attacked if current card is confused
-                    if (card.effects.some(str => str.includes("Confused")) == true) {
+                    if (Object.hasOwn(card.effects,"Confused")) {
                         zeattacked.hp += card.atk*2;
                     }
                     if (user.mods.some(str => str.includes("FlameTouch"))) {
                         let cm = cleanseModifier("Norm",user.mods.filter(str => str.includes("FlameTouch"))[0]);
-                        console.log(cm);
-                        if (zeattacked.effects.some(str => str.includes("Burning")) == false) {
-                            zeattacked.effects.push(`Burning{${cm[0]},${cm[1]}}`);
-                        }
+                        addEffect(zeattacked,'burning',{s:cm[0],t:cm[1]});
                     }
                     if (arrHas(user.mods,"SoulLantern") == true && card.subtypes.includes("magic")) {
                         let cm = cleanseModifier("Norm",arrFirst(user.mods,"SoulLantern"));
@@ -2961,7 +2949,7 @@ function useCard(element = null,opp = null,index = null,select = null,selectp) {
                             zeattacked.hp -= card.atk;
                         }
                         if (card.level >= 2) {
-                            addEffect(zeattacked,"Bleeding",5,2); // bleeding 5% for 2 turns
+                            addEffect(zeattacked,"bleeding",{s:5,t:2}); // bleeding 5% for 2 turns
                         }
                     }
                     if (user == p1 && Object.hasOwn(p1.relics,"mammothtusk") && card.name == "spearman") {
@@ -2980,9 +2968,7 @@ function useCard(element = null,opp = null,index = null,select = null,selectp) {
                     }
                     
                     if (card.name == "cannoneer") {
-                        if (arrHas(zeattacked.effects,"Stunned") == false) {
-                            zeattacked.effects.push("Stunned{1,2}");
-                        }
+                        addEffect(zeattacked,"stunned",{s:1,t:2});
                         let attackAmount = 1;
                         let attackMult = 0.4;
                         let superCannon = false;
@@ -3002,7 +2988,7 @@ function useCard(element = null,opp = null,index = null,select = null,selectp) {
                             damageCard(card,chosencard,Math.round(card.atk*attackMult));
                             //chosencard.hp -= Math.round(card.atk*attackMult); // deal attackmult% of damage
                             if (arrHas(chosencard.effects,"Stunned") == false && superCannon) { // apply stun if super cannon
-                                chosencard.effects.push("Stunned{1,2}");
+                                addEffect(chosencard,"stunned",{s:1,t:2});
                             }
                         }
                     }
@@ -3018,7 +3004,7 @@ function useCard(element = null,opp = null,index = null,select = null,selectp) {
                         }
                     }
                     if (card.name == "corruptedclaw") {
-                        addEffect(zeattacked,"Poison",card.poison,4,true,Math.round(card.poison/2),1);
+                        addEffect(zeattacked,"poison",{s:card.poison,t:4},true,{s:Math.round(card.poison/2),t:1});
                         // card's stat is the poison given
                     }
                     
@@ -3027,7 +3013,7 @@ function useCard(element = null,opp = null,index = null,select = null,selectp) {
                         card.hp -= zeattacked.stat;
                     }
                     if (zeattacked.name == "sandstorm") {
-                        addEffect(card,"Poison",Math.round(zeattacked.poison/5),1,true,zeattacked.poison,2);
+                        addEffect(card,"poison",{s:Math.round(zeattacked.poison/5),t:1},true,{s:zeattacked.poison,t:2});
                         // worsen opponent's poison
                     }
                     if (card.name == "solarprism") {
@@ -3039,13 +3025,13 @@ function useCard(element = null,opp = null,index = null,select = null,selectp) {
                         opponent.health -= beamDamage;
                     }
                     if (card.name == "radiantfists") {
-                        addEffect(zeattacked,"Predicted",card.stat,1,true,1,1);
+                        addEffect(zeattacked,"predicted",{s:card.stat,t:1},true,{s:0.5,t:1});
                         // predicts opponent's attack
                     }
-                    if (card.cardmods.includes("infernalfoil") && arrHas(zeattacked.effects,"Burning") == false) {
+                    if (card.cardmods.includes("infernalfoil")) {
                         if (randNum(1,5) == 5) {
                             extraatk += 25;
-                            zeattacked.effects.push("Burning{3,1}");
+                            addEffect(zeattacked,"burning",{s:3,t:1});
                         }
                     }
 
@@ -3056,9 +3042,9 @@ function useCard(element = null,opp = null,index = null,select = null,selectp) {
                     preeffects = zeattacked.effects;
                     damageCard(card,zeattacked,card.atk+extraatk,stropp,strmain);
                     //zeattacked.hp -= card.atk+extraatk;
-                    if (arrHas(zeattacked.effects,"Bubbly")) {
+                    if (Object.hasOwn(zeattacked.effects,"bubbly")) {
                         // heal for x% of the damage taken based off of bubbly effect scale 
-                        zeattacked.hp += formateffect("Attributes",arrFirst(zeattacked.effects,"Bubbly"))[0]*(card.atk+extraatk)/100;
+                        zeattacked.hp += Math.round(zeattacked.effects.bubbly.attr.s*(card.atk+extraatk)/100);
                     }
                     console.log(zeattacked);
                     
@@ -3085,14 +3071,10 @@ function useCard(element = null,opp = null,index = null,select = null,selectp) {
                             let card = opponent.inventory[Object.keys(opponent.inventory)[i]];
                             if (card != undefined) {
                                 let substr = "Shock";
-                                if (card.effects.some(str => str.includes(substr)) == false) {
-                                    card.effects.push("Shock{1,1}");
-                                }
+                                addEffect(card,"shock",{s:1,t:1});
                                 if (randNum(1,2)) {
                                     substr = "Stunned";
-                                    if (arrHas(card.effects,substr) == false) {
-                                        card.effects.push("Stunned{1,1}");
-                                    }
+                                    addEffect(card,"stunned",{s:1,t:1});
                                 }
                                 if (superCharge) { // add manasteal
                                     manaSteal += 1;
@@ -3113,7 +3095,7 @@ function useCard(element = null,opp = null,index = null,select = null,selectp) {
                             let chosencard = randKey(opponent.inventory);
                             chosencard.hp -= Math.round(card.atk/2); // deal half of attack
                             // harness 
-                            addEffect(chosencard,"Harness",card.stat,3,true,0,2);
+                            addEffect(chosencard,"harness",{s:card.stat,t:3},true,{t:2});
                         }
                     }
                     if (card.name == "weakener") {
@@ -3165,7 +3147,7 @@ function useCard(element = null,opp = null,index = null,select = null,selectp) {
                             // shocks every card, dealing 1/7 of coil's attack with extra shock.
                             let tempchosen = opponent.inventory[Object.keys(opponent.inventory)[i]];
                             tempchosen.hp -= Math.ceil(card.atk/7);
-                            tempchosen = addEffect(tempchosen,"Shock",1,1,true);
+                            tempchosen = addEffect(tempchosen,"shock",{s:1,t:1},true);
                             /*if (tempchosen.effects.some(str => str.includes("Shock")) == true) {
                                 let zeval = tempchosen.effects.filter(str => str.includes("Shock"))[0];
                                 let index = tempchosen.effects.indexOf(zeval);
@@ -3205,7 +3187,12 @@ function useCard(element = null,opp = null,index = null,select = null,selectp) {
                             zeattacked.hp -= 7;
                         }
                         // add burning effect to enemy
-                        zeattacked = addEffect(zeattacked,"Burning",1,1,true);
+                        if (card.level < 2) {
+                            zeattacked = addEffect(zeattacked,"burning",{s:1,t:1},false);
+                        } else {
+                            zeattacked = addEffect(zeattacked,"burning",{s:1,t:1},true,{s:1,t:1});
+                        }
+                        
                         if (card.level >= 1 && randNum(1,16)==16) {
                             for (let i =0; i < 5;i++) {
                                 let chosen = randKey(opponent.inventory);
@@ -3229,10 +3216,7 @@ function useCard(element = null,opp = null,index = null,select = null,selectp) {
                     }
                     if (card.name == "ninja") {
                         // add camouflaged effect for 2 turns
-                        card = addEffect(card,"Camouflaged",1,2,false);
-                        /*if (card.effects.some(str => str.includes("Camouflaged")) == false) {
-                            card.effects.push("Camouflaged{1,2}");
-                        }*/
+                        addEffect(card,"camouflaged",{s:1,t:2});
                     }
                     if (card.name == "juggernaut") {
                         let stunAmount = 1;
@@ -3247,10 +3231,7 @@ function useCard(element = null,opp = null,index = null,select = null,selectp) {
                             if (card != undefined) {
                                 if (i < stunAmount) {
                                     let substr = "Stunned";
-                                    if (card.effects.some(str => str.includes(substr)) == false) {
-                                        card.effects.push("Stunned{1,1}");
-                                        
-                                    }
+                                    addEffect(card,"stunned",{s:1,t:1});
                                 }
                                 card.hp -= bashDamage; // deal bash damage
                                 
@@ -3266,7 +3247,7 @@ function useCard(element = null,opp = null,index = null,select = null,selectp) {
                         }
                     }
                     if (card.name == "soulkeeper") {
-                        if (arrHas(card.effects,"Camouflaged")) {
+                        if (Object.hasOwn(card.effects,"camouflaged")) {
                             card.hp = Math.round(card.hp+(card.atk/10));
                             card.atk = Math.round(card.atk+(card.atk/20));
                         }
@@ -3295,10 +3276,7 @@ function useCard(element = null,opp = null,index = null,select = null,selectp) {
                             // only stun first four
                             if (card != undefined && i < 4) {
                                 let substr = "Stunned";
-                                if (card.effects.some(str => str.includes(substr)) == false) {
-                                    card.effects.push("Stunned{1,1}");
-                                    
-                                }
+                                addEffect(card,"stunned",{s:1,t:1});
                                 card.hp -= damage;
                                 
                             } else {
@@ -3331,7 +3309,7 @@ function useCard(element = null,opp = null,index = null,select = null,selectp) {
                             chosen = null;
                             for (let i = 0; i < Object.keys(opponent.inventory).length; i++) {
                                 let tempchosen = opponent.inventory[Object.keys(opponent.inventory)[i]];
-                                if (tempchosen.hp > mosthp && tempchosen.effects.some(str => str.includes(substr)) == false) {
+                                if (tempchosen.hp > mosthp && tryAccess(tempchosen.effects,"death") == false) {
                                     keyname = Object.keys(opponent.inventory)[i];
                                     chosen = tempchosen;
                                     mosthp = chosen.hp;
@@ -3342,9 +3320,7 @@ function useCard(element = null,opp = null,index = null,select = null,selectp) {
                         if (chosen == null) {
                            
                         } else {
-                            if (chosen.effects.some(str => str.includes(substr)) == false) { // push death effect, which kills enemy after 3 turns
-                                chosen.effects.push("Death{1,1}");
-                            }
+                            addEffect(chosen,"death",{s:1,t:2});
                             if (card.level >= 1 && randNum(1,10) == 1) { // 1/10 chance of insta killing enemy
                                 delete opponent.inventory[keyname];
                             }
@@ -3361,7 +3337,7 @@ function useCard(element = null,opp = null,index = null,select = null,selectp) {
                             for (let i = 0; i < Object.keys(opponent.inventory).length; i++) {
                                 let tempchosen = opponent.inventory[Object.keys(opponent.inventory)[i]];
                                 if (Object.hasOwn(tempchosen,"atk")) {
-                                    if (tempchosen.atk > mostatk && tempchosen.coolleft < 2 && tempchosen.effects.some(str => str.includes(substr)) == false) {
+                                    if (tempchosen.atk > mostatk && tempchosen.coolleft < 2 && tryAccess(tempchosen.effects,"frozen") == false) {
                                         chosen = tempchosen;
                                         mostatk = chosen.atk;
                                     }
@@ -3374,9 +3350,7 @@ function useCard(element = null,opp = null,index = null,select = null,selectp) {
                         if (chosen == null) {
                            
                         } else {
-                            if (chosen.effects.some(str => str.includes(substr)) == false) {
-                                chosen.effects.push("Frozen{1,2}");
-                            }
+                            addEffect(chosen,"frozen",{s:1,t:2});
                         }
                     }
                     if (card.name == "jester") {
@@ -3384,7 +3358,7 @@ function useCard(element = null,opp = null,index = null,select = null,selectp) {
                         let chosen;
                         for (let i = 0; i < Object.keys(opponent.inventory).length; i++) {
                             let tempchosen = opponent.inventory[Object.keys(opponent.inventory)[i]];
-                            if (tempchosen.type == "Attack" && tempchosen.effects.some(str => str.includes(substr)) == false) {
+                            if (tempchosen.type == "Attack" && tryAccess(tempchosen.effects,"confused") == false) {
                                 chosen = tempchosen;
                                 break;
                             }
@@ -3392,9 +3366,7 @@ function useCard(element = null,opp = null,index = null,select = null,selectp) {
                         if (chosen == null || chosen.type != "Attack") {
                            
                         } else {
-                            if (chosen.effects.some(str => str.includes(substr)) == false) {
-                                chosen.effects.push("Confused{1,2}");
-                            }
+                            addEffect(chosen,"confused",{s:1,t:2},true,{t:1});
                         }
                         
                     }
@@ -3431,7 +3403,7 @@ function useCard(element = null,opp = null,index = null,select = null,selectp) {
                         user.health = Math.round(user.health);
                     }
                     // IF CURRENT ATTACKED CARD IS PHASED, TAKE NO DAMAGE
-                    if (arrHas(zeattacked.effects,"Phased")) {
+                    if (Object.hasOwn(zeattacked.effects,"phased")) {
                         console.log(zeattacked.hp,predamagehp,);
                         zeattacked.hp = predamagehp;
                         zeattacked.effects = preeffects;
@@ -3532,12 +3504,12 @@ function useCard(element = null,opp = null,index = null,select = null,selectp) {
                         }
                     }
                 } else {
-                    if (!arrHas(card.effects,"Poison")) { // you cannot heal poison, only bubblemancer can fix
+                    if (!tryAccess(zechosen.effects,"poison")) { // you cannot heal poison, only bubblemancer can fix
                         if (card.name != "bubblemancer") {
                             zechosen.hp += card.heal;
                             if (card.level >= 1 && card.name == "healorb") {
-                                let goodeffects = ["Bubbly","Phased","Strength","Regeneration"];
-                                addEffect(zechosen,randItem(goodeffects),5,2);
+                                let goodeffects = ["bubbly","phased","strength","regeneration"];
+                                addEffect(zechosen,randItem(goodeffects),{s:5,t:2});
                             }
                         }
                     }
@@ -3549,18 +3521,13 @@ function useCard(element = null,opp = null,index = null,select = null,selectp) {
                     for (let i = 0; i < 3; i++) {
                         let chosencard = randKey(user.inventory);
                         chosencard.hp += card.heal;
-                        let badeffects = ["Burning","Death","Fear","Frozen","Stunned","Shock","Poison"];
-                        for (let j = 0; j < chosencard.effects.length; j++) {
-                            let zefect = chosencard.effects[j];
-                            if (badeffects.includes(formateffect("FlatEffect",zefect))) {
-                                chosencard.effects.splice(chosencard.effects.indexOf(zefect),1);
+                        //let badeffects = ["burning","death","fear","frozen","stunned","shock","poison"];
+                        for (let effect in chosencard.effects) {
+                            if (effect.type == "bad") {
+                                delete chosencard.effects[effect];
                             }
                         }
-                        if (arrHas(chosencard.effects,"Bubbly")) {
-                            increaseModifier("Norm",arrFirst(chosencard.effects,"Bubbly"),[5,1]);
-                        } else {
-                            chosencard.effects.push("Bubbly{15,2}");
-                        }
+                        addEffect(chosencard,"bubbly",{s:15,t:2,d:5},true,{s:10});
                     }
                 }
 
@@ -3620,8 +3587,8 @@ function useCard(element = null,opp = null,index = null,select = null,selectp) {
                     }
                     chosen.atk *= 1+(card.stat/100);
                     chosen.atk = Math.round(chosen.atk);
-                    if (arrHas(chosen.effects,"Guarded") == false) {
-                        chosen.effects.push("Guarded{1,3}");
+                    if (tryAccess(chosen.effects,"guarded") == false) {
+                        addEffect(chosen,"guarded",{s:1,t:3});
                     }
                     chosen.ammo += 1;
                     delete user.inventory[Object.keys(user.inventory)[index]];
@@ -3675,8 +3642,8 @@ function useCard(element = null,opp = null,index = null,select = null,selectp) {
                     let substr = "Fear";
                     if (chosen != "Opp") {
                         chosen = opponent.inventory[chosen];
-                        if (chosen.effects.some(str => str.includes(substr)) == false) {
-                            chosen.effects.push("Fear{1,1}");
+                        if (tryAccess(chosen.effects,"fear") == false) {
+                            addEffect(chosen,"fear",{s:1,t:1});
                             chosen.coolleft += 1;
                         }
                     }
@@ -3757,8 +3724,8 @@ function useCard(element = null,opp = null,index = null,select = null,selectp) {
                         let substr = "Fear";
                         if (chosen != "Opp") {
                             chosen = opponent.inventory[chosen];
-                            if (chosen.effects.some(str => str.includes(substr)) == false) {
-                                chosen.effects.push("Fear{1,1}");
+                            if (tryAccess(chosen.effects,"fear") == false) {
+                                addEffect(chosen,"fear",{s:1,t:1});
                                 chosen.coolleft += 1;
                             }
                         }
@@ -4022,10 +3989,12 @@ function enterAdventureScreen() {
     let emmodallist = ["buycard","choosecard"];
 
     // SET BACK TO DEFUALT
+    byId("aftertext").innerHTML = "";
     embtnWrap.style.display = "none";
     clearChildren(byId("special-wrapper"));
     byId("reroll").style.display = "none";
-    
+    focusedSpecial = null;
+
     if (Object.hasOwn(curlocation,"skipallowed")) {
         alttravelbtn.style.display = "block";
     } else {
@@ -4104,6 +4073,17 @@ function enterAdventureScreen() {
                 if (rerolls == 5) {
                     rerolls = tryAccess(data,"rerolls",5);
                 }
+                if (special == "custom" && textfinished == true) {
+                    let specialdiv = specialEvent.createWrapper("custom");
+                    if (Object.hasOwn(data,"title")) {
+                        specialEvent.setTitle(data.title,specialdiv);
+                    }
+                    for (let j =0; j < Object.keys(data.choices).length; j++) {
+                        let choice = data.choices[Object.keys(data.choices)[j]];
+                        let opt = specialEvent.addOption(`<h2>${choice.h2}</h2><p>${choice.p}</p>`,Object.keys(data.choices)[j],special,specialdiv);
+                    }
+                    
+                }
                 if (special == "gaincard" && textfinished == true) {
                     // New Way
                     offerwrapper.style.display = "flex";
@@ -4154,7 +4134,7 @@ function enterAdventureScreen() {
                             tempLootTable = data.cardloottable;
                         }
                         let card = shopcards[lib.weight(cardLootTables[tempLootTable])]; // gets card from loot table, then gets version in shopcards
-                        card.effects = [];
+                        card.effects = {};
                         let chance = randNum(1,3); // 1/3 chance of increasing stats
                         if (chance > 2) {
                             let chance2 = randNum(1,10);
@@ -4503,6 +4483,15 @@ function enterAdventureScreen() {
                     specialEvent.addOption("<h2 class='text-yell'>Honey Chicken Wings</h2><p>+75 max health & full stomach for 3 battles. Costs 100 CC</p>",2,special,specialdiv);
                     specialEvent.addOption("<h2 class='text-red'>Flaming Reaper Chicken</h2><p>-50 max health & flaming for 10 battles. Costs 50 CC",3,special,specialdiv);
                 }
+                if (Object.hasOwn(data,"showopt")) {
+                    let specialdiv = specialEvent.createWrapper(special);
+                    let info = specials[special];
+                    let opt1 = specialEvent.addOption(`<h2>${info.formal}</h2><p>${info.desc}</p>`,special,"focus-special",specialdiv);
+                } else {
+                    if (["upgcard","sacrificecard","infernalfoil","energizer","destroycard","duplicatecard","diamondfoil","gamble"].includes(special)) {
+                        focusedSpecial = special;
+                    }
+                }
                 // IMPORTANT
                 if (special == "setpart" || special == "setloc") {
                     let specialdiv = specialEvent.createWrapper(special);
@@ -4539,19 +4528,7 @@ function enterAdventureScreen() {
         }
         
         // END OF IMPORTANT
-        if (shopmod == "showopt") {
-            let specialdiv = specialEvent.createWrapper(special);
-            byId("sc3").style.display = "none";
-            let zespec1 = specials[curspecial1];
-            let zespec2 = specials[curspecial2];
-            byId("sc1").innerHTML = `<h2>${zespec1.formal}</h2><p>${zespec1.desc}</p>`;
-            byId("sc1").setAttribute("data-specialset",zespec1.name);
-            byId("sc2").innerHTML = `<h2>${zespec2.formal}</h2><p>${zespec2.desc}</p>`;
-            byId("sc2").setAttribute("data-specialset",zespec2.name);
-        } else {
-            byId("sc1").removeAttribute("data-specialset");
-            byId("sc2").removeAttribute("data-specialset");
-        }
+        
     } else {
         curspecials = {};
         let specialdiv = specialEvent.createWrapper(special);
@@ -4820,7 +4797,7 @@ function updateAdventureScreen() {
                 return;
             }
             let card = p1.deck[element.getAttribute("data-card")];
-            if (Object.keys(curspecials).includes("destroycard")) {
+            if (focusedSpecial == "destroycard") {
                 if (Object.keys(p1.deck).length == 1){
                     invspecial.innerHTML = "ONLY ONE CARD LEFT";
                     return false;
@@ -4845,6 +4822,7 @@ function updateAdventureScreen() {
                         return false;
                     }
                     speciallock = true;
+                    p1.coins += randNum(10,40);
                     if (randNum(1,2) == 1) {
                         p1.health += 30;
                     } else {
@@ -4866,7 +4844,7 @@ function updateAdventureScreen() {
                 delete p1.deck[element.getAttribute("data-card")];
                 updateAdventureScreen();
             }
-            if (Object.keys(curspecials).includes("upgcard")) {
+            if (focusedSpecial == "upgcard") {
                 if (curlocation.name == "unclerictorappear") {
                     if (speciallock < 3) {
                         let card = p1.deck[element.getAttribute("data-card")];
@@ -4982,7 +4960,7 @@ function updateAdventureScreen() {
                     }
                 }
             }
-            if (Object.keys(curspecials).includes("sacrificecard")) {
+            if (focusedSpecial == "sacrificecard") {
                 if (curlocation.sacrificedcard != undefined) {
                     let card = p1.deck[element.getAttribute("data-card")];
                     let upgradeStats = card.upgrades[card.level+1];
@@ -5039,7 +5017,7 @@ function updateAdventureScreen() {
                     updateAdventureScreen();
                 }
             }
-            if (Object.keys(curspecials).includes("gamble")) {
+            if (focusedSpecial == "gamble") {
                 if (p1.coins < 50) {
                     invspecial.innerHTML = "INSUFFICIENT FUNDS";
                     return false;
@@ -5068,7 +5046,7 @@ function updateAdventureScreen() {
                 updateAdventureScreen();
             }
             
-            if (Object.keys(curspecials).includes("energizer") && p1.coins >= 150 && speciallock2 < 2) {
+            if (focusedSpecial == "energizer" && p1.coins >= 150 && speciallock2 < 2) {
                 p1.coins -= 150;
                 if (typeof speciallock2 == "boolean") {
                     speciallock2 = 1;
@@ -5087,7 +5065,11 @@ function updateAdventureScreen() {
                 invspecial.innerHTML = "CARD ENERGIZED!";
                 updateAdventureScreen();
             }
-            if (curspecial1 == "infernalfoil" && p1.coins >= 300 && speciallock == false && p1.deck[element.getAttribute("data-card")].cardmods.includes("infernalfoil") == false) {
+            if (focusedSpecial == "infernalfoil" && speciallock == false && p1.deck[element.getAttribute("data-card")].cardmods.includes("infernalfoil") == false) {
+                if (p1.coins < 300) {
+                    invspecial.innerHTML = "Need 300 CC for Infernal Foil!";
+                    return false;
+                }
                 if (typeof speciallock == "number") {
                     return false;
                 }
@@ -5098,7 +5080,7 @@ function updateAdventureScreen() {
                 invspecial.innerHTML = "Infernal Foil Applied!";
                 updateAdventureScreen();
             }
-            if (curspecial1 == "diamondfoil" && p1.coins >= 200 && speciallock == false && p1.deck[element.getAttribute("data-card")].cardmods.includes("diamondfoil") == false) {
+            if (focusedSpecial == "diamondfoil" && p1.coins >= 200 && speciallock == false && p1.deck[element.getAttribute("data-card")].cardmods.includes("diamondfoil") == false) {
                 speciallock = true;
                 p1.coins -= 200;
                 let card = p1.deck[element.getAttribute("data-card")];
@@ -5112,7 +5094,7 @@ function updateAdventureScreen() {
                 invspecial.innerHTML = "Diamond Foil Applied!";
                 updateAdventureScreen();
             }
-            if (curspecial1 == "duplicatecard" &&speciallock == false) {
+            if (focusedSpecial == "duplicatecard" &&speciallock == false) {
                 speciallock = true;
                 p1.coins += 50;
                 let card = p1.deck[element.getAttribute("data-card")];
@@ -5341,10 +5323,17 @@ function handleSpecialCard(element) {
     }
     let special = element.getAttribute("data-special");
     let choice = Number(element.getAttribute('data-choice'));
-    let data = curlocation.special[special];
+    if (isNaN(choice)) {
+        choice = element.getAttribute('data-choice');
+    }
+    let data = tryAccess(curlocation.special,special,{});
+    if (special == "custom") {
+        data = tryAccess(curlocation.special.custom.choices,choice,{});
+    }
     if (element.hasAttribute("data-specialset")) {
         curspecial1 = element.getAttribute("data-specialset");
     }
+    console.log(data,choice,special);
     if (Object.hasOwn(data,"heal")) {
         p1.health += data.heal;
         if (!tryAccess(data,"maxheal")) {
@@ -5355,6 +5344,12 @@ function handleSpecialCard(element) {
     }
     if (Object.hasOwn(data,"maxheal")) {
         p1.maxhealth += data.maxheal;
+    }
+    if (Object.hasOwn(data,"coins")) {
+        p1.coins += data.coins;
+    }
+    if (special == "focus-special") {
+        focusedSpecial = choice;
     }
     if (special == "setpart") {
         setLoc("addpart",[curlocation.name,data.setpart]);
@@ -5545,6 +5540,7 @@ function handleSpecialCard(element) {
         let card = lib.weight(cardLootTables.standard);
         drawCard("p1",true,card.name,"addToDeck");
         p1.health -= 100;
+        p1.coins += randNum(20,100);
         if (p1.health < 1) {
             p1.health = 1;
         }
@@ -5586,7 +5582,7 @@ function handleSpecialCard(element) {
         }
         updateAdventureScreen();
     }
-    if (Object.keys(curspecials).includes("crowattack") && speciallock ==false) {
+    if (special == "crowattack" && speciallock ==false) {
         // lose two random cards or 80 health
         speciallock = true;
         if (choice == 1 && Object.keys(p1.deck).length > 2) {
@@ -5727,15 +5723,18 @@ function handleSpecialCard(element) {
         }
     }
     element.style.border = "7px solid black";
-    if (Object.hasOwn(curlocation.special[special],choice) && Object.hasOwn(curlocation.special[special][choice],"actiontext")) {
-        currenttext += "<br>"+curlocation.special[special][choice].actiontext;
-        loretxt.innerHTML = currenttext;
-        annotateText(loretxt);
+    
+    if (Object.hasOwn(data,"choices") && Object.hasOwn(data.choices[choice],"actiontext")) {
+        byId("aftertext").innerHTML += data.choices[choice].actiontext;
+        annotateText(byId("aftertext"));
+    }
+    if (Object.hasOwn(data,"actiontext")) {
+        byId("aftertext").innerHTML += data.actiontext;
+        annotateText(byId("aftertext"));
     }
     if (con1) {
-        currenttext += "<br>"+curlocation.actiontext;
-        loretxt.innerHTML = currenttext;
-        annotateText(loretxt);
+        byId("aftertext").innerHTML += curlocation.actiontext;
+        annotateText(byId("aftertext"));
     }
     if (con2) {
         enterAdventureScreen();
@@ -5957,8 +5956,8 @@ function replaceChar(origString, replaceChar, index) {
 var changelogtab = byId("changelogtab");
 var tutorialtab = byId("tutorialtab");
 var importanttab = byId("importanttab");
-var annot_in = [".text-yell{",".text-blue{",".text-purp{",".text-green{",".text-red{",".text-highlight~~{",".text-linedeco~~{",".text-custom~~{",".text-woah{",".text-skewdash{",".text-italic{",".text-bold{",".text-maxi{",".text-positive{",".text-negative{",".text-number{",".text-quote{",".text-large{",".text-mini{",".text-small{"];
-var annot_out = ["<span class='text-yell'>|||</span>","<span class='text-blue'>|||</span>","<span class='text-purp'>|||</span>","<span class='text-green'>|||</span>","<span class='text-red'>|||</span>","<mark style='background-color:zespecial;'>|||</mark>","<span style='text-decoration:zespecial;'>|||</span>","<span style='zespecial'>|||</span>","<span class='text-woah'>|||</span>","<div class='text-skewdash'><span>|||</span></div>","<span style='font-style:italic;'>|||</span>","<span style='font-weight:bolder;'>|||</span>","<span class='text-maxi'>|||</span>","<span class='text-positive'>|||</span>","<span class='text-negative'>|||</span>","<span class='text-number'>|||</span>","<span class='text-quote'>|||</span>","<span class='text-large'>|||</span>","<span class='text-mini'>|||</span>","<span class='text-small'>|||</span>"];
+var annot_in = [".text-yell{",".text-blue{",".text-purp{",".text-green{",".text-red{",".text-highlight~~{",".text-linedeco~~{",".text-custom~~{",".text-woah{",".text-skewdash{",".text-italic{",".text-bold{",".text-maxi{",".text-positive{",".text-negative{",".text-number{",".text-quote{",".text-large{",".text-mini{",".text-small{",".text-white-hi{",".text-yell-hi{",".text-purp-hi{",".text-black-hi{"];
+var annot_out = ["<span class='text-yell'>|||</span>","<span class='text-blue'>|||</span>","<span class='text-purp'>|||</span>","<span class='text-green'>|||</span>","<span class='text-red'>|||</span>","<mark style='background-color:zespecial;'>|||</mark>","<span style='text-decoration:zespecial;'>|||</span>","<span style='zespecial'>|||</span>","<span class='text-woah'>|||</span>","<div class='text-skewdash'><span>|||</span></div>","<span style='font-style:italic;'>|||</span>","<span style='font-weight:bolder;'>|||</span>","<span class='text-maxi'>|||</span>","<span class='text-positive'>|||</span>","<span class='text-negative'>|||</span>","<span class='text-number'>|||</span>","<span class='text-quote'>|||</span>","<span class='text-large'>|||</span>","<span class='text-mini'>|||</span>","<span class='text-small'>|||</span>","<mark class='text-white-hi>|||</mark>","<mark class='text-yell-hi'>|||</mark>","<mark class='text-purp-hi'>|||</mark>","<mark class='text-black-hi'>|||</mark>"];
 function annotateText(element) {
     for (let i =0; i < annot_in.length; i++) {
         let annot = annot_in[i];
