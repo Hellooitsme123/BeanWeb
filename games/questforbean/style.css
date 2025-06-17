@@ -1,3 +1,11 @@
+@font-face {
+    font-family: "AlexBrush";
+    src: url('/fonts/AlexBrush.ttf');
+}
+@font-face {
+    font-family: "SuperBubbly";
+    src: url('/fonts/SuperBubbly.ttf');
+}
 body,html {
     height: 100%;
     width: 100%;
@@ -23,7 +31,7 @@ span {
 }
 /* GAME MENU */
 #menu {
-    background-image: url('img/background/woodbackground.png');
+    background-image: url('img/background/background1.png');
     width: 100vw;
     height: 100%;
     min-height: 100%;
@@ -32,11 +40,23 @@ span {
     background-size: 100%;
     transition: opacity 0.2s ease-in-out;
 }
+#gametitle-wrapper {
+    background: rgba(255, 255, 255, 0.75);
+    width: 70%;
+    height: 90px;
+    margin: auto;
+    clip-path: polygon(15% 10%, 85% 10%, 100% 50%, 85% 90%, 15% 90%, 0 50%);
+}
+#gametitle {
+    padding-top:8px;
+    text-align: center;
+    font-size:60px;
+}
 #versiontext {
     position: absolute;
     bottom: 0px;
     left: 0px;
-    font-family:"Courier New";
+    font-family:"SuperBubbly";
     font-weight:bolder;
     font-size: 30px; /*20*/
     /*text-shadow:
@@ -46,16 +66,13 @@ span {
     0 -0.07em black;*/
     -webkit-background-clip: text !important;
     -webkit-text-fill-color: transparent;
-    background: linear-gradient(67deg,rgb(0, 52, 80),rgb(0, 238, 255));
-    -webkit-text-stroke-width: 0.5px;
-    -webkit-text-stroke-color: rgb(151, 255, 241);
+    background: radial-gradient(circle at 100%,rgb(11, 0, 12),rgb(141, 20, 146),rgb(108, 10, 200));
+    -webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-color: rgb(231, 151, 255);
 }
 #background {
 }
-#gametitle {
-    text-align: center;
-    font-size:60px;
-}
+
 #modes, #startingmods {
     width: 80%;
     opacity: 0;
@@ -106,7 +123,7 @@ span {
     src: url('misc/fonts/CabinSketch.ttf') format('opentype');
 }
 #play {
-    width: 230px;
+    width: 250px;
     height: 80px;
     border-radius: 15px;
     background: rgb(61, 105, 187);
@@ -114,16 +131,22 @@ span {
     text-shadow: 0px 0px 20px rgb(155, 255, 255);
     font-size: 43px;
     position: absolute;
-    top: 50%;
+    top: 60%;
     left: 50%;
     transform: translateX(-50%) translateY(-50%);
     cursor: pointer;
     opacity: 1;
     box-shadow: 0px 0px 20px rgb(15, 33, 68),inset 0px 0px 20px rgba(146, 107, 107, 0.7);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-wrap: break-word;
+    display: block;
+    line-height: 1em; /* a */
+    max-height: 2em; /* a x number of line to show (ex : 2 line)  */
     transition: all 0.2s ease-in-out;
 }
 #play:hover {
-    width: 250px;
+    width: 300px;
     height: 87px;
     font-size:49px;
     opacity: 1;
@@ -147,6 +170,18 @@ span {
 #game {
     opacity: 0;
     transition: opacity 0.2s ease-in-out;
+}
+#unlock-btn {
+    background: gray !important;
+    border-radius: 5px;
+    clip-path: polygon(0% 0%, 75% 0%, 100% 50%, 75% 100%, 0% 100%);
+    box-shadow:0px 0px 5px 2px rgb(73, 73, 73);
+    font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    width: 90px;
+    text-align: left;
+}
+#unlock-btn:hover {
+    background:#484848 !important;
 }
 /* ADVENTURE SCREEN */
 #adventure {
@@ -639,7 +674,17 @@ button:hover {
     background: lightgrey;
     outline: 0.5px solid grey;
     font-style: italic;
-
+}
+.text-code {
+    font-family: 'Courier New', Courier, monospace;
+    color: orange;
+    font-weight: bold;
+}
+.text-feebolum {
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent;
+    background: linear-gradient(40deg,rgb(98, 73, 39),rgb(62, 112, 47));
+    font-weight:bolder;
 }
 .text-woah {
     -webkit-background-clip: text !important;

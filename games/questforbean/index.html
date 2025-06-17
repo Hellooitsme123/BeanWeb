@@ -286,7 +286,8 @@
     </div>
     <div id="menu">
         <div id="background">
-            <h1 id="gametitle">QUEST FOR BEAN</h1>
+            <div id="gametitle-wrapper"><h1 id="gametitle">QUEST FOR BEAN</h1></div>
+            
             <div class="open-modal-btn-wrapper">
                 <button id="changelog-btn" class="open-modal-btn" data-target="modal-overlay">
                     Changelog
@@ -302,12 +303,15 @@
                 PLAY
             </button>
         </div>
-        <p id="versiontext">v0.4pre - the pivot</p>
+        <p id="versiontext">v0.4 - the pivot</p>
     </div>
     <div id="game" class="hide">
         <h2 id="battletitle">FIGHT AGAINST</h2>
         <p id="p1">Player 1: 500 health</p>
         <p id="p2">Player 2: 500 health</p>
+        <div id="battle-events">
+
+        </div>
         <p id="battle-event"></p>
         <h4 id="whichturn">YOUR TURN</h4>
         <p id="battletext"></p>
@@ -393,11 +397,13 @@
                 </button>
             </div>
             <div id="changelogtab" class="tabcontent">
-                <h1>Update v0.4pre2 - the pivot (BETA)</h1>
+                <h1>Update v0.4 - the pivot</h1>
                 <hr>
                 <div class="modal-content" id="modal-content">
                     <h3>Important Note</h3>
-                    <p>.text-quote{"The pivot is halfway done."}</p>
+                    <p>.text-quote{"The pivot is complete?"}</p>
+                    <h3>New Menu!</h3>
+                    <p>Menu has been changed slightly to make it more appealing!</p>
                     <h3>Unlocks</h3>
                     <p>You can now unlock new items! At the end of a run, you will have to click the save unlocks button, which copies a bunch of text. Paste this somewhere safe. In the game's menu, there is a button at the bottom called load unlocks. This loads all the unlocks you have.</p>
                     <h3>Characters</h3>
@@ -405,12 +411,16 @@
                     <h3>New Cards</h3>
                     <ul>
                         <li>.text-purp{??? See for yourself.}</li>
-                        <li>Added Rotten Glob (special mechanic not added yet)</li>
+                        <li>Added Drawback back into the game, albeit MUCH, MUCH harder to get.</li>
+                        <li>Added Radiant Fists</li>
+                        <li>Added Fishing Rod</li>
+                        <li>Added Bloodstained Spear</li>
+                        <li>Bubblemancer art got redrawn</li>
                         <li>More art for cards</li>
                     </ul>
-                    <h3>Removed Cards</h3>
+                    <h3>Removed Features</h3>
                     <ul>
-                        <li>None in this update</li>
+                        <li>Removed orb mix (replaced with healorb upgrade)</li>
                     </ul>
                     <h3>New relics</h3>
                     <ul>
@@ -420,39 +430,46 @@
                     <h3>New Locations</h3>
                     <ul>
                         <li>A few locations added and deleted.</li>
-                        <li>Crimson Pedestal now allows you to sacrifice a card for a cheaper upgrade.</li>
-                        <li>Stage 2 Part 2a, .text-purp{Loda's Fortress}, will begin construction.</li>
-                        <li>Stage 2, Coda, has been expanded. .text-blue{Filo has now been expanded.}</li>
+                        <li>Added more special events.</li>
+                        <li>Added power deals, which can be used to gain advantages by giving up your power.</li>
+                        <li>Stage 1 Part 2a, .text-purp{Burnt Factory}, will begin construction.</li>
+                        <li>Stage 2, Coda, has been expanded. .text-blue{Feebole has now been added.}</li>
                     </ul>
                     <h3>Other Additions:</h3>
                     <ul>
-                        <li>.text-bold{COMPLETELY Overhauled} card effects, adding more customizability. They may not work as expected.</li>
-                        <li>.text-bold{COMPLETELY Overhauled} special events, making them more customizable than previously. Change won't be noticed much on client side.</li>
+                        <li>Enemies can now discard.</li>
+                        <li>Made battle event text more dynamic, now allowing multiple events to occur.</li>
+                        <li>Added a few changes to make mobile UI slightly more appealing.</li>
+                        <li>Enhanced cheat menu to make it easier for debugging.</li>
+                        <li>Added .text-bold{exhaust} cards, which can only be used once* per battle (*unless reloaded before use)</li>
+                        <li>.text-bold{COMPLETELY Overhauled} card effects, adding more customizability.</li>
+                        <li>Added on to the overhaul of special events, adding features for custom specials like heal or cost and special.id, which makes them more identifiable.</li>
+                        <li>Started adding special items that you can by.</li>
                         <li>Added more .text-bold{emphasis} to important information in lore text to prevent skipping over info.</li>
-                        <li>.text-large{.text-bold{MAGNIFY}}, you can now see a more detailed description of cards.</li>
-                        <li>Added formal damageCard function, making a cleaner way to handle card damage.</li>
-                        <li>Added items, which there are not many of currently. May be used later on.</li>
-                        <li>Cards now have genuine images instead of backgrounds (VERY BUGGY)</li>
+                        <li>Added new unlocks.</li>
                     </ul>
                     <h3>Balance Changes:</h3>
                     <ul>
+                        <li>Buffed Traffic Lord -> .text-positive{+1000 Aura, leveled up cards, new stop sign card}</li>
+                        <li>Nerfed Lord K -> .text-negative{Meteor Damage 50 -> 10-20}</li>
                         <li>Changed loot tables slightly</li>
-                        <li>Heal Orb & Heal Bubble .text-positive{buffed}. Heal Orb MU .text-positive{1 -> 0}. Heal Bubble MU .text-positive{1 -> 0.5}</li>
-                        <li>Nerfed many of the lose card events (e.g. Dance Club Spill)</li>
-                        <li>Most card upgrade .text-positive{costs decreased by ~100 CC}</li>
-                        <li>Nerfed some of the power events (e.g. Risk, Gain Power)</li>
+                        <li>Nerfed phaser .text-negative{Phase Chance 30% -> 20%}</li>
+                        <li>.text-positive{Buffed} some of the power events (e.g. Risk, Gain Power)</li>
                         <li>Buffed many risk events to .text-positive{give items/coins}</li>
                         <li>.text-positive{Buffed} Grass Lurker</li>
                         <li>Removed unobtainable cards from appearing in fights</li>
                     </ul>
                     <h3>Bug Fixes:</h3>
                     <ul>
-                        <li>Fixed multi-special events not working in previous pre-update</li>
+                        <li>Fixed cannoneer not working</li>
+                        <li>Fixed most special events not working from the special overhaul.</li>
+                        <li>Fixed Dance Club Spill adding .text-code{undefined} to your inventory</li>
                         <li>Fixed reroll appearing unnecessarily in certain events.</li>
                         <li>Fixed unobtainable cards being accessed during card swap/gain events</li>
                         <li>Fixed sacrifice card events</li>
                         <li>Fixed Janjo getting rarest relics instead of commonest relics</li>
-                        <li>Fixed events where you are promised a card but not given one</li>
+                        <li>Fixed Bubbly effect causing .text-code{NaN} hp</li>
+                        <li>Fixed addRelic command not increasing attributes.</li>
                     </ul>
                     <h3>Next Update?</h3>
                     <p>Complete Adding Stage 2 Part 3</p>
@@ -527,6 +544,7 @@
                     <h3>Other Not Shown Mechanics</h3>
                     <ul>
                         <li>Reloading - At the start of each round and reload, your hand consists of .text-bold{inventory length} cards. 1 card is added to your queue at the end of each turn. If you spend all cards in your hand, you will have to end turn to reload.</li>
+                        <li>Exhaust/Battle Deck - The battle deck is different from your actual deck. During a battle, a variety of factors can change the deck available to you. Exhaust cards will remove themselves from the battle deck after use. If you reload before using one, it is possible to have multiple.</li>
                         <li>Relics - They give special effects like extra damage and health, or an upgrade for one specific card.</li>
                         <li>Enemy Modifiers - Some enemies have special abilities, like Lord K's .text-bold{.text-red{Meteor Strike}} and Traffic Lord's .text-bold{Turn Block}. As of current only a few are displayed.</li>
                         <li>[UPCOMING] Card Modifiers - You can add modifiers to your cards like an .text-bold{Infernal Foil}, which makes it resistant to fire. Coming soon.</li>
@@ -621,6 +639,8 @@
         <button class="cheat-btn" type="button" data-cheat="3">Gain Coins</button>
         <button class="cheat-btn" type="button" data-cheat="5">Gain Relic</button>
         <button class="cheat-btn" type="button" data-cheat="4">Upgrade</button>
+        <button class="cheat-btn" type="button" data-cheat="6">Set Location</button>
+        <p id="locationsarr_show" class="text-miny text-code"></p>
     </div>
     <audio id="sfx1">
         <source src="sounds/draw-card.mp3" type="audio/mpeg">

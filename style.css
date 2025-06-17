@@ -1,6 +1,14 @@
 * {
     font-family: 'Trebuchet MS';
 }
+@font-face {
+    font-family: "AlexBrush";
+    src: url('/fonts/AlexBrush.ttf');
+}
+@font-face {
+    font-family: "SuperBubbly";
+    src: url('/fonts/SuperBubbly.ttf');
+}
 .disappearing {
     transition: opacity 1.5s ease-in-out;
     margin-top: 3px;
